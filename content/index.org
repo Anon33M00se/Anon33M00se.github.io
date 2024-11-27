@@ -1,0 +1,45 @@
+#+TITLE: m00se polemics
+#+INCLUDE: "./header.org"
+
+
+#+BEGIN_header
+  Lorem ipsum
+#+END_header
+
+* Overview
+
+This is an example of a _website_ written in *Org Mode*. If this text is longer in some way, then the left justification stuff will work better.
+
+I wonder what happens with LaTex Math: $y=x^2$
+
+If I want to do some raw html, how about @@html:<b>@@bold text@@html:</b>@@?  
+
+
+#+BEGIN_aside
+  Lorem ipsum
+#+END_aside
+
+* Links
+
+- [[https://systemcrafters.net/][System Crafters]]
+- [[https://news.ycombinator.com][Hacker News]]
+- [[./some_file.org][some file]]
+  
+* More crap
+This is really a lot of text that will help scroll off the bottom of the page.
+This is really a lot of text that will help scroll off the bottom of the page.
+This is really a lot of text that will help scroll off the bottom of the page.
+This is really a lot of text that will help scroll off the bottom of the page.
+This is really a lot of text that will help scroll off the bottom of the page.
+This is really a lot of text that will help scroll off the bottom of the page.
+This is really a lot of text that will help scroll off the bottom of the page.
+This is really a lot of text that will help scroll off the bottom of the page.
+This is really a lot of text that will help scroll off the bottom of the page.
+This is really a lot of text that will help scroll off the bottom of the page.
+This is really a lot of text that will help scroll off the bottom of the page.
+This is really a lot of text that will help scroll off the bottom of the page.
+This is really a lot of text that will help scroll off the bottom of the page.
+This is really a lot of text that will help scroll off the bottom of the page.
+This is really a lot of text that will help scroll off the bottom of the page.
+
+

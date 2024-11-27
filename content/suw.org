@@ -1,0 +1,18 @@
+#+TITLE: Stop Using Word
+#+INCLUDE: "./header.org"
+
+** Stop Using Word
+
+You should stop using Word. You should also do everything you can to stop people in your organization, circle, or scorirty
+
+** Motivation
+
+The scale of human loss to Word.
+
+** A General Approach
+
+Use simple text, and or really easy markup languages. 
+
+** A Specific Example
+
+Org files exported to a very specific Word requirement. 
