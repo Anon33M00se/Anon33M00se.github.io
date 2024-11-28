@@ -1,2 +1,17 @@
-#+HTML_HEAD_EXTRA: <header><h2>stuff</h2><p>Random things that need to be stuffed somewhere.</p><div class="topbar-menu-container"><span class="topbar-menu"><a class="button" href="/">Home</a></span> | <span><a href="/suw.html">SUW</a></span> | <span class="topbar-menu"><a href="https://distro.tube/projects/index.html">Other Projects</a></span><span class="topbar-menu"><a href="https://distro.tube/kb/index.html">Knowledge Base</a></span><span class="topbar-menu"><a href="https://distro.tube/man-org/index.html">Linux Manpages</a></span><span class="topbar-menu"><a href="https://distro.tube/community/index.html">Community</a></span><span class="topbar-menu"><a href="https://distro.tube/contribute/index.html">Contribute</a></span></div></header>
+#+HTML_HEAD_EXTRA: <meta name="viewport" content="width=device-width, initial-scale=1">
+
+#+begin_export html
+<div class="orgyeah-header">
+  <img src="https://distro.tube/img/logo.png"/>
+  <div class="topbar-menu-container">
+    <span class="topbar-menu"><a class="current" href="https://distro.tube/index.html">Home</a></span>
+    <span class="topbar-menu"><a href="https://distro.tube/dtos/index.html">DTOS</a></span>
+    <span class="topbar-menu"><a href="https://distro.tube/projects/index.html">Other Projects</a></span>
+    <span class="topbar-menu"><a href="https://distro.tube/kb/index.html">Knowledge Base</a></span>
+    <span class="topbar-menu"><a href="https://distro.tube/man-org/index.html">Linux Manpages</a></span>
+    <span class="topbar-menu"><a href="https://distro.tube/community/index.html">Community</a></span>
+    <span class="topbar-menu"><a href="https://distro.tube/contribute/index.html">Contribute</a></span>
+  </div>
+</div>
+#+end_export
 
