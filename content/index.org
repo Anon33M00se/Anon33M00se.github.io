@@ -23,7 +23,6 @@ If I want to do some raw html, how about @@html:<b>@@bold text@@html:</b>@@?
 
 - [[https://systemcrafters.net/][System Crafters]]
 - [[https://news.ycombinator.com][Hacker News]]
-- [[./some_file.org][some file]]
   
 * More crap
 This is really a lot of text that will help scroll off the bottom of the page.
