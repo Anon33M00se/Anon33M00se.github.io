@@ -1,0 +1,6 @@
+#+TITLE: Stuff ~ Bar
+#+INCLUDE: "./header.org"
+
+* BAR
+
+This is currently just a placeholder.

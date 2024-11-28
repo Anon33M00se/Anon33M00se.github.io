@@ -1,0 +1,6 @@
+#+TITLE: Stuff ~ Foo
+#+INCLUDE: "./header.org"
+
+* Foo
+
+This is currently just a placeholder.
