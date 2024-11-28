@@ -1,6 +1,6 @@
 
 #+begin_export html
-<div class="orgyeah-header">
+<header>
   <img src="https://distro.tube/img/logo.png"/>
   <div class="topbar-menu-container">
     <span class="topbar-menu"><a class="current" href="https://distro.tube/index.html">Home</a></span>
@@ -11,6 +11,6 @@
     <span class="topbar-menu"><a href="https://distro.tube/community/index.html">Community</a></span>
     <span class="topbar-menu"><a href="https://distro.tube/contribute/index.html">Contribute</a></span>
   </div>
-</div>
+</header>
 #+end_export
 
