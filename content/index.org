@@ -1,11 +1,6 @@
 #+TITLE: Stuff
 #+INCLUDE: "./header.org"
 
-
-#+BEGIN_header
-  Lorem ipsum
-#+END_header
-
 * Overview
 
 This is an example of a _website_ written in *Org Mode*. If this text is longer in some way, then the left justification stuff will work better.
