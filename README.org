@@ -9,3 +9,4 @@
   - You make changes (mostly to org mode files) in ./content
   - You run ./build.sh which call emacs in script mode to run the build-site.el file
   - Content gets exported into a directory called ./public
+ 
