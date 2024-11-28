@@ -1,0 +1,27 @@
+
+
+
+This is just a random org file. But it does have a code block:
+
+#+BEGIN_SRC elisp
+;
+; This is a comment
+;
+(defn cow (x) (x * 2))
+
+#+END_SRC
+
+This is $\LaTeX$. Does that work?
+
+#+BEGIN_SRC latex
+
+$y=x^2$
+\LaTeX
+
+#+END_SRC
+
+Or Maybe this:
+
+#+BEGIN_SRC latex
+\LaTeX
+#+END_SRC
