@@ -28,12 +28,20 @@
       org-html-doctype                 "html5"
       org-html-html5-fancy                   t
       org-html-head-include-default-style  nil ;; skip the default style sheet
-      org-html-meta-tags                   '( ("<meta charset=\"utf-8\">")
-					      ("<meta name=\"viewport\" content=\"width=device-width, initial-scale=0.5\">")
-					      ("<meta name=\"generator\" content=\"Org mode\">"))
-      org-html-head                        '( ("<link rel=\"stylesheet\" href=\"https://cdn.simplecss.org/simple.min.css\"/>")
-                                              ("<link rel=\"stylesheet\" type=\"text/css\" href=\"customizations.css\" />")
-					      ("<meta name=\"viewport\" content=\"width=device-width, initial-scale=0.25\">"))
+      org-html-viewport                    '((width "device-width")
+			                     (initial-scale "0.44")
+			                     (minimum-scale "")
+			                     (maximum-scale "")
+			                     (user-scalable ""))
+					     
+      org-html-meta-tags                    (list  (list "name" "viewport" "width=device-width, initial-scale=0.25"))
+;      org-html-meta-tags                   '( ("<meta charset=\"utf-8\">")
+;					      ("<meta name=\"viewport\" content=\"width=device-width, initial-scale=0.5\">")
+;					      ("<meta name=\"generator\" content=\"Org mode\">"))
+;;      org-html-head                        '( ("<link rel=\"stylesheet\" href=\"https://cdn.simplecss.org/simple.min.css\"/>")
+;;                                              ("<link rel=\"stylesheet\" type=\"text/css\" href=\"customizations.css\" />")
+;;					      ("<meta name=\"viewport\" content=\"width=device-width, initial-scale=0.25\">"))
+  )
 
 (setq org-publish-project-alist
   (list
