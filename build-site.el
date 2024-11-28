@@ -36,7 +36,7 @@
 					     
       org-html-meta-tags                   (list  (list "name" "viewport" "width=device-width, initial-scale=0.25"))
       org-html-head                        "<link rel=\"stylesheet\" href=\"https://cdn.simplecss.org/simple.min.css\"/>
-                                            <link rel=\"stylesheet\" type=\"text/css\" href=\"customizations.css\" />"
+                                            <link rel=\"stylesheet\" type=\"text/css\" href=\"/css/customizations.css\" />"
   )
 
 (setq org-publish-project-alist
@@ -52,18 +52,19 @@
      :with-creator t
      :with-toc nil
      :section-numbers nil
+     :time-stamp-file t)
+   (list "static"
+     :recursive t
+     :base-directory "./static"
+     :base-extension "css\\|js"
+     :publishing-directory "./public"
+     :publishing-function 'org-publish-attachment
+     :with-author nil
+     :with-title nil
+     :with-creator t
+     :with-toc nil
+     :section-numbers nil
      :time-stamp-file t)))
-;;   (list "static"
-;;     :recursive t
-;;     :base-directory "./static"
-;;     :publishing-directory "./public"
-;;     :publishing-function 'org-html-publish-to-html
-;;     :with-author nil
-;;     :with-title nil
-;;     :with-creator t
-;;     :with-toc nil
-;;     :section-numbers nil
-;;     :time-stamp-file t)))
 
 (org-publish-all t)
      
