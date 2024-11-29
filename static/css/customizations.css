@@ -1,23 +1,37 @@
-body > div > header { 
+body > div > header {
   background: var(--accent-bg);
-  width: 500%;
-  margin-top: -1rem;
-  margin-left: -200%;
-  border-bottom: 1px solid var(--border);
-  text-align: center;
-  padding: 1rem 0.5rem 2rem 0.5rem;
-  grid-column: 1 / -1;
-  box-sizing: border-box;
+  width: 100vw; 
+  margin-top: -1rem; 
+  padding-top: 10px;
+  margin-left: calc((100vw - 100%) / -2.0)
+  /*margin-right: 1vw;*/
+  /* margin-left: -100px; */
+  /* border-bottom: 1px solid var(--border); */
+  /* text-align: center; */
+  /* padding: 1rem 0.5rem 2rem 0.5rem;  */
+  /* padding-top: 1rem; */
+  /* grid-column: 1 / -1; */
+  /* box-sizing: border-box; */
 }
 
 body > div > header h1 {
-  max-width: 1200px;
-  margin: 1rem auto;
+  /*max-width: 1200px; */
+  /* margin: 1rem auto; */
+  /* margin-top: 100px; */
+    text-align: center;
+    padding-bottom: 0px;
+    margin-bottom: 0px;
 }
 
 body > div > header p {
   max-width: 40rem;
   margin: 1rem auto;
+  text-align: center;
+}
+
+.topbar-menu-container {
+    text-align: center;
+    padding-bottom: 1rem;
 }
 
 
