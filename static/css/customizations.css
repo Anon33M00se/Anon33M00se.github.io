@@ -7,6 +7,7 @@ body > div > header {
   /*margin-right: 1vw;*/
   /* margin-left: -100px; */
   /* border-bottom: 1px solid var(--border); */
+  /* border-bottom: 1px solid; */
   /* text-align: center; */
   /* padding: 1rem 0.5rem 2rem 0.5rem;  */
   /* padding-top: 1rem; */
@@ -35,11 +36,16 @@ body > div > header p {
 }
 
 
-body > div > footer {
-  margin-top: 4rem;
-  padding: 2rem 1rem 1.5rem 1rem;
+.status {
+  margin-top: 1rem;
+  /* padding: 2rem 1rem 1.5rem 1rem; */
   color: var(--text-light);
   font-size: 0.9rem;
-  text-align: center;
   border-top: 1px solid var(--border);
 }
+
+.status p {
+    margin-bottom: 0;
+    margin-top: 0;
+}
+
