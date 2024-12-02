@@ -29,14 +29,16 @@
       org-html-html5-fancy                 t
       org-html-head-include-default-style  nil ;; skip the default style sheet
       org-html-viewport                    '((width "device-width")
-			                     (initial-scale "0.44")
+			                     (initial-scale "0.5")
 			                     (minimum-scale "")
 			                     (maximum-scale "")
 			                     (user-scalable ""))
 					     
-      org-html-meta-tags                   (list  (list "name" "viewport" "width=device-width, initial-scale=0.25"))
       org-html-head                        "<link rel=\"stylesheet\" href=\"https://cdn.simplecss.org/simple.min.css\"/>
-                                            <link rel=\"stylesheet\" type=\"text/css\" href=\"/css/customizations.css\" />"
+                                            <link rel=\"stylesheet\" type=\"text/css\" href=\"/static/css/customizations.css\" />"
+      ;;org-html-head                        "<link rel=\"stylesheet\" href=\"https://latex.vercel.app/style.css\" />"
+      ;;org-html-head                        "<link rel=\"stylesheet\" href=\"/css/latex.css\" />"
+      
   )
 
 (setq org-publish-project-alist
@@ -56,8 +58,8 @@
    (list "static"
      :recursive t
      :base-directory "./static"
-     :base-extension "css\\|js"
-     :publishing-directory "./public"
+     :base-extension "css\\|js\\|pdf"
+     :publishing-directory "./public/static"
      :publishing-function 'org-publish-attachment
      :with-author nil
      :with-title nil
