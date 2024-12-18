@@ -1,6 +1,6 @@
 * Stuff
 
-  Partly a palce to put "stuff", partly a place to experiment with CI/CD/GitHubActions. 
+  Partly a place to put "stuff", partly a place to experiment with CI/CD/GitHubActions. 
 
 * How this works
 
