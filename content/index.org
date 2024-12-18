@@ -9,7 +9,7 @@ I wonder what happens with LaTex Math: $y=x^2$
 
 If I want to do some raw html, how about @@html:<b>@@bold text@@html:</b>@@?  
 
-And here is an edit. And here is another edit.
+And here is an edit. And here is another edit. And here is a third edit.
 
 #+BEGIN_aside
   Lorem ipsum
