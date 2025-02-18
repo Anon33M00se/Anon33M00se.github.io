@@ -22,7 +22,7 @@ x=\sqrt{b}                              % even tables, figures, etc
 \end{equation}
 
 \begin{equation}                        % arbitrary environments,
-x=\diff{a}{b}                              % even tables, figures, etc
+x=\frac{dy}{dx}                              % even tables, figures, etc
 \end{equation}
 
 If $a^2=b$ and \( b=2 \), then the solution must be
