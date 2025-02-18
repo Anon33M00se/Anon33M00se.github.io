@@ -15,7 +15,15 @@ And here is an edit. And here is another edit. And here is a third edit. And now
   This is an aside. Over on the side ...
 #+END_aside
 
-And here is some slighly more complicated math: $\diff{y}{x} = 2x^3 + x^2$
+And here is some slighly more complicated math:
+
+\begin{equation}                        % arbitrary environments,
+x=\sqrt{b}                              % even tables, figures, etc
+\end{equation}
+
+If $a^2=b$ and \( b=2 \), then the solution must be
+either $$ a=+\sqrt{2} $$ or \[ a=-\sqrt{2} \].
+
 
 related to this:
 
