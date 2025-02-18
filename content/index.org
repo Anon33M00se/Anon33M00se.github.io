@@ -15,6 +15,14 @@ And here is an edit. And here is another edit. And here is a third edit. And now
   This is an aside. Over on the side ...
 #+END_aside
 
+And here is some slighly more complicated math:
+
+$\diff{y}{x} = 2x^3 + x^2$
+
+related to this:
+
+[[https://www.teachmaths.org/20250105_orgmode-lesson-notes/][Emacs for Math Teachers]]  
+
 * Links
 
 - [[https://systemcrafters.net/][System Crafters]]
