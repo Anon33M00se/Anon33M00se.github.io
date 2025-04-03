@@ -1,6 +1,16 @@
 #+TITLE: How is this site made?
 #+INCLUDE: "./header.org"
 
-* How is this site made?
+* How does this site work?
 
-People tell me they really want to know. 
+A few people have asked me about how I manage this site. It changes
+frequently, as I will often through stuff up very quickly, move it
+around, and take it down again.
+
+The whole site controlled by editing local files in emacs and then a
+couple of quick keystrokes pushes out any changes to a free web
+service running on github. I'll explain each of the pieces in turn.
+
+* It Starts with Org Mode
+
+Org mode is a part of Emacs, and. Here's 

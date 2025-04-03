@@ -1,6 +1,22 @@
 #+TITLE: Stuff ~ Foo
 #+INCLUDE: "./header.org"
 
-* Foo
+* In praise of Old Alarm Systems
 
-This is currently just a placeholder.
+We moved into our current house almost 20 years ago and inherited an alarm system what was already close to a decade old.
+
+Installed in 1997, it apparently cost about $1,600 at the time, but a lot of that was for ..
+
+It just works. We replace a battery every now and then.
+
+Is there another pice of 30 year old tech?
+
+And amazingly, I'm integrating into Home Assistant now. It's also the one thing in Home Assistant that seems to work really well :-)
+
+* A small theory about LLM search
+
+Imagine if you indexed all of the web, and then did not pllute the results with ads. Is that what LLMs are right now; search without enshitification from marketing and advertising.
+
+Let's enjoy it while we can, because the enshitification is coming.
+
+
