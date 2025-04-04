@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!-- 2025-04-04 Fri 18:11 -->
+<!-- 2025-04-04 Fri 20:18 -->
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=0.5" />
 <title>How is this site made?</title>
@@ -58,9 +58,9 @@
   </div>
 </header>
 
-<div id="outline-container-orga14f831" class="outline-2">
-<h2 id="orga14f831">How does this site work?</h2>
-<div class="outline-text-2" id="text-orga14f831">
+<div id="outline-container-org8a44955" class="outline-2">
+<h2 id="org8a44955">How does this site work?</h2>
+<div class="outline-text-2" id="text-org8a44955">
 <p>
 A few people have asked me about how I manage this site. It changes
 frequently, as I will often throw stuff up very quickly, move it
@@ -68,21 +68,22 @@ around, and take it down again.
 </p>
 
 <p>
-The whole site is managed by editing local files in emacs and then a
-couple of quick keystrokes push out any changes to free webhosting on
-github. I'll explain each of the pieces in turn.
+The whole site is managed by editing local files in Emacs and then a
+couple of quick keystrokes push out any changes to free web-hosting on
+GitHub. I'll explain each of the pieces in turn.
 </p>
 </div>
 </div>
 
 
-<div id="outline-container-orge76510d" class="outline-2">
-<h2 id="orge76510d">It Starts with Org Mode</h2>
-<div class="outline-text-2" id="text-orge76510d">
+<div id="outline-container-org38060ce" class="outline-2">
+<h2 id="org38060ce">It Starts with Org Mode</h2>
+<div class="outline-text-2" id="text-org38060ce">
 <p>
 Org-mode is a part of Emacs, and is a whole ecosystem for, well,
 organizing information. <a href="https://orgmode.org/">Org</a> files are just plain text with some
-formatting conventions not unlike <a href="https://en.wikipedia.org/wiki/Markdown">Markdown</a>. Here's an example: 
+formatting conventions that superficially are not unlike
+<a href="https://en.wikipedia.org/wiki/Markdown">Markdown</a>. Here's an example:
 </p>
 
 <div class="org-src-container">
@@ -94,8 +95,8 @@ A few people have asked me about how I manage this site. It changes
 frequently, as I will often throw stuff up very quickly, move it
 around, and take it down again.
 
-The whole site is managed by editing local files in emacs and then a
-couple of quick keystrokes push out any changes to a free webhosting
+The whole site is managed by editing local files in Emacs and then a
+couple of quick keystrokes push out any changes to a free web-hosting
 github. I'll explain each of the pieces in turn.
 
 * It Starts with Org Mode
@@ -112,7 +113,7 @@ just plain text with some formatting conventions not unlike
 <p>
 That is the exact content that this page starts with. Because I spend
 most of my day in Emacs already (see <a href="https://stuff.sigvaldason.com/email.html">email</a>), it is super easy to just
-pop into an org file, make some changes (or open a new file) and
+pop into an org file, make some edits (or create a new file) and
 automatically push the changes out to "production".
 </p>
 
@@ -200,9 +201,9 @@ almost every conceivable use scenario.
 </div>
 
 
-<div id="outline-container-org004090e" class="outline-2">
-<h2 id="org004090e">Add in Some Packages</h2>
-<div class="outline-text-2" id="text-org004090e">
+<div id="outline-container-org0d37393" class="outline-2">
+<h2 id="org0d37393">Add in Some Packages</h2>
+<div class="outline-text-2" id="text-org0d37393">
 <p>
 Emacs has a notion of packages, and there a few available for
 automating the translation of org files into html. In fact, Org-mode
@@ -210,7 +211,7 @@ has built-in exporting to a number of different formats, including
 \(\LaTeX\), PDF, ODT/Word, and html. While the default html output from
 Org is serviceable, there is a more powerful package available that is
 more flexible, produces nicer html output, and helps keep various
-ancilliary files organized.
+ancillary files organized.
 </p>
 
 <p>
@@ -241,8 +242,8 @@ process all the changes.
 <p>
 There are other things you can do within ox-publish. The one I use for
 this site is in the code block below, and I include resources at the
-end of this document where you can find more details on running
-ox-publish scripts.
+end of this document where you can find more details on all the
+configuration options available.
 </p>
 
 <div class="org-src-container">
@@ -326,8 +327,6 @@ ox-publish scripts.
 
 (message <span class="org-string">"Build complete!"</span>)
 
-
-
 </pre>
 </div>
 
@@ -335,7 +334,7 @@ ox-publish scripts.
 
 
 <p>
-The htmlize package is included in there so that if I have a code block in a given file, like this:
+The htmlize package is included in there so that if I have a code block in a given file, like this python file:
 </p>
 
 <div class="org-src-container">
@@ -352,25 +351,43 @@ The htmlize package is included in there so that if I have a code block in a giv
 </div>
 
 <p>
-I get syntax highlighting automatically without having to do anything further. 
+I get syntax highlighting in the exported html automatically without having to do anything further. 
 </p>
 </div>
 </div>
 
 
-<div id="outline-container-org5cac7ac" class="outline-2">
-<h2 id="org5cac7ac">Hosting at Github (&amp; "Actions")</h2>
-<div class="outline-text-2" id="text-org5cac7ac">
+<div id="outline-container-org9f4f0fa" class="outline-2">
+<h2 id="org9f4f0fa">Hosting at Github (plus Actions)</h2>
+<div class="outline-text-2" id="text-org9f4f0fa">
 <p>
 Everything up to this point has been about creating content in org
-format and then automatically converting it to nice looking html.
+format and then automatically converting it into nice looking html. To
+host it at github, we need a couple of more pieces in places.
+</p>
+
+<p>
+The first step is get a github account. Even if you already have an
+account for other purposes, it might make sense to have a separate one
+just for hosting a site (it's somewhat more complicated to juggle
+projects, repositories, and github pages when you only want to host a
+wesbsite for one repository from a given account, but it can <a href="https://deanattali.com/blog/multiple-github-pages-domains/">be done</a>).
+</p>
+
+<p>
+Once you've got the github account setup, it's most straightforward to
+go ahead and create a repository in your account that consists of your username plus "gihub.io", like this:
+</p>
+
+<p>
+<b><i>username</i>.gihub.io</b>
 </p>
 </div>
 </div>
 
-<div id="outline-container-org628ece5" class="outline-2">
-<h2 id="org628ece5">Custom Domain Name</h2>
-<div class="outline-text-2" id="text-org628ece5">
+<div id="outline-container-orgee8e3bb" class="outline-2">
+<h2 id="orgee8e3bb">Custom Domain Name</h2>
+<div class="outline-text-2" id="text-orgee8e3bb">
 <p>
 The last little detail on this is how to have a custom domain name
 point at the github hosted content. 
@@ -378,9 +395,9 @@ point at the github hosted content.
 </div>
 </div>
 
-<div id="outline-container-org4acaee8" class="outline-2">
-<h2 id="org4acaee8">Worth It?</h2>
-<div class="outline-text-2" id="text-org4acaee8">
+<div id="outline-container-org73bd824" class="outline-2">
+<h2 id="org73bd824">Worth It?</h2>
+<div class="outline-text-2" id="text-org73bd824">
 <p>
 If you've never used Emacs and/or org-mode, it might seem like a <b>lot</b>
 of upfront work to get over the mountain of Emacs just so you can
@@ -405,9 +422,9 @@ there are worse ways to begin the journey.
 </div>
 
 
-<div id="outline-container-org5bf392f" class="outline-2">
-<h2 id="org5bf392f">Resources</h2>
-<div class="outline-text-2" id="text-org5bf392f">
+<div id="outline-container-org668691e" class="outline-2">
+<h2 id="org668691e">Resources</h2>
+<div class="outline-text-2" id="text-org668691e">
 <p>
 The amazing <a href="https://systemcrafters.net/">System Crafters</a> website has a whole series of videos
 related to Emacs, and a section devoted to website publishing with
@@ -431,7 +448,7 @@ another guide to using ox-publish on the Org-mode website here:
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="date">Created: 2025-04-04 Fri 18:11</p>
+<p class="date">Created: 2025-04-04 Fri 20:18</p>
 <p class="creator"><a href="https://www.gnu.org/software/emacs/">Emacs</a> 29.3 (<a href="https://orgmode.org">Org</a> mode 9.6.15)</p>
 </div>
 </body>
