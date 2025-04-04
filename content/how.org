@@ -89,10 +89,97 @@ Emacs has a notion of packages, and there a few available for
 automating the translation of org files into html. In fact Org-mode
 has built-in exporting to a number of different formats, including
 $\LaTeX$, PDF, ODT/Word, and html. While the default html output from
-Org is serviceable, there are several packages that make the html
-output nicer and help keep the various ancilliary files organized.
+Org is serviceable, there is a more powerful package available that is
+more flexible, produces nicer html output, and helps keep various
+ancilliary files organized.
 
-The package I use for this is
+The main package for this is ox-publish, which is really part of
+Org-mode itself. If you create an elisp file (a bit of interpretable
+code written in Emac's own variant of the Lisp programming language)
+that looks like this:
+
+#+BEGIN_SRC elisp
+
+;;
+;; Bring in the package system (elpa/melpa), make sure that is not
+;; messing with our normal (user) package dir but is doing so in the
+;; local .packages directory, and then bring in htmlize (mostly for
+;; syntax highlighting in code blocks).
+;;
+
+(require 'package)
+(setq package-user-dir (expand-file-name "./.packages"))
+(setq package-archives '(("melpa" . "https://melpa.org/packages/"   )
+			 ("elpa"  . "https://elpa.gnu.org/packages" )))
+
+;; Init the package system
+(package-initialize)
+(unless package-archive-contents
+  (package-refresh-contents))
+
+;; Install dependencies
+(package-install 'htmlize)
+
+;;
+;; Load the publishing system
+;;
+(require 'ox-publish)
+
+(setq org-html-validation-link             nil ;; don't show a "Validate" link at the bottom of the page
+      org-html-head-include-scripts        nil ;; don't put default org-html export scripts in place
+      org-html-doctype                     "html5"
+      org-html-html5-fancy                 t
+      org-html-head-include-default-style  nil ;; skip the default style sheet
+      org-html-viewport                    '((width "device-width")
+			                     (initial-scale "0.5")
+			                     (minimum-scale "")
+			                     (maximum-scale "")
+			                     (user-scalable ""))
+					     
+      org-html-head                        "<link rel=\"stylesheet\" href=\"https://cdn.simplecss.org/simple.min.css\"/>
+                                            <link rel=\"stylesheet\" type=\"text/css\" href=\"/static/css/customizations.css\" />"
+      ;;org-html-head                        "<link rel=\"stylesheet\" href=\"https://latex.vercel.app/style.css\" />"
+      ;;org-html-head                        "<link rel=\"stylesheet\" href=\"/css/latex.css\" />"
+      
+  )
+
+(setq org-publish-project-alist
+  (list
+   (list "stuff"
+     :recursive t
+     :base-directory "./content"
+     :base-extension "org"
+     :publishing-directory "./public"
+     :publishing-function 'org-html-publish-to-html
+     :with-author nil
+     :with-title nil
+     :with-creator t
+     :with-toc nil
+     :section-numbers nil
+     :time-stamp-file t)
+   (list "static"
+     :recursive t
+     :base-directory "./static"
+     :base-extension "css\\|js\\|pdf\\|png"
+     :publishing-directory "./public/static"
+     :publishing-function 'org-publish-attachment
+     :with-author nil
+     :with-title nil
+     :with-creator t
+     :with-toc nil
+     :section-numbers nil
+     :time-stamp-file t)))
+
+(org-publish-all t)
+     
+
+(message "Website build finished!")
+
+
+#+END_SRC
+
+
+
 
 The htmlize package is there so that if I have a code block in a given file, like this:
 
@@ -137,13 +224,15 @@ there are worse ways to begin the journey.
 
 * Resources
 
-The [[https://systemcrafters.net/][System Crafters]] website has a whole series of videos related to
-Emacs, and a section devoted to website publishing with Emacs:
+The amazing [[https://systemcrafters.net/][System Crafters]] website has a whole series of videos
+related to Emacs, and a section devoted to website publishing with
+Emacs:
 
-- [[https://systemcrafters.net/publishing-websites-with-org-mode/][Publishing Website with Org Mode]]
+- [[https://systemcrafters.net/publishing-websites-with-org-mode/building-the-site][Build Your Website with Org Mode]]
+- [[https://systemcrafters.net/publishing-websites-with-org-mode/automated-site-publishing/][Automated Org Mode Website Publishing with GitHub or SourceHut]]
 
-The above link covers ox-publish quite extensively. There's another
-guide to using ox-publish on the Org-mode website here:
+The above link covers using ox-publish quite extensively. There's
+another guide to using ox-publish on the Org-mode website here:
 
 - [[https://orgmode.org/worg/org-tutorials/org-publish-html-tutorial.html][Publishing Org-mode files to HTML]]
 
