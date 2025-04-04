@@ -7,27 +7,36 @@ A few people have asked me about how I manage this site. It changes
 frequently, as I will often throw stuff up very quickly, move it
 around, and take it down again.
 
-The whole site controlled by editing local files in emacs and then a
-couple of quick keystrokes pushes out any changes to a free web
-service running on github. I'll explain each of the pieces in turn.
+The whole site is managed by editing local files in emacs and then a
+couple of quick keystrokes push out any changes to a free webhosting
+github. I'll explain each of the pieces in turn.
 
 * It Starts with Org Mode
 
-Org mode is a part of Emacs, and. Here's a block of code:
+Org mode is a part of Emacs, and is a whole ecosystem for, well,
+organizing information. [[https://orgmode.org/][Org]] files are just plain text with some
+formatting conventions not unlike [[https://en.wikipedia.org/wiki/Markdown][Markdown]]. Here's an example: 
 
 #+BEGIN_SRC code
 
-This is some source code.
 
-What happens to, say a python
+,* How does this site work?
 
-,* Header
+A few people have asked me about how I manage this site. It changes
+frequently, as I will often throw stuff up very quickly, move it
+around, and take it down again.
 
-Blah
+The whole site is managed by editing local files in emacs and then a
+couple of quick keystrokes push out any changes to a free webhosting
+github. I'll explain each of the pieces in turn.
 
-,** Subheading
+,* It Starts with Org Mode
 
-foo foo foo
+Org mode is a part of Emacs, and is a whole ecosystem for, well,
+organizing information. [[https://orgmode.org/][Org]] files are
+just plain text with some formatting conventions not unlike
+[[https://en.wikipedia.org/wiki/Markdown][Markdown]]. Here's an example: 
+
 
 #+END_SRC
 
