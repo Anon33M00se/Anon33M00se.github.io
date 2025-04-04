@@ -7,7 +7,7 @@ A few people have asked me about how I manage this site. It changes
 frequently, as I will often throw stuff up very quickly, move it
 around, and take it down again.
 
-The whole site is managed by editing local files in Emacs and then a
+The whole system is managed by editing local files in Emacs and then a
 couple of quick keystrokes push out any changes to free web-hosting on
 GitHub. I'll explain each of the pieces in turn.
 
@@ -20,26 +20,23 @@ formatting conventions that superficially are not unlike
 [[https://en.wikipedia.org/wiki/Markdown][Markdown]]. Here's an example:
 
 #+BEGIN_SRC code
-
-
 ,* How does this site work?
 
 A few people have asked me about how I manage this site. It changes
 frequently, as I will often throw stuff up very quickly, move it
 around, and take it down again.
 
-The whole site is managed by editing local files in Emacs and then a
-couple of quick keystrokes push out any changes to a free web-hosting
-github. I'll explain each of the pieces in turn.
+The whole system is managed by editing local files in Emacs and then a
+couple of quick keystrokes push out any changes to free web-hosting on
+GitHub. I'll explain each of the pieces in turn.
+
 
 ,* It Starts with Org Mode
 
 Org-mode is a part of Emacs, and is a whole ecosystem for, well,
-organizing information. [[https://orgmode.org/][Org]] files are
-just plain text with some formatting conventions not unlike
-[[https://en.wikipedia.org/wiki/Markdown][Markdown]]. Here's an example: 
-
-
+organizing information. [[https://orgmode.org/][Org]] files are just plain text with some
+formatting conventions that superficially are not unlike
+[[https://en.wikipedia.org/wiki/Markdown][Markdown]]. Here's an example:
 #+END_SRC
 
 That is the exact content that this page starts with. Because I spend
@@ -47,7 +44,7 @@ most of my day in Emacs already (see [[https://stuff.sigvaldason.com/email.html]
 pop into an org file, make some edits (or create a new file) and
 automatically push the changes out to "production".
 
-You can do a lot of different kinds of formats in Org-mode very easily. For example:
+You can produce a lot of different formats in Org-mode very easily. For example:
 
 #+BEGIN_SRC code
 
@@ -101,11 +98,11 @@ that:
 
 1. Makes sure ox-publish is in place
 
-2. Describes where the source (.org) files for the site are located (relative to the directory the elisp file is in).
+2. Describes where the source (.org) files for the site are located (relative to the directory where the elisp script is).
 
 3. Describes the "publishing" directory where html output files should end up.
 
-4. Sets various other optional parameters (e.g. css style sheets to use, 
+4. Sets various other optional parameters (e.g. css style sheets to use, etc.)
 
 5. Runs the actual page creation process.
 
@@ -113,10 +110,10 @@ Then, any time you make any edits or structural changes to the
 underlying org document, you just invoke this script to automagically
 process all the changes.
 
-There are other things you can do within ox-publish. The one I use for
-this site is in the code block below, and I include resources at the
-end of this document where you can find more details on all the
-configuration options available.
+There are many other things you can do within ox-publish. The exact
+script I use for this site is in the code block below, and I include
+resources at the end of this document where you can find more details
+on all the configuration options available.
 
 #+BEGIN_SRC elisp
 
@@ -225,23 +222,106 @@ I get syntax highlighting in the exported html automatically without having to d
 
 Everything up to this point has been about creating content in org
 format and then automatically converting it into nice looking html. To
-host it at github, we need a couple of more pieces in places.
+host it at github, we need a couple of more pieces in place.
 
-The first step is get a github account. Even if you already have an
+The first step is to get a [[https://github.com/signup][github account]]. Even if you already have an
 account for other purposes, it might make sense to have a separate one
 just for hosting a site (it's somewhat more complicated to juggle
 projects, repositories, and github pages when you only want to host a
 wesbsite for one repository from a given account, but it can [[https://deanattali.com/blog/multiple-github-pages-domains/][be done]]).
 
-Once you've got the github account setup, it's most straightforward to
-go ahead and create a repository in your account that consists of your username plus "gihub.io", like this:
+Once you've got the github account setup, you should create a
+repository in that account with a name that consists of your username
+plus "github.io", like this:
 
-*/username/.gihub.io*
+\nbsp{}\nbsp{}\nbsp{}\nbsp{} */username/.github.io*
+
+Then use git (or the Emacs module [[https://magit.vc/][magit]]) to sync all the org files,
+directory structure, build script, etc. to the newly created
+repository.
+
+Now you can take advantage of github's free web-hosting service
+(called [[https://pages.github.com/][Github Pages]]) to serve the files via a "Continuous
+Integration" (CI) process. CI is often spoken of in hushed tones that
+suggest complex processes involving infrastructure and platform
+systems to automatically deploy very sophisticated systems. All it
+means in this context is that github will automatically run a script
+every time you push new changes to the repository. In particular, if
+you make a directory inside *.github* called *workflows*, any
+yaml file placed in there will automatically be processed by github
+after a push. So if we have a file like this called *./github/workflows/publish.yml*:
+
+#+BEGIN_SRC elisp
+
+name: Publish to GitHub Pages
+
+on: [push]
+      
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out
+        uses: actions/checkout@v1
+
+      - name: Install Emacs
+        run: sudo apt install emacs-nox --yes
+
+      - name: Build the site
+        run: ./build.sh
+
+      - name: Publish generated content to GitHub Pages
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: public
+
+
+#+END_SRC
+
+Processing that yaml will invoke a virtual machine at github running
+ubuntu ("*runs-on: ubuntu-latest*"). On that vm, we will actually
+quickly install emacs ("*run: sudo apt install emacs-nox --yes*") and
+then run a script ("*run ./build.sh*:) which is just a shell wrapper
+around the ox-publish script from above. It looks like this:
+
+#+BEGIN_SRC org
+#!/bin/sh
+emacs -Q --script build-site.el
+#+END_SRC
+
+This will then regenerate all the site content in the *./public*
+directory of our repository. The yaml file then says to use a very
+popular github action (defined in
+*JamesIves/github-pages-deploy-action@v4*) to push the content in the
+*/public* directory to the GitHub Pages site for this repository. The
+site should then be available at */username/.github.io*.
+
+All of that may sound a little complicated, with CI yaml invocations
+of virtual machines, build scripts and whatnot. But once you've
+wrapped your head around it once and got it set up, it's all fully
+automated from them on.
+
 
 * Custom Domain Name
 
 The last little detail on this is how to have a custom domain name
-point at the github hosted content. 
+point at the github hosted content. This is actually well documented on github at:
+
+- [[https://docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site/managing-a-custom-domain-for-your-github-pages-site][Managing a custom domain for your GitHub Pages site]]
+
+You can use those instructions to set up either an APEX name
+(e.g. *example.com*) or a subdomain (e.g. *foo.example.com*). The main
+caveat to be aware of is that when you first configure the domain name
+on github's Settings page, you should wait 24 hours or so before
+turning on https enforcing. Even in this day and age, DNS propagation
+can take a while, and that all has to be working correctly and
+distributed out before the https setting will work.
+
+If you need somewhere to register a domain, I've had good luck with [[https://namecheap.com][namecheap]] and [[https://porkbun.com/][porkbun]].
+
 
 * Worth It?
 
@@ -250,15 +330,19 @@ of upfront work to get over the mountain of Emacs just so you can
 easily manage the molehill of pushing out website updates.
 
 I actually came to Emacs after roughly 20 years of using joe ([[https://joe-editor.sourceforge.io/][Joe's
-Own Editor]]), and some of my muscle memory for text editing was so deep
-that I had to customize emacs to mimic many of joe's keystrokes.
+Own Editor]]), and some of my muscle memory for text editing was so
+deeply ingrained that I had to customize emacs to mimic many of joe's
+keystrokes.
 
 But whatever path you take to get to Emacs, it will almost certainly
 be worth it. If you are an engineer, developer, or other technical
-user. Emacs (plus Org-mode, dired, mu4e, git/magit, etc., etc.) is
+user, Emacs (plus Org-mode, dired, mu4e, git/magit, etc., etc.) is
 just such a powerful tool that is worth learning to use well. If the
 path happens to start with wanting to manage a website in Org-mode,
 there are worse ways to begin the journey.
+
+And once it is all in place, you can push changes or new content to a
+site so quickly that it becomes almost second nature.
 
 
 * Resources
@@ -270,8 +354,12 @@ Emacs:
 - [[https://systemcrafters.net/publishing-websites-with-org-mode/building-the-site][Build Your Website with Org Mode]]
 - [[https://systemcrafters.net/publishing-websites-with-org-mode/automated-site-publishing/][Automated Org Mode Website Publishing with GitHub or SourceHut]]
 
-The above link covers using ox-publish quite extensively. There's
-another guide to using ox-publish on the Org-mode website here:
+The above link covers using ox-publish quite extensively, and if you
+examine the setup they walk through, you'll see it was the source for
+a lot of what I implemented.
+
+There's also another guide to using ox-publish on the Org-mode website
+here:
 
 - [[https://orgmode.org/worg/org-tutorials/org-publish-html-tutorial.html][Publishing Org-mode files to HTML]]
 
