@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!-- 2025-04-04 Fri 20:18 -->
+<!-- 2025-04-04 Fri 22:06 -->
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=0.5" />
 <title>How is this site made?</title>
@@ -58,9 +58,9 @@
   </div>
 </header>
 
-<div id="outline-container-org8a44955" class="outline-2">
-<h2 id="org8a44955">How does this site work?</h2>
-<div class="outline-text-2" id="text-org8a44955">
+<div id="outline-container-org53ddca8" class="outline-2">
+<h2 id="org53ddca8">How does this site work?</h2>
+<div class="outline-text-2" id="text-org53ddca8">
 <p>
 A few people have asked me about how I manage this site. It changes
 frequently, as I will often throw stuff up very quickly, move it
@@ -68,7 +68,7 @@ around, and take it down again.
 </p>
 
 <p>
-The whole site is managed by editing local files in Emacs and then a
+The whole system is managed by editing local files in Emacs and then a
 couple of quick keystrokes push out any changes to free web-hosting on
 GitHub. I'll explain each of the pieces in turn.
 </p>
@@ -76,9 +76,9 @@ GitHub. I'll explain each of the pieces in turn.
 </div>
 
 
-<div id="outline-container-org38060ce" class="outline-2">
-<h2 id="org38060ce">It Starts with Org Mode</h2>
-<div class="outline-text-2" id="text-org38060ce">
+<div id="outline-container-org8b17880" class="outline-2">
+<h2 id="org8b17880">It Starts with Org Mode</h2>
+<div class="outline-text-2" id="text-org8b17880">
 <p>
 Org-mode is a part of Emacs, and is a whole ecosystem for, well,
 organizing information. <a href="https://orgmode.org/">Org</a> files are just plain text with some
@@ -87,26 +87,23 @@ formatting conventions that superficially are not unlike
 </p>
 
 <div class="org-src-container">
-<pre class="src src-code">
-
-* How does this site work?
+<pre class="src src-code">* How does this site work?
 
 A few people have asked me about how I manage this site. It changes
 frequently, as I will often throw stuff up very quickly, move it
 around, and take it down again.
 
-The whole site is managed by editing local files in Emacs and then a
-couple of quick keystrokes push out any changes to a free web-hosting
-github. I'll explain each of the pieces in turn.
+The whole system is managed by editing local files in Emacs and then a
+couple of quick keystrokes push out any changes to free web-hosting on
+GitHub. I'll explain each of the pieces in turn.
+
 
 * It Starts with Org Mode
 
 Org-mode is a part of Emacs, and is a whole ecosystem for, well,
-organizing information. [[https://orgmode.org/][Org]] files are
-just plain text with some formatting conventions not unlike
-[[https://en.wikipedia.org/wiki/Markdown][Markdown]]. Here's an example: 
-
-
+organizing information. [[https://orgmode.org/][Org]] files are just plain text with some
+formatting conventions that superficially are not unlike
+[[https://en.wikipedia.org/wiki/Markdown][Markdown]]. Here's an example:
 </pre>
 </div>
 
@@ -118,7 +115,7 @@ automatically push the changes out to "production".
 </p>
 
 <p>
-You can do a lot of different kinds of formats in Org-mode very easily. For example:
+You can produce a lot of different formats in Org-mode very easily. For example:
 </p>
 
 <div class="org-src-container">
@@ -201,9 +198,9 @@ almost every conceivable use scenario.
 </div>
 
 
-<div id="outline-container-org0d37393" class="outline-2">
-<h2 id="org0d37393">Add in Some Packages</h2>
-<div class="outline-text-2" id="text-org0d37393">
+<div id="outline-container-org4bec088" class="outline-2">
+<h2 id="org4bec088">Add in Some Packages</h2>
+<div class="outline-text-2" id="text-org4bec088">
 <p>
 Emacs has a notion of packages, and there a few available for
 automating the translation of org files into html. In fact, Org-mode
@@ -224,11 +221,11 @@ that:
 <ol class="org-ol">
 <li>Makes sure ox-publish is in place</li>
 
-<li>Describes where the source (.org) files for the site are located (relative to the directory the elisp file is in).</li>
+<li>Describes where the source (.org) files for the site are located (relative to the directory where the elisp script is).</li>
 
 <li>Describes the "publishing" directory where html output files should end up.</li>
 
-<li>Sets various other optional parameters (e.g. css style sheets to use,</li>
+<li>Sets various other optional parameters (e.g. css style sheets to use, etc.)</li>
 
 <li>Runs the actual page creation process.</li>
 </ol>
@@ -240,10 +237,10 @@ process all the changes.
 </p>
 
 <p>
-There are other things you can do within ox-publish. The one I use for
-this site is in the code block below, and I include resources at the
-end of this document where you can find more details on all the
-configuration options available.
+There are many other things you can do within ox-publish. The exact
+script I use for this site is in the code block below, and I include
+resources at the end of this document where you can find more details
+on all the configuration options available.
 </p>
 
 <div class="org-src-container">
@@ -357,17 +354,17 @@ I get syntax highlighting in the exported html automatically without having to d
 </div>
 
 
-<div id="outline-container-org9f4f0fa" class="outline-2">
-<h2 id="org9f4f0fa">Hosting at Github (plus Actions)</h2>
-<div class="outline-text-2" id="text-org9f4f0fa">
+<div id="outline-container-org6e9caa3" class="outline-2">
+<h2 id="org6e9caa3">Hosting at Github (plus Actions)</h2>
+<div class="outline-text-2" id="text-org6e9caa3">
 <p>
 Everything up to this point has been about creating content in org
 format and then automatically converting it into nice looking html. To
-host it at github, we need a couple of more pieces in places.
+host it at github, we need a couple of more pieces in place.
 </p>
 
 <p>
-The first step is get a github account. Even if you already have an
+The first step is to get a <a href="https://github.com/signup">github account</a>. Even if you already have an
 account for other purposes, it might make sense to have a separate one
 just for hosting a site (it's somewhat more complicated to juggle
 projects, repositories, and github pages when you only want to host a
@@ -375,29 +372,130 @@ wesbsite for one repository from a given account, but it can <a href="https://de
 </p>
 
 <p>
-Once you've got the github account setup, it's most straightforward to
-go ahead and create a repository in your account that consists of your username plus "gihub.io", like this:
+Once you've got the github account setup, you should create a
+repository in that account with a name that consists of your username
+plus "github.io", like this:
 </p>
 
 <p>
-<b><i>username</i>.gihub.io</b>
+&nbsp;&nbsp;&nbsp;&nbsp; <b><i>username</i>.github.io</b>
+</p>
+
+<p>
+Then use git (or the Emacs module <a href="https://magit.vc/">magit</a>) to sync all the org files,
+directory structure, build script, etc. to the newly created
+repository.
+</p>
+
+<p>
+Now you can take advantage of github's free web-hosting service
+(called <a href="https://pages.github.com/">Github Pages</a>) to serve the files via a "Continuous
+Integration" (CI) process. CI is often spoken of in hushed tones that
+suggest complex processes involving infrastructure and platform
+systems to automatically deploy very sophisticated systems. All it
+means in this context is that github will automatically run a script
+every time you push new changes to the repository. In particular, if
+you make a directory inside <b>.github</b> called <b>workflows</b>, any
+yaml file placed in there will automatically be processed by github
+after a push. So if we have a file like this called <b>./github/workflows/publish.yml</b>:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-elisp">
+name: Publish to GitHub Pages
+
+on: [push]
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out
+        uses: actions/checkout@v1
+
+      - name: Install Emacs
+        run: sudo apt install emacs-nox --yes
+
+      - name: Build the site
+        run: ./build.sh
+
+      - name: Publish generated content to GitHub Pages
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: public
+
+
+</pre>
+</div>
+
+<p>
+Processing that yaml will invoke a virtual machine at github running
+ubuntu ("<b>runs-on: ubuntu-latest</b>"). On that vm, we will actually
+quickly install emacs ("<b>run: sudo apt install emacs-nox &#x2013;yes</b>") and
+then run a script ("<b>run ./build.sh</b>:) which is just a shell wrapper
+around the ox-publish script from above. It looks like this:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-org">#!/bin/sh
+emacs -Q --script build-site.el
+</pre>
+</div>
+
+<p>
+This will then regenerate all the site content in the <b>./public</b>
+directory of our repository. The yaml file then says to use a very
+popular github action (defined in
+<b>JamesIves/github-pages-deploy-action@v4</b>) to push the content in the
+<b>/public</b> directory to the GitHub Pages site for this repository. The
+site should then be available at <b><i>username</i>.github.io</b>.
+</p>
+
+<p>
+All of that may sound a little complicated, with CI yaml invocations
+of virtual machines, build scripts and whatnot. But once you've
+wrapped your head around it once and got it set up, it's all fully
+automated from them on.
 </p>
 </div>
 </div>
 
-<div id="outline-container-orgee8e3bb" class="outline-2">
-<h2 id="orgee8e3bb">Custom Domain Name</h2>
-<div class="outline-text-2" id="text-orgee8e3bb">
+
+<div id="outline-container-org065e0f6" class="outline-2">
+<h2 id="org065e0f6">Custom Domain Name</h2>
+<div class="outline-text-2" id="text-org065e0f6">
 <p>
 The last little detail on this is how to have a custom domain name
-point at the github hosted content. 
+point at the github hosted content. This is actually well documented on github at:
+</p>
+
+<ul class="org-ul">
+<li><a href="https://docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site/managing-a-custom-domain-for-your-github-pages-site">Managing a custom domain for your GitHub Pages site</a></li>
+</ul>
+
+<p>
+You can use those instructions to set up either an APEX name
+(e.g. <b>example.com</b>) or a subdomain (e.g. <b>foo.example.com</b>). The main
+caveat to be aware of is that when you first configure the domain name
+on github's Settings page, you should wait 24 hours or so before
+turning on https enforcing. Even in this day and age, DNS propagation
+can take a while, and that all has to be working correctly and
+distributed out before the https setting will work.
+</p>
+
+<p>
+If you need somewhere to register a domain, I've had good luck with <a href="https://namecheap.com">namecheap</a> and <a href="https://porkbun.com/">porkbun</a>.
 </p>
 </div>
 </div>
 
-<div id="outline-container-org73bd824" class="outline-2">
-<h2 id="org73bd824">Worth It?</h2>
-<div class="outline-text-2" id="text-org73bd824">
+
+<div id="outline-container-org7a5ad77" class="outline-2">
+<h2 id="org7a5ad77">Worth It?</h2>
+<div class="outline-text-2" id="text-org7a5ad77">
 <p>
 If you've never used Emacs and/or org-mode, it might seem like a <b>lot</b>
 of upfront work to get over the mountain of Emacs just so you can
@@ -406,25 +504,31 @@ easily manage the molehill of pushing out website updates.
 
 <p>
 I actually came to Emacs after roughly 20 years of using joe (<a href="https://joe-editor.sourceforge.io/">Joe's
-Own Editor</a>), and some of my muscle memory for text editing was so deep
-that I had to customize emacs to mimic many of joe's keystrokes.
+Own Editor</a>), and some of my muscle memory for text editing was so
+deeply ingrained that I had to customize emacs to mimic many of joe's
+keystrokes.
 </p>
 
 <p>
 But whatever path you take to get to Emacs, it will almost certainly
 be worth it. If you are an engineer, developer, or other technical
-user. Emacs (plus Org-mode, dired, mu4e, git/magit, etc., etc.) is
+user, Emacs (plus Org-mode, dired, mu4e, git/magit, etc., etc.) is
 just such a powerful tool that is worth learning to use well. If the
 path happens to start with wanting to manage a website in Org-mode,
 there are worse ways to begin the journey.
+</p>
+
+<p>
+And once it is all in place, you can push changes or new content to a
+site so quickly that it becomes almost second nature.
 </p>
 </div>
 </div>
 
 
-<div id="outline-container-org668691e" class="outline-2">
-<h2 id="org668691e">Resources</h2>
-<div class="outline-text-2" id="text-org668691e">
+<div id="outline-container-orgd8ac209" class="outline-2">
+<h2 id="orgd8ac209">Resources</h2>
+<div class="outline-text-2" id="text-orgd8ac209">
 <p>
 The amazing <a href="https://systemcrafters.net/">System Crafters</a> website has a whole series of videos
 related to Emacs, and a section devoted to website publishing with
@@ -437,8 +541,14 @@ Emacs:
 </ul>
 
 <p>
-The above link covers using ox-publish quite extensively. There's
-another guide to using ox-publish on the Org-mode website here:
+The above link covers using ox-publish quite extensively, and if you
+examine the setup they walk through, you'll see it was the source for
+a lot of what I implemented.
+</p>
+
+<p>
+There's also another guide to using ox-publish on the Org-mode website
+here:
 </p>
 
 <ul class="org-ul">
@@ -448,7 +558,7 @@ another guide to using ox-publish on the Org-mode website here:
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="date">Created: 2025-04-04 Fri 20:18</p>
+<p class="date">Created: 2025-04-04 Fri 22:06</p>
 <p class="creator"><a href="https://www.gnu.org/software/emacs/">Emacs</a> 29.3 (<a href="https://orgmode.org">Org</a> mode 9.6.15)</p>
 </div>
 </body>
