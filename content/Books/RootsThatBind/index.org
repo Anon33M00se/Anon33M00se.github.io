@@ -8,7 +8,7 @@
 #+ATTR_HTML: :width 180px
 #+ATTR_HTML: :align left
 #+ATTR_ORG: :align left
-[[./../../static/pdf/RootsThatBind.pdf]#[../../../static/img/roots-cover.png]]
+[[./../../static/pdf/RootsThatBind.pdf][../../../static/img/roots-cover.png]]
 
 # In 1979, Kristiana Magnusson wrote a history of the Sigvaldason family descendents of Sigvaldi Jóhannesson and Ingibjörg Magnúsdóttir called */Roots That Bind/*. That book is long out of print, but a scanned version is available here:
 
