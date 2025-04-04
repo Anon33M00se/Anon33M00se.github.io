@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!-- 2025-04-04 Fri 16:11 -->
+<!-- 2025-04-04 Fri 16:41 -->
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=0.5" />
 <title>How is this site made?</title>
@@ -57,9 +57,9 @@
   </div>
 </header>
 
-<div id="outline-container-org8b6c5cb" class="outline-2">
-<h2 id="org8b6c5cb">How does this site work?</h2>
-<div class="outline-text-2" id="text-org8b6c5cb">
+<div id="outline-container-orgd6d7111" class="outline-2">
+<h2 id="orgd6d7111">How does this site work?</h2>
+<div class="outline-text-2" id="text-orgd6d7111">
 <p>
 A few people have asked me about how I manage this site. It changes
 frequently, as I will often throw stuff up very quickly, move it
@@ -75,9 +75,9 @@ github. I'll explain each of the pieces in turn.
 </div>
 
 
-<div id="outline-container-org779e16f" class="outline-2">
-<h2 id="org779e16f">It Starts with Org Mode</h2>
-<div class="outline-text-2" id="text-org779e16f">
+<div id="outline-container-org7eb562f" class="outline-2">
+<h2 id="org7eb562f">It Starts with Org Mode</h2>
+<div class="outline-text-2" id="text-org7eb562f">
 <p>
 Org mode is a part of Emacs, and is a whole ecosystem for, well,
 organizing information. <a href="https://orgmode.org/">Org</a> files are just plain text with some
@@ -199,21 +199,109 @@ almost every conceivable use scenario.
 </div>
 
 
-<div id="outline-container-org60b7e76" class="outline-2">
-<h2 id="org60b7e76">Add in Some Packages</h2>
-<div class="outline-text-2" id="text-org60b7e76">
+<div id="outline-container-orgddfb838" class="outline-2">
+<h2 id="orgddfb838">Add in Some Packages</h2>
+<div class="outline-text-2" id="text-orgddfb838">
 <p>
 Emacs has a notion of packages, and there a few available for
 automating the translation of org files into html. In fact Org-mode
 has built-in exporting to a number of different formats, including
 \(\LaTeX\), PDF, ODT/Word, and html. While the default html output from
-Org is serviceable, there are several packages that make the html
-output nicer and help keep the various ancilliary files organized.
+Org is serviceable, there is a more powerful package available that is
+more flexible, produces nicer html output, and helps keep various
+ancilliary files organized.
 </p>
 
 <p>
-The package I use for this is
+The main package for this is ox-publish, which is really part of
+Org-mode itself. If you create an elisp file (a bit of interpretable
+code written in Emac's own variant of the Lisp programming language)
+that looks like this:
 </p>
+
+<div class="org-src-container">
+<pre class="src src-elisp">
+<span style="font-weight: bold; font-style: italic;">;;</span>
+<span style="font-weight: bold; font-style: italic;">;; </span><span style="font-weight: bold; font-style: italic;">Bring in the package system (elpa/melpa), make sure that is not</span>
+<span style="font-weight: bold; font-style: italic;">;; </span><span style="font-weight: bold; font-style: italic;">messing with our normal (user) package dir but is doing so in the</span>
+<span style="font-weight: bold; font-style: italic;">;; </span><span style="font-weight: bold; font-style: italic;">local .packages directory, and then bring in htmlize (mostly for</span>
+<span style="font-weight: bold; font-style: italic;">;; </span><span style="font-weight: bold; font-style: italic;">syntax highlighting in code blocks).</span>
+<span style="font-weight: bold; font-style: italic;">;;</span>
+
+(<span style="font-weight: bold;">require</span> '<span style="font-weight: bold; text-decoration: underline;">package</span>)
+(<span style="font-weight: bold;">setq</span> package-user-dir (expand-file-name <span style="font-style: italic;">"./.packages"</span>))
+(<span style="font-weight: bold;">setq</span> package-archives '((<span style="font-style: italic;">"melpa"</span> . <span style="font-style: italic;">"https://melpa.org/packages/"</span>   )
+                         (<span style="font-style: italic;">"elpa"</span>  . <span style="font-style: italic;">"https://elpa.gnu.org/packages"</span> )))
+
+<span style="font-weight: bold; font-style: italic;">;; </span><span style="font-weight: bold; font-style: italic;">Init the package system</span>
+(package-initialize)
+(<span style="font-weight: bold;">unless</span> package-archive-contents
+  (package-refresh-contents))
+
+<span style="font-weight: bold; font-style: italic;">;; </span><span style="font-weight: bold; font-style: italic;">Install dependencies</span>
+(package-install 'htmlize)
+
+<span style="font-weight: bold; font-style: italic;">;;</span>
+<span style="font-weight: bold; font-style: italic;">;; </span><span style="font-weight: bold; font-style: italic;">Load the publishing system</span>
+<span style="font-weight: bold; font-style: italic;">;;</span>
+(<span style="font-weight: bold;">require</span> '<span style="font-weight: bold; text-decoration: underline;">ox-publish</span>)
+
+(<span style="font-weight: bold;">setq</span> org-html-validation-link             nil <span style="font-weight: bold; font-style: italic;">;; </span><span style="font-weight: bold; font-style: italic;">don't show a "Validate" link at the bottom of the page</span>
+      org-html-head-include-scripts        nil <span style="font-weight: bold; font-style: italic;">;; </span><span style="font-weight: bold; font-style: italic;">don't put default org-html export scripts in place</span>
+      org-html-doctype                     <span style="font-style: italic;">"html5"</span>
+      org-html-html5-fancy                 t
+      org-html-head-include-default-style  nil <span style="font-weight: bold; font-style: italic;">;; </span><span style="font-weight: bold; font-style: italic;">skip the default style sheet</span>
+      org-html-viewport                    '((width <span style="font-style: italic;">"device-width"</span>)
+                                             (initial-scale <span style="font-style: italic;">"0.5"</span>)
+                                             (minimum-scale <span style="font-style: italic;">""</span>)
+                                             (maximum-scale <span style="font-style: italic;">""</span>)
+                                             (user-scalable <span style="font-style: italic;">""</span>))
+
+      org-html-head                        <span style="font-style: italic;">"&lt;link rel=\"stylesheet\" href=\"https://cdn.simplecss.org/simple.min.css\"/&gt;</span>
+<span style="font-style: italic;">                                            &lt;link rel=\"stylesheet\" type=\"text/css\" href=\"/static/css/customizations.css\" /&gt;"</span>
+      <span style="font-weight: bold; font-style: italic;">;;</span><span style="font-weight: bold; font-style: italic;">org-html-head                        "&lt;link rel=\"stylesheet\" href=\"https://latex.vercel.app/style.css\" /&gt;"</span>
+      <span style="font-weight: bold; font-style: italic;">;;</span><span style="font-weight: bold; font-style: italic;">org-html-head                        "&lt;link rel=\"stylesheet\" href=\"/css/latex.css\" /&gt;"</span>
+
+  )
+
+(<span style="font-weight: bold;">setq</span> org-publish-project-alist
+  (list
+   (list <span style="font-style: italic;">"stuff"</span>
+     <span style="font-weight: bold;">:recursive</span> t
+     <span style="font-weight: bold;">:base-directory</span> <span style="font-style: italic;">"./content"</span>
+     <span style="font-weight: bold;">:base-extension</span> <span style="font-style: italic;">"org"</span>
+     <span style="font-weight: bold;">:publishing-directory</span> <span style="font-style: italic;">"./public"</span>
+     <span style="font-weight: bold;">:publishing-function</span> 'org-html-publish-to-html
+     <span style="font-weight: bold;">:with-author</span> nil
+     <span style="font-weight: bold;">:with-title</span> nil
+     <span style="font-weight: bold;">:with-creator</span> t
+     <span style="font-weight: bold;">:with-toc</span> nil
+     <span style="font-weight: bold;">:section-numbers</span> nil
+     <span style="font-weight: bold;">:time-stamp-file</span> t)
+   (list <span style="font-style: italic;">"static"</span>
+     <span style="font-weight: bold;">:recursive</span> t
+     <span style="font-weight: bold;">:base-directory</span> <span style="font-style: italic;">"./static"</span>
+     <span style="font-weight: bold;">:base-extension</span> <span style="font-style: italic;">"css</span><span style="font-weight: bold; font-style: italic;">\\</span><span style="font-weight: bold; font-style: italic;">|</span><span style="font-style: italic;">js</span><span style="font-weight: bold; font-style: italic;">\\</span><span style="font-weight: bold; font-style: italic;">|</span><span style="font-style: italic;">pdf</span><span style="font-weight: bold; font-style: italic;">\\</span><span style="font-weight: bold; font-style: italic;">|</span><span style="font-style: italic;">png"</span>
+     <span style="font-weight: bold;">:publishing-directory</span> <span style="font-style: italic;">"./public/static"</span>
+     <span style="font-weight: bold;">:publishing-function</span> 'org-publish-attachment
+     <span style="font-weight: bold;">:with-author</span> nil
+     <span style="font-weight: bold;">:with-title</span> nil
+     <span style="font-weight: bold;">:with-creator</span> t
+     <span style="font-weight: bold;">:with-toc</span> nil
+     <span style="font-weight: bold;">:section-numbers</span> nil
+     <span style="font-weight: bold;">:time-stamp-file</span> t)))
+
+(org-publish-all t)
+
+
+(message <span style="font-style: italic;">"Website build finished!"</span>)
+
+
+</pre>
+</div>
+
+
+
 
 <p>
 The htmlize package is there so that if I have a code block in a given file, like this:
@@ -239,19 +327,19 @@ I get syntax highlighting automatically without having to do anything further.
 </div>
 
 
-<div id="outline-container-orgfd59b59" class="outline-2">
-<h2 id="orgfd59b59">Hosting at Github (&amp; "Actions")</h2>
+<div id="outline-container-org503a69f" class="outline-2">
+<h2 id="org503a69f">Hosting at Github (&amp; "Actions")</h2>
 </div>
 
 
-<div id="outline-container-org074a2aa" class="outline-2">
-<h2 id="org074a2aa">Custom Domain Name</h2>
+<div id="outline-container-org9b28b90" class="outline-2">
+<h2 id="org9b28b90">Custom Domain Name</h2>
 </div>
 
 
-<div id="outline-container-org4e1f50f" class="outline-2">
-<h2 id="org4e1f50f">Worth It?</h2>
-<div class="outline-text-2" id="text-org4e1f50f">
+<div id="outline-container-orge09a12f" class="outline-2">
+<h2 id="orge09a12f">Worth It?</h2>
+<div class="outline-text-2" id="text-orge09a12f">
 <p>
 If you've never used Emacs and/or org-mode, it might seem like a <b>lot</b>
 of upfront work to get over the mountain of Emacs just so you can
@@ -276,21 +364,23 @@ there are worse ways to begin the journey.
 </div>
 
 
-<div id="outline-container-org5319b97" class="outline-2">
-<h2 id="org5319b97">Resources</h2>
-<div class="outline-text-2" id="text-org5319b97">
+<div id="outline-container-org7c6b16d" class="outline-2">
+<h2 id="org7c6b16d">Resources</h2>
+<div class="outline-text-2" id="text-org7c6b16d">
 <p>
-The <a href="https://systemcrafters.net/">System Crafters</a> website has a whole series of videos related to
-Emacs, and a section devoted to website publishing with Emacs:
+The amazing <a href="https://systemcrafters.net/">System Crafters</a> website has a whole series of videos
+related to Emacs, and a section devoted to website publishing with
+Emacs:
 </p>
 
 <ul class="org-ul">
-<li><a href="https://systemcrafters.net/publishing-websites-with-org-mode/">Publishing Website with Org Mode</a></li>
+<li><a href="https://systemcrafters.net/publishing-websites-with-org-mode/building-the-site">Build Your Website with Org Mode</a></li>
+<li><a href="https://systemcrafters.net/publishing-websites-with-org-mode/automated-site-publishing/">Automated Org Mode Website Publishing with GitHub or SourceHut</a></li>
 </ul>
 
 <p>
-The above link covers ox-publish quite extensively. There's another
-guide to using ox-publish on the Org-mode website here:
+The above link covers using ox-publish quite extensively. There's
+another guide to using ox-publish on the Org-mode website here:
 </p>
 
 <ul class="org-ul">
@@ -300,7 +390,7 @@ guide to using ox-publish on the Org-mode website here:
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="date">Created: 2025-04-04 Fri 16:11</p>
+<p class="date">Created: 2025-04-04 Fri 16:41</p>
 <p class="creator"><a href="https://www.gnu.org/software/emacs/">Emacs</a> 29.3 (<a href="https://orgmode.org">Org</a> mode 9.6.15)</p>
 </div>
 </body>
