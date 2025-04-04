@@ -7,16 +7,17 @@ A few people have asked me about how I manage this site. It changes
 frequently, as I will often throw stuff up very quickly, move it
 around, and take it down again.
 
-The whole site is managed by editing local files in emacs and then a
-couple of quick keystrokes push out any changes to free webhosting on
-github. I'll explain each of the pieces in turn.
+The whole site is managed by editing local files in Emacs and then a
+couple of quick keystrokes push out any changes to free web-hosting on
+GitHub. I'll explain each of the pieces in turn.
 
 
 * It Starts with Org Mode
 
 Org-mode is a part of Emacs, and is a whole ecosystem for, well,
 organizing information. [[https://orgmode.org/][Org]] files are just plain text with some
-formatting conventions not unlike [[https://en.wikipedia.org/wiki/Markdown][Markdown]]. Here's an example: 
+formatting conventions that superficially are not unlike
+[[https://en.wikipedia.org/wiki/Markdown][Markdown]]. Here's an example:
 
 #+BEGIN_SRC code
 
@@ -27,8 +28,8 @@ A few people have asked me about how I manage this site. It changes
 frequently, as I will often throw stuff up very quickly, move it
 around, and take it down again.
 
-The whole site is managed by editing local files in emacs and then a
-couple of quick keystrokes push out any changes to a free webhosting
+The whole site is managed by editing local files in Emacs and then a
+couple of quick keystrokes push out any changes to a free web-hosting
 github. I'll explain each of the pieces in turn.
 
 ,* It Starts with Org Mode
@@ -43,7 +44,7 @@ just plain text with some formatting conventions not unlike
 
 That is the exact content that this page starts with. Because I spend
 most of my day in Emacs already (see [[https://stuff.sigvaldason.com/email.html][email]]), it is super easy to just
-pop into an org file, make some changes (or open a new file) and
+pop into an org file, make some edits (or create a new file) and
 automatically push the changes out to "production".
 
 You can do a lot of different kinds of formats in Org-mode very easily. For example:
@@ -91,7 +92,7 @@ has built-in exporting to a number of different formats, including
 $\LaTeX$, PDF, ODT/Word, and html. While the default html output from
 Org is serviceable, there is a more powerful package available that is
 more flexible, produces nicer html output, and helps keep various
-ancilliary files organized.
+ancillary files organized.
 
 The main package for this is ox-publish, which is really part of
 Org-mode itself. You can create an elisp file (a bit of interpretable
@@ -114,8 +115,8 @@ process all the changes.
 
 There are other things you can do within ox-publish. The one I use for
 this site is in the code block below, and I include resources at the
-end of this document where you can find more details on running
-ox-publish scripts.
+end of this document where you can find more details on all the
+configuration options available.
 
 #+BEGIN_SRC elisp
 
@@ -198,14 +199,12 @@ ox-publish scripts.
 
 (message "Build complete!")
 
-
-
 #+END_SRC
 
 
 
 
-The htmlize package is included in there so that if I have a code block in a given file, like this:
+The htmlize package is included in there so that if I have a code block in a given file, like this python file:
 
 #+BEGIN_SRC python
 
@@ -219,13 +218,25 @@ async def root():
 
 #+END_SRC
 
-I get syntax highlighting automatically without having to do anything further. 
+I get syntax highlighting in the exported html automatically without having to do anything further. 
  
 
-* Hosting at Github (& "Actions")
+* Hosting at Github (plus Actions)
 
 Everything up to this point has been about creating content in org
-format and then automatically converting it to nice looking html.
+format and then automatically converting it into nice looking html. To
+host it at github, we need a couple of more pieces in places.
+
+The first step is get a github account. Even if you already have an
+account for other purposes, it might make sense to have a separate one
+just for hosting a site (it's somewhat more complicated to juggle
+projects, repositories, and github pages when you only want to host a
+wesbsite for one repository from a given account, but it can [[https://deanattali.com/blog/multiple-github-pages-domains/][be done]]).
+
+Once you've got the github account setup, it's most straightforward to
+go ahead and create a repository in your account that consists of your username plus "gihub.io", like this:
+
+*/username/.gihub.io*
 
 * Custom Domain Name
 
