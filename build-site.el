@@ -35,7 +35,8 @@
 			                     (user-scalable ""))
 					     
       org-html-head                        "<link rel=\"stylesheet\" href=\"https://cdn.simplecss.org/simple.min.css\"/>
-                                            <link rel=\"stylesheet\" type=\"text/css\" href=\"/static/css/customizations.css\" />"
+                                            <link rel=\"stylesheet\" type=\"text/css\" href=\"/static/css/customizations.css\" />
+                                            <link rel=\"stylesheet\" type=\"text/css\" href=\"/static/css/wtf.css\" />"
       ;;org-html-head                        "<link rel=\"stylesheet\" href=\"https://latex.vercel.app/style.css\" />"
       ;;org-html-head                        "<link rel=\"stylesheet\" href=\"/css/latex.css\" />"
       ;org-html-htmlize-output-type         'inline-css
