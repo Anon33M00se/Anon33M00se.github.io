@@ -86,8 +86,8 @@ almost every conceivable use scenario.
 
 Emacs has a notion of packages, and there a few available for
 automating the translation of org files into html. In fact Org-mode
-has built in exporting to a number of different formats, including
-$\latex$, PDF, ODT/Word, and html. But this 
+has built-in exporting to a number of different formats, including
+$\LaTeX$, PDF, ODT/Word, and html. But this 
 
 * Hosting at Github and Using "Actions"
 
