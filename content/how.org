@@ -11,6 +11,7 @@ The whole site is managed by editing local files in emacs and then a
 couple of quick keystrokes push out any changes to free webhosting on
 github. I'll explain each of the pieces in turn.
 
+
 * It Starts with Org Mode
 
 Org mode is a part of Emacs, and is a whole ecosystem for, well,
@@ -87,7 +88,28 @@ almost every conceivable use scenario.
 Emacs has a notion of packages, and there a few available for
 automating the translation of org files into html. In fact Org-mode
 has built-in exporting to a number of different formats, including
-$\LaTeX$, PDF, ODT/Word, and html. While the default out
+$\LaTeX$, PDF, ODT/Word, and html. While the default html output from
+Org is serviceable, there are several packages that make the html
+output nicer and help keep the various ancilliary files organized.
+
+The package I use for this is
+
+The htmlize package is there so that if I have a code block in a given file, like this:
+
+#+BEGIN_SRC python
+
+from fastapi import FastAPI
+
+app = FastAPI()
+
+@app.get("/")
+async def root():
+    return {"message": "Hello, World!"}
+
+#+END_SRC
+
+I get syntax highlighting automatically without having to do anything further. 
+ 
 
 * Hosting at Github (& "Actions")
 
@@ -98,7 +120,7 @@ $\LaTeX$, PDF, ODT/Word, and html. While the default out
 * Worth It?
 
 If you've never used Emacs and/or org-mode, it might seem like a *lot*
-of upfront work just to get over the mountain of Emacs so you can
+of upfront work to get over the mountain of Emacs just so you can
 easily manage the molehill of pushing out website updates.
 
 I actually came to Emacs after roughly 20 years of using joe ([[https://joe-editor.sourceforge.io/][Joe's
@@ -107,18 +129,21 @@ that I had to customize emacs to handle many of my preferred keystrokes.
 
 But whatever path you take to get to Emacs, it will almost certainly
 be worth it. If you are an engineer, developer, or other technical
-user. Emacs (plus Org-mode, dired, mu4e, git/magit, etc., etc.) is just
-such a powerful tool that is worth learning to use well.
+user. Emacs (plus Org-mode, dired, mu4e, git/magit, etc., etc.) is
+just such a powerful tool that is worth learning to use well. If the
+path happens to start with wanting to manage a website in og-mode,
+there are worse ways to begin the journey.
 
 
 * Resources
 
-The website [[https://systemcrafters.net/][System Crafters]] has a whole series of videos related to
+The [[https://systemcrafters.net/][System Crafters]] website has a whole series of videos related to
 Emacs, and a section devoted to website publishing with Emacs:
 
 - [[https://systemcrafters.net/publishing-websites-with-org-mode/][Publishing Website with Org Mode]]
 
-The above link covers ox-publish quite extensively. There's another guide to using ox-publish on the Org-mode website here:
+The above link covers ox-publish quite extensively. There's another
+guide to using ox-publish on the Org-mode website here:
 
 - [[https://orgmode.org/worg/org-tutorials/org-publish-html-tutorial.html][Publishing Org-mode files to HTML]]
 
