@@ -40,12 +40,12 @@ just plain text with some formatting conventions not unlike
 
 #+END_SRC
 
-That is the exact org content that this page starts with. Because I
-spend most of my day in Emacs already (see [[/email.html][email]]), it is super easy to
-just pop into an org file, make some changes (or open a new file) and
+That is the exact content that this page starts with. Because I spend
+most of my day in Emacs already (see [[https://stuff.sigvaldason.com/email.html][email]]), it is super easy to just
+pop into an org file, make some changes (or open a new file) and
 automatically push the changes out to "production".
 
-You can do a lot of different kinds of formats in org mode very easily. For example:
+You can do a lot of different kinds of formats in Org-mode very easily. For example:
 
 #+BEGIN_SRC code
 
@@ -60,7 +60,7 @@ You can do a lot of different kinds of formats in org mode very easily. For exam
 $y=x^2$
 #+END_SRC
 
-leads to:
+produces:
 
 *bold*, _underline_, +strikethrough+, /italics/
 
@@ -72,7 +72,7 @@ leads to:
 
 $y=x^2$
 
-But this is just scratching the surface or org mode. To quote from the [[https://orgmode.org/worg/org-faq.html][Org FAQ]]:
+This is just scratching the surface or Org-mode. To quote from the [[https://orgmode.org/worg/org-faq.html][Org FAQ]]:
 
 #+BEGIN_QUOTE
 In its default setup, Org-mode offers a simple outlining and task
@@ -82,4 +82,26 @@ almost every conceivable use scenario.
 #+END_QUOTE
 
 
-* Add in 
+* Add in Some Packages
+
+Emacs has a notion of packages, and there a few available for
+automating the translation of org files into html. In fact Org-mode
+has built in exporting to a number of different formats, including
+$\latex$, PDF, ODT/Word, and html. But this 
+
+* Hosting at Github and Using "Actions"
+
+* Custom Domain Name
+
+* Worth It?
+
+If you've never used Emacs and/or org-mode, it might seem like a *lot*
+of upfront work to manage a website this way.
+
+I actually came to Emacs after roughly 20 years of using joe ([[https://joe-editor.sourceforge.io/][Joe's
+Own Editor]]), and some of my muscle memory for text editing was so deep
+that I had to customize emacs to handle many of my preferred keystrokes. 
+
+* Resources
+
+I used
