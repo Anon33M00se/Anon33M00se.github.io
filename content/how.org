@@ -87,21 +87,39 @@ almost every conceivable use scenario.
 Emacs has a notion of packages, and there a few available for
 automating the translation of org files into html. In fact Org-mode
 has built-in exporting to a number of different formats, including
-$\LaTeX$, PDF, ODT/Word, and html. But this 
+$\LaTeX$, PDF, ODT/Word, and html. While the default out
 
-* Hosting at Github and Using "Actions"
+* Hosting at Github (& "Actions")
+
 
 * Custom Domain Name
+
 
 * Worth It?
 
 If you've never used Emacs and/or org-mode, it might seem like a *lot*
-of upfront work to manage a website this way.
+of upfront work just to get over the mountain of Emacs so you can
+easily manage the molehill of pushing out website updates.
 
 I actually came to Emacs after roughly 20 years of using joe ([[https://joe-editor.sourceforge.io/][Joe's
 Own Editor]]), and some of my muscle memory for text editing was so deep
-that I had to customize emacs to handle many of my preferred keystrokes. 
+that I had to customize emacs to handle many of my preferred keystrokes.
+
+But whatever path you take to get to Emacs, it will almost certainly
+be worth it. If you are an engineer, developer, or other technical
+user. Emacs (plus Org-mode, dired, mu4e, git/magit, etc., etc.) is just
+such a powerful tool that is worth learning to use well.
+
 
 * Resources
 
-I used
+The website [[https://systemcrafters.net/][System Crafters]] has a whole series of videos related to
+Emacs, and a section devoted to website publishing with Emacs:
+
+- [[https://systemcrafters.net/publishing-websites-with-org-mode/][Publishing Website with Org Mode]]
+
+The above link covers ox-publish quite extensively. There's another guide to using ox-publish on the Org-mode website here:
+
+- [[https://orgmode.org/worg/org-tutorials/org-publish-html-tutorial.html][Publishing Org-mode files to HTML]]
+
+  
