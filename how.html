@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!-- 2025-04-04 Fri 17:48 -->
+<!-- 2025-04-04 Fri 18:11 -->
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=0.5" />
 <title>How is this site made?</title>
@@ -58,9 +58,9 @@
   </div>
 </header>
 
-<div id="outline-container-org019693f" class="outline-2">
-<h2 id="org019693f">How does this site work?</h2>
-<div class="outline-text-2" id="text-org019693f">
+<div id="outline-container-orga14f831" class="outline-2">
+<h2 id="orga14f831">How does this site work?</h2>
+<div class="outline-text-2" id="text-orga14f831">
 <p>
 A few people have asked me about how I manage this site. It changes
 frequently, as I will often throw stuff up very quickly, move it
@@ -76,11 +76,11 @@ github. I'll explain each of the pieces in turn.
 </div>
 
 
-<div id="outline-container-org7e118aa" class="outline-2">
-<h2 id="org7e118aa">It Starts with Org Mode</h2>
-<div class="outline-text-2" id="text-org7e118aa">
+<div id="outline-container-orge76510d" class="outline-2">
+<h2 id="orge76510d">It Starts with Org Mode</h2>
+<div class="outline-text-2" id="text-orge76510d">
 <p>
-Org mode is a part of Emacs, and is a whole ecosystem for, well,
+Org-mode is a part of Emacs, and is a whole ecosystem for, well,
 organizing information. <a href="https://orgmode.org/">Org</a> files are just plain text with some
 formatting conventions not unlike <a href="https://en.wikipedia.org/wiki/Markdown">Markdown</a>. Here's an example: 
 </p>
@@ -100,7 +100,7 @@ github. I'll explain each of the pieces in turn.
 
 * It Starts with Org Mode
 
-Org mode is a part of Emacs, and is a whole ecosystem for, well,
+Org-mode is a part of Emacs, and is a whole ecosystem for, well,
 organizing information. [[https://orgmode.org/][Org]] files are
 just plain text with some formatting conventions not unlike
 [[https://en.wikipedia.org/wiki/Markdown][Markdown]]. Here's an example: 
@@ -200,12 +200,12 @@ almost every conceivable use scenario.
 </div>
 
 
-<div id="outline-container-orgf53ce77" class="outline-2">
-<h2 id="orgf53ce77">Add in Some Packages</h2>
-<div class="outline-text-2" id="text-orgf53ce77">
+<div id="outline-container-org004090e" class="outline-2">
+<h2 id="org004090e">Add in Some Packages</h2>
+<div class="outline-text-2" id="text-org004090e">
 <p>
 Emacs has a notion of packages, and there a few available for
-automating the translation of org files into html. In fact Org-mode
+automating the translation of org files into html. In fact, Org-mode
 has built-in exporting to a number of different formats, including
 \(\LaTeX\), PDF, ODT/Word, and html. While the default html output from
 Org is serviceable, there is a more powerful package available that is
@@ -215,9 +215,34 @@ ancilliary files organized.
 
 <p>
 The main package for this is ox-publish, which is really part of
-Org-mode itself. If you create an elisp file (a bit of interpretable
+Org-mode itself. You can create an elisp file (a bit of interpretable
 code written in Emac's own variant of the Lisp programming language)
-that looks like this:
+that:
+</p>
+
+<ol class="org-ol">
+<li>Makes sure ox-publish is in place</li>
+
+<li>Describes where the source (.org) files for the site are located (relative to the directory the elisp file is in).</li>
+
+<li>Describes the "publishing" directory where html output files should end up.</li>
+
+<li>Sets various other optional parameters (e.g. css style sheets to use,</li>
+
+<li>Runs the actual page creation process.</li>
+</ol>
+
+<p>
+Then, any time you make any edits or structural changes to the
+underlying org document, you just invoke this script to automagically
+process all the changes.
+</p>
+
+<p>
+There are other things you can do within ox-publish. The one I use for
+this site is in the code block below, and I include resources at the
+end of this document where you can find more details on running
+ox-publish scripts.
 </p>
 
 <div class="org-src-container">
@@ -259,9 +284,13 @@ that looks like this:
                                              (user-scalable <span class="org-string">""</span>))
 
       org-html-head                        <span class="org-string">"&lt;link rel=\"stylesheet\" href=\"https://cdn.simplecss.org/simple.min.css\"/&gt;</span>
-<span class="org-string">                                            &lt;link rel=\"stylesheet\" type=\"text/css\" href=\"/static/css/customizations.css\" /&gt;"</span>
-      <span class="org-comment-delimiter">;;</span><span class="org-comment">org-html-head                        "&lt;link rel=\"stylesheet\" href=\"https://latex.vercel.app/style.css\" /&gt;"</span>
-      <span class="org-comment-delimiter">;;</span><span class="org-comment">org-html-head                        "&lt;link rel=\"stylesheet\" href=\"/css/latex.css\" /&gt;"</span>
+<span class="org-string">                                            &lt;link rel=\"stylesheet\" type=\"text/css\" href=\"/static/css/customizations.css\" /&gt;</span>
+<span class="org-string">                                            &lt;link rel=\"stylesheet\" type=\"text/css\" href=\"/static/css/org-html-styling.css\" /&gt;"</span>
+                                            <span class="org-comment-delimiter">;; </span><span class="org-comment">^ This last file is generated by running org-html-htmlize-generate-css</span>
+      <span class="org-comment-delimiter">;;</span><span class="org-comment">org-html-head                       "&lt;link rel=\"stylesheet\" href=\"https://latex.vercel.app/style.css\" /&gt;"</span>
+      <span class="org-comment-delimiter">;;</span><span class="org-comment">org-html-head                       "&lt;link rel=\"stylesheet\" href=\"/css/latex.css\" /&gt;"</span>
+      <span class="org-comment-delimiter">;;</span><span class="org-comment">org-html-htmlize-output-type        'inline-css</span>
+      org-html-htmlize-output-type          'css
 
   )
 
@@ -295,7 +324,8 @@ that looks like this:
 (org-publish-all t)
 
 
-(message <span class="org-string">"Website build finished!"</span>)
+(message <span class="org-string">"Build complete!"</span>)
+
 
 
 </pre>
@@ -305,7 +335,7 @@ that looks like this:
 
 
 <p>
-The htmlize package is there so that if I have a code block in a given file, like this:
+The htmlize package is included in there so that if I have a code block in a given file, like this:
 </p>
 
 <div class="org-src-container">
@@ -328,19 +358,29 @@ I get syntax highlighting automatically without having to do anything further.
 </div>
 
 
-<div id="outline-container-org2c1335b" class="outline-2">
-<h2 id="org2c1335b">Hosting at Github (&amp; "Actions")</h2>
+<div id="outline-container-org5cac7ac" class="outline-2">
+<h2 id="org5cac7ac">Hosting at Github (&amp; "Actions")</h2>
+<div class="outline-text-2" id="text-org5cac7ac">
+<p>
+Everything up to this point has been about creating content in org
+format and then automatically converting it to nice looking html.
+</p>
+</div>
 </div>
 
-
-<div id="outline-container-org9dfcd9a" class="outline-2">
-<h2 id="org9dfcd9a">Custom Domain Name</h2>
+<div id="outline-container-org628ece5" class="outline-2">
+<h2 id="org628ece5">Custom Domain Name</h2>
+<div class="outline-text-2" id="text-org628ece5">
+<p>
+The last little detail on this is how to have a custom domain name
+point at the github hosted content. 
+</p>
+</div>
 </div>
 
-
-<div id="outline-container-orgb449995" class="outline-2">
-<h2 id="orgb449995">Worth It?</h2>
-<div class="outline-text-2" id="text-orgb449995">
+<div id="outline-container-org4acaee8" class="outline-2">
+<h2 id="org4acaee8">Worth It?</h2>
+<div class="outline-text-2" id="text-org4acaee8">
 <p>
 If you've never used Emacs and/or org-mode, it might seem like a <b>lot</b>
 of upfront work to get over the mountain of Emacs just so you can
@@ -350,7 +390,7 @@ easily manage the molehill of pushing out website updates.
 <p>
 I actually came to Emacs after roughly 20 years of using joe (<a href="https://joe-editor.sourceforge.io/">Joe's
 Own Editor</a>), and some of my muscle memory for text editing was so deep
-that I had to customize emacs to handle many of my preferred keystrokes.
+that I had to customize emacs to mimic many of joe's keystrokes.
 </p>
 
 <p>
@@ -358,16 +398,16 @@ But whatever path you take to get to Emacs, it will almost certainly
 be worth it. If you are an engineer, developer, or other technical
 user. Emacs (plus Org-mode, dired, mu4e, git/magit, etc., etc.) is
 just such a powerful tool that is worth learning to use well. If the
-path happens to start with wanting to manage a website in og-mode,
+path happens to start with wanting to manage a website in Org-mode,
 there are worse ways to begin the journey.
 </p>
 </div>
 </div>
 
 
-<div id="outline-container-org10ed3ee" class="outline-2">
-<h2 id="org10ed3ee">Resources</h2>
-<div class="outline-text-2" id="text-org10ed3ee">
+<div id="outline-container-org5bf392f" class="outline-2">
+<h2 id="org5bf392f">Resources</h2>
+<div class="outline-text-2" id="text-org5bf392f">
 <p>
 The amazing <a href="https://systemcrafters.net/">System Crafters</a> website has a whole series of videos
 related to Emacs, and a section devoted to website publishing with
@@ -391,7 +431,7 @@ another guide to using ox-publish on the Org-mode website here:
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="date">Created: 2025-04-04 Fri 17:48</p>
+<p class="date">Created: 2025-04-04 Fri 18:11</p>
 <p class="creator"><a href="https://www.gnu.org/software/emacs/">Emacs</a> 29.3 (<a href="https://orgmode.org">Org</a> mode 9.6.15)</p>
 </div>
 </body>
