@@ -38,7 +38,8 @@
                                             <link rel=\"stylesheet\" type=\"text/css\" href=\"/static/css/customizations.css\" />"
       ;;org-html-head                        "<link rel=\"stylesheet\" href=\"https://latex.vercel.app/style.css\" />"
       ;;org-html-head                        "<link rel=\"stylesheet\" href=\"/css/latex.css\" />"
-      org-html-htmlize-output-type         'inline-css
+      ;org-html-htmlize-output-type         'inline-css
+      org-html-htmlize-output-type          'css
       
   )
 
