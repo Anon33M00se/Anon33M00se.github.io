@@ -8,7 +8,7 @@ frequently, as I will often throw stuff up very quickly, move it
 around, and take it down again.
 
 The whole site is managed by editing local files in emacs and then a
-couple of quick keystrokes push out any changes to a free webhosting
+couple of quick keystrokes push out any changes to free webhosting on
 github. I'll explain each of the pieces in turn.
 
 * It Starts with Org Mode
@@ -40,3 +40,42 @@ just plain text with some formatting conventions not unlike
 
 #+END_SRC
 
+That is the exact org content that this page starts with. Because I
+spend most of my day in Emacs already (see [[/email.html][email]]), it is super easy to
+just pop into an org file, make some changes (or open a new file) and
+automatically push the changes out to "production".
+
+You can do a lot of different kinds of formats in org mode very easily. For example:
+
+#+BEGIN_SRC code
+
+,*bold*, _underline_, +strikethrough+, /italics/
+
+| n | n^2 | n^3 |
+|---+-----+-----|
+| 1 |   1 |   1 |
+| 2 |   4 |   8 |
+| 3 |   9 |  27 |
+
+\begin{equation}
+x=\sqrt{b}                              
+\end{equation}
+#+END_SRC
+
+leads to:
+
+*bold*, _underline_, +strikethrough+, /italics/
+
+| n | n^2 | n^3 |
+|---+-----+-----|
+| 1 |   1 |   1 |
+| 2 |   4 |   8 |
+| 3 |   9 |  27 |
+
+\begin{equation}
+x=\sqrt{b}                              
+\end{equation}
+
+
+
+* Add in 
