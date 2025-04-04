@@ -57,9 +57,7 @@ You can do a lot of different kinds of formats in org mode very easily. For exam
 | 2 |   4 |   8 |
 | 3 |   9 |  27 |
 
-\begin{equation}
-x=\sqrt{b}                              
-\end{equation}
+$y=x^2$
 #+END_SRC
 
 leads to:
@@ -72,10 +70,16 @@ leads to:
 | 2 |   4 |   8 |
 | 3 |   9 |  27 |
 
-\begin{equation}
-x=\sqrt{b}                              
-\end{equation}
+$y=x^2$
 
+But this is just scratching the surface or org mode. To quote from the [[https://orgmode.org/worg/org-faq.html][Org FAQ]]:
+
+#+BEGIN_QUOTE
+In its default setup, Org-mode offers a simple outlining and task
+management environment. But it also has a huge number of features and
+settings "under the hood." Advanced users have configured Org-mode for
+almost every conceivable use scenario.
+#+END_QUOTE
 
 
 * Add in 
