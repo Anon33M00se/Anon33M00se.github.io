@@ -1,13 +1,45 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!-- 2025-04-04 Fri 14:08 -->
+<!-- 2025-04-04 Fri 14:31 -->
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=0.5" />
 <title>How is this site made?</title>
 <meta name="generator" content="Org Mode" />
 <link rel="stylesheet" href="https://cdn.simplecss.org/simple.min.css"/>
                                             <link rel="stylesheet" type="text/css" href="/static/css/customizations.css" />
+<script>
+  window.MathJax = {
+    tex: {
+      ams: {
+        multlineWidth: '85%'
+      },
+      tags: 'ams',
+      tagSide: 'right',
+      tagIndent: '.8em'
+    },
+    chtml: {
+      scale: 1.0,
+      displayAlign: 'center',
+      displayIndent: '0em'
+    },
+    svg: {
+      scale: 1.0,
+      displayAlign: 'center',
+      displayIndent: '0em'
+    },
+    output: {
+      font: 'mathjax-modern',
+      displayOverflow: 'overflow'
+    }
+  };
+</script>
+
+<script
+  id="MathJax-script"
+  async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+</script>
 </head>
 <body>
 <div id="content" class="content">
@@ -25,9 +57,9 @@
   </div>
 </header>
 
-<div id="outline-container-orgad565fd" class="outline-2">
-<h2 id="orgad565fd">How does this site work?</h2>
-<div class="outline-text-2" id="text-orgad565fd">
+<div id="outline-container-org57623b9" class="outline-2">
+<h2 id="org57623b9">How does this site work?</h2>
+<div class="outline-text-2" id="text-org57623b9">
 <p>
 A few people have asked me about how I manage this site. It changes
 frequently, as I will often throw stuff up very quickly, move it
@@ -36,15 +68,15 @@ around, and take it down again.
 
 <p>
 The whole site is managed by editing local files in emacs and then a
-couple of quick keystrokes push out any changes to a free webhosting
+couple of quick keystrokes push out any changes to free webhosting on
 github. I'll explain each of the pieces in turn.
 </p>
 </div>
 </div>
 
-<div id="outline-container-orge820f4c" class="outline-2">
-<h2 id="orge820f4c">It Starts with Org Mode</h2>
-<div class="outline-text-2" id="text-orge820f4c">
+<div id="outline-container-org71670d0" class="outline-2">
+<h2 id="org71670d0">It Starts with Org Mode</h2>
+<div class="outline-text-2" id="text-org71670d0">
 <p>
 Org mode is a part of Emacs, and is a whole ecosystem for, well,
 organizing information. <a href="https://orgmode.org/">Org</a> files are just plain text with some
@@ -74,11 +106,94 @@ just plain text with some formatting conventions not unlike
 
 </pre>
 </div>
+
+<p>
+That is the exact org content that this page starts with. Because I
+spend most of my day in Emacs already (see <a href="file:///email.html">email</a>), it is super easy to
+just pop into an org file, make some changes (or open a new file) and
+automatically push the changes out to "production".
+</p>
+
+<p>
+You can do a lot of different kinds of formats in org mode very easily. For example:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-code">
+*bold*, _underline_, +strikethrough+, /italics/
+
+| n | n^2 | n^3 |
+|---+-----+-----|
+| 1 |   1 |   1 |
+| 2 |   4 |   8 |
+| 3 |   9 |  27 |
+
+\begin{equation}
+x=\sqrt{b}                              
+\end{equation}
+</pre>
 </div>
+
+<p>
+leads to:
+</p>
+
+<p>
+<b>bold</b>, <span class="underline">underline</span>, <del>strikethrough</del>, <i>italics</i>
+</p>
+
+<table>
+
+
+<colgroup>
+<col  class="org-right">
+
+<col  class="org-right">
+
+<col  class="org-right">
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-right">n</th>
+<th scope="col" class="org-right">n<sup>2</sup></th>
+<th scope="col" class="org-right">n<sup>3</sup></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-right">1</td>
+<td class="org-right">1</td>
+<td class="org-right">1</td>
+</tr>
+
+<tr>
+<td class="org-right">2</td>
+<td class="org-right">4</td>
+<td class="org-right">8</td>
+</tr>
+
+<tr>
+<td class="org-right">3</td>
+<td class="org-right">9</td>
+<td class="org-right">27</td>
+</tr>
+</tbody>
+</table>
+
+\begin{equation}
+x=\sqrt{b}                              
+\end{equation}
+</div>
+</div>
+
+
+
+<div id="outline-container-orge025148" class="outline-2">
+<h2 id="orge025148">Add in</h2>
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="date">Created: 2025-04-04 Fri 14:08</p>
+<p class="date">Created: 2025-04-04 Fri 14:31</p>
 <p class="creator"><a href="https://www.gnu.org/software/emacs/">Emacs</a> 29.3 (<a href="https://orgmode.org">Org</a> mode 9.6.15)</p>
 </div>
 </body>
