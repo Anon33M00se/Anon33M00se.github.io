@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!-- 2025-04-04 Fri 17:29 -->
+<!-- 2025-04-04 Fri 17:38 -->
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=0.5" />
 <title>How is this site made?</title>
@@ -57,9 +57,9 @@
   </div>
 </header>
 
-<div id="outline-container-org547d74e" class="outline-2">
-<h2 id="org547d74e">How does this site work?</h2>
-<div class="outline-text-2" id="text-org547d74e">
+<div id="outline-container-orgbf6d898" class="outline-2">
+<h2 id="orgbf6d898">How does this site work?</h2>
+<div class="outline-text-2" id="text-orgbf6d898">
 <p>
 A few people have asked me about how I manage this site. It changes
 frequently, as I will often throw stuff up very quickly, move it
@@ -75,9 +75,9 @@ github. I'll explain each of the pieces in turn.
 </div>
 
 
-<div id="outline-container-org8f05ed3" class="outline-2">
-<h2 id="org8f05ed3">It Starts with Org Mode</h2>
-<div class="outline-text-2" id="text-org8f05ed3">
+<div id="outline-container-orgc439f96" class="outline-2">
+<h2 id="orgc439f96">It Starts with Org Mode</h2>
+<div class="outline-text-2" id="text-orgc439f96">
 <p>
 Org mode is a part of Emacs, and is a whole ecosystem for, well,
 organizing information. <a href="https://orgmode.org/">Org</a> files are just plain text with some
@@ -199,9 +199,9 @@ almost every conceivable use scenario.
 </div>
 
 
-<div id="outline-container-orgadffe9d" class="outline-2">
-<h2 id="orgadffe9d">Add in Some Packages</h2>
-<div class="outline-text-2" id="text-orgadffe9d">
+<div id="outline-container-org7669c2e" class="outline-2">
+<h2 id="org7669c2e">Add in Some Packages</h2>
+<div class="outline-text-2" id="text-org7669c2e">
 <p>
 Emacs has a notion of packages, and there a few available for
 automating the translation of org files into html. In fact Org-mode
@@ -221,80 +221,80 @@ that looks like this:
 
 <div class="org-src-container">
 <pre class="src src-elisp">
-<span style="font-weight: bold; font-style: italic;">;;</span>
-<span style="font-weight: bold; font-style: italic;">;; </span><span style="font-weight: bold; font-style: italic;">Bring in the package system (elpa/melpa), make sure that is not</span>
-<span style="font-weight: bold; font-style: italic;">;; </span><span style="font-weight: bold; font-style: italic;">messing with our normal (user) package dir but is doing so in the</span>
-<span style="font-weight: bold; font-style: italic;">;; </span><span style="font-weight: bold; font-style: italic;">local .packages directory, and then bring in htmlize (mostly for</span>
-<span style="font-weight: bold; font-style: italic;">;; </span><span style="font-weight: bold; font-style: italic;">syntax highlighting in code blocks).</span>
-<span style="font-weight: bold; font-style: italic;">;;</span>
+<span class="org-comment-delimiter">;;</span>
+<span class="org-comment-delimiter">;; </span><span class="org-comment">Bring in the package system (elpa/melpa), make sure that is not</span>
+<span class="org-comment-delimiter">;; </span><span class="org-comment">messing with our normal (user) package dir but is doing so in the</span>
+<span class="org-comment-delimiter">;; </span><span class="org-comment">local .packages directory, and then bring in htmlize (mostly for</span>
+<span class="org-comment-delimiter">;; </span><span class="org-comment">syntax highlighting in code blocks).</span>
+<span class="org-comment-delimiter">;;</span>
 
-(<span style="font-weight: bold;">require</span> '<span style="font-weight: bold; text-decoration: underline;">package</span>)
-(<span style="font-weight: bold;">setq</span> package-user-dir (expand-file-name <span style="font-style: italic;">"./.packages"</span>))
-(<span style="font-weight: bold;">setq</span> package-archives '((<span style="font-style: italic;">"melpa"</span> . <span style="font-style: italic;">"https://melpa.org/packages/"</span>   )
-                         (<span style="font-style: italic;">"elpa"</span>  . <span style="font-style: italic;">"https://elpa.gnu.org/packages"</span> )))
+(<span class="org-keyword">require</span> '<span class="org-constant">package</span>)
+(<span class="org-keyword">setq</span> package-user-dir (expand-file-name <span class="org-string">"./.packages"</span>))
+(<span class="org-keyword">setq</span> package-archives '((<span class="org-string">"melpa"</span> . <span class="org-string">"https://melpa.org/packages/"</span>   )
+                         (<span class="org-string">"elpa"</span>  . <span class="org-string">"https://elpa.gnu.org/packages"</span> )))
 
-<span style="font-weight: bold; font-style: italic;">;; </span><span style="font-weight: bold; font-style: italic;">Init the package system</span>
+<span class="org-comment-delimiter">;; </span><span class="org-comment">Init the package system</span>
 (package-initialize)
-(<span style="font-weight: bold;">unless</span> package-archive-contents
+(<span class="org-keyword">unless</span> package-archive-contents
   (package-refresh-contents))
 
-<span style="font-weight: bold; font-style: italic;">;; </span><span style="font-weight: bold; font-style: italic;">Install dependencies</span>
+<span class="org-comment-delimiter">;; </span><span class="org-comment">Install dependencies</span>
 (package-install 'htmlize)
 
-<span style="font-weight: bold; font-style: italic;">;;</span>
-<span style="font-weight: bold; font-style: italic;">;; </span><span style="font-weight: bold; font-style: italic;">Load the publishing system</span>
-<span style="font-weight: bold; font-style: italic;">;;</span>
-(<span style="font-weight: bold;">require</span> '<span style="font-weight: bold; text-decoration: underline;">ox-publish</span>)
+<span class="org-comment-delimiter">;;</span>
+<span class="org-comment-delimiter">;; </span><span class="org-comment">Load the publishing system</span>
+<span class="org-comment-delimiter">;;</span>
+(<span class="org-keyword">require</span> '<span class="org-constant">ox-publish</span>)
 
-(<span style="font-weight: bold;">setq</span> org-html-validation-link             nil <span style="font-weight: bold; font-style: italic;">;; </span><span style="font-weight: bold; font-style: italic;">don't show a "Validate" link at the bottom of the page</span>
-      org-html-head-include-scripts        nil <span style="font-weight: bold; font-style: italic;">;; </span><span style="font-weight: bold; font-style: italic;">don't put default org-html export scripts in place</span>
-      org-html-doctype                     <span style="font-style: italic;">"html5"</span>
+(<span class="org-keyword">setq</span> org-html-validation-link             nil <span class="org-comment-delimiter">;; </span><span class="org-comment">don't show a "Validate" link at the bottom of the page</span>
+      org-html-head-include-scripts        nil <span class="org-comment-delimiter">;; </span><span class="org-comment">don't put default org-html export scripts in place</span>
+      org-html-doctype                     <span class="org-string">"html5"</span>
       org-html-html5-fancy                 t
-      org-html-head-include-default-style  nil <span style="font-weight: bold; font-style: italic;">;; </span><span style="font-weight: bold; font-style: italic;">skip the default style sheet</span>
-      org-html-viewport                    '((width <span style="font-style: italic;">"device-width"</span>)
-                                             (initial-scale <span style="font-style: italic;">"0.5"</span>)
-                                             (minimum-scale <span style="font-style: italic;">""</span>)
-                                             (maximum-scale <span style="font-style: italic;">""</span>)
-                                             (user-scalable <span style="font-style: italic;">""</span>))
+      org-html-head-include-default-style  nil <span class="org-comment-delimiter">;; </span><span class="org-comment">skip the default style sheet</span>
+      org-html-viewport                    '((width <span class="org-string">"device-width"</span>)
+                                             (initial-scale <span class="org-string">"0.5"</span>)
+                                             (minimum-scale <span class="org-string">""</span>)
+                                             (maximum-scale <span class="org-string">""</span>)
+                                             (user-scalable <span class="org-string">""</span>))
 
-      org-html-head                        <span style="font-style: italic;">"&lt;link rel=\"stylesheet\" href=\"https://cdn.simplecss.org/simple.min.css\"/&gt;</span>
-<span style="font-style: italic;">                                            &lt;link rel=\"stylesheet\" type=\"text/css\" href=\"/static/css/customizations.css\" /&gt;"</span>
-      <span style="font-weight: bold; font-style: italic;">;;</span><span style="font-weight: bold; font-style: italic;">org-html-head                        "&lt;link rel=\"stylesheet\" href=\"https://latex.vercel.app/style.css\" /&gt;"</span>
-      <span style="font-weight: bold; font-style: italic;">;;</span><span style="font-weight: bold; font-style: italic;">org-html-head                        "&lt;link rel=\"stylesheet\" href=\"/css/latex.css\" /&gt;"</span>
+      org-html-head                        <span class="org-string">"&lt;link rel=\"stylesheet\" href=\"https://cdn.simplecss.org/simple.min.css\"/&gt;</span>
+<span class="org-string">                                            &lt;link rel=\"stylesheet\" type=\"text/css\" href=\"/static/css/customizations.css\" /&gt;"</span>
+      <span class="org-comment-delimiter">;;</span><span class="org-comment">org-html-head                        "&lt;link rel=\"stylesheet\" href=\"https://latex.vercel.app/style.css\" /&gt;"</span>
+      <span class="org-comment-delimiter">;;</span><span class="org-comment">org-html-head                        "&lt;link rel=\"stylesheet\" href=\"/css/latex.css\" /&gt;"</span>
 
   )
 
-(<span style="font-weight: bold;">setq</span> org-publish-project-alist
+(<span class="org-keyword">setq</span> org-publish-project-alist
   (list
-   (list <span style="font-style: italic;">"stuff"</span>
-     <span style="font-weight: bold;">:recursive</span> t
-     <span style="font-weight: bold;">:base-directory</span> <span style="font-style: italic;">"./content"</span>
-     <span style="font-weight: bold;">:base-extension</span> <span style="font-style: italic;">"org"</span>
-     <span style="font-weight: bold;">:publishing-directory</span> <span style="font-style: italic;">"./public"</span>
-     <span style="font-weight: bold;">:publishing-function</span> 'org-html-publish-to-html
-     <span style="font-weight: bold;">:with-author</span> nil
-     <span style="font-weight: bold;">:with-title</span> nil
-     <span style="font-weight: bold;">:with-creator</span> t
-     <span style="font-weight: bold;">:with-toc</span> nil
-     <span style="font-weight: bold;">:section-numbers</span> nil
-     <span style="font-weight: bold;">:time-stamp-file</span> t)
-   (list <span style="font-style: italic;">"static"</span>
-     <span style="font-weight: bold;">:recursive</span> t
-     <span style="font-weight: bold;">:base-directory</span> <span style="font-style: italic;">"./static"</span>
-     <span style="font-weight: bold;">:base-extension</span> <span style="font-style: italic;">"css</span><span style="font-weight: bold; font-style: italic;">\\</span><span style="font-weight: bold; font-style: italic;">|</span><span style="font-style: italic;">js</span><span style="font-weight: bold; font-style: italic;">\\</span><span style="font-weight: bold; font-style: italic;">|</span><span style="font-style: italic;">pdf</span><span style="font-weight: bold; font-style: italic;">\\</span><span style="font-weight: bold; font-style: italic;">|</span><span style="font-style: italic;">png"</span>
-     <span style="font-weight: bold;">:publishing-directory</span> <span style="font-style: italic;">"./public/static"</span>
-     <span style="font-weight: bold;">:publishing-function</span> 'org-publish-attachment
-     <span style="font-weight: bold;">:with-author</span> nil
-     <span style="font-weight: bold;">:with-title</span> nil
-     <span style="font-weight: bold;">:with-creator</span> t
-     <span style="font-weight: bold;">:with-toc</span> nil
-     <span style="font-weight: bold;">:section-numbers</span> nil
-     <span style="font-weight: bold;">:time-stamp-file</span> t)))
+   (list <span class="org-string">"stuff"</span>
+     <span class="org-builtin">:recursive</span> t
+     <span class="org-builtin">:base-directory</span> <span class="org-string">"./content"</span>
+     <span class="org-builtin">:base-extension</span> <span class="org-string">"org"</span>
+     <span class="org-builtin">:publishing-directory</span> <span class="org-string">"./public"</span>
+     <span class="org-builtin">:publishing-function</span> 'org-html-publish-to-html
+     <span class="org-builtin">:with-author</span> nil
+     <span class="org-builtin">:with-title</span> nil
+     <span class="org-builtin">:with-creator</span> t
+     <span class="org-builtin">:with-toc</span> nil
+     <span class="org-builtin">:section-numbers</span> nil
+     <span class="org-builtin">:time-stamp-file</span> t)
+   (list <span class="org-string">"static"</span>
+     <span class="org-builtin">:recursive</span> t
+     <span class="org-builtin">:base-directory</span> <span class="org-string">"./static"</span>
+     <span class="org-builtin">:base-extension</span> <span class="org-string">"css</span><span class="org-string"><span class="org-regexp-grouping-backslash">\\</span></span><span class="org-string"><span class="org-regexp-grouping-construct">|</span></span><span class="org-string">js</span><span class="org-string"><span class="org-regexp-grouping-backslash">\\</span></span><span class="org-string"><span class="org-regexp-grouping-construct">|</span></span><span class="org-string">pdf</span><span class="org-string"><span class="org-regexp-grouping-backslash">\\</span></span><span class="org-string"><span class="org-regexp-grouping-construct">|</span></span><span class="org-string">png"</span>
+     <span class="org-builtin">:publishing-directory</span> <span class="org-string">"./public/static"</span>
+     <span class="org-builtin">:publishing-function</span> 'org-publish-attachment
+     <span class="org-builtin">:with-author</span> nil
+     <span class="org-builtin">:with-title</span> nil
+     <span class="org-builtin">:with-creator</span> t
+     <span class="org-builtin">:with-toc</span> nil
+     <span class="org-builtin">:section-numbers</span> nil
+     <span class="org-builtin">:time-stamp-file</span> t)))
 
 (org-publish-all t)
 
 
-(message <span style="font-style: italic;">"Website build finished!"</span>)
+(message <span class="org-string">"Website build finished!"</span>)
 
 
 </pre>
@@ -309,13 +309,13 @@ The htmlize package is there so that if I have a code block in a given file, lik
 
 <div class="org-src-container">
 <pre class="src src-python">
-<span style="font-weight: bold;">from</span> fastapi <span style="font-weight: bold;">import</span> FastAPI
+<span class="org-keyword">from</span> fastapi <span class="org-keyword">import</span> FastAPI
 
-<span style="font-weight: bold; font-style: italic;">app</span> = FastAPI()
+<span class="org-variable-name">app</span> <span class="org-operator">=</span> FastAPI()
 
-<span style="font-weight: bold; text-decoration: underline;">@app.get</span>(<span style="font-style: italic;">"/"</span>)
-<span style="font-weight: bold;">async def</span> <span style="font-weight: bold;">root</span>():
-    <span style="font-weight: bold;">return</span> {<span style="font-style: italic;">"message"</span>: <span style="font-style: italic;">"Hello, World!"</span>}
+<span class="org-type">@app.get</span>(<span class="org-string">"/"</span>)
+<span class="org-keyword">async def</span> <span class="org-function-name">root</span>():
+    <span class="org-keyword">return</span> {<span class="org-string">"message"</span>: <span class="org-string">"Hello, World!"</span>}
 
 </pre>
 </div>
@@ -327,19 +327,19 @@ I get syntax highlighting automatically without having to do anything further.
 </div>
 
 
-<div id="outline-container-orged12560" class="outline-2">
-<h2 id="orged12560">Hosting at Github (&amp; "Actions")</h2>
+<div id="outline-container-org815213a" class="outline-2">
+<h2 id="org815213a">Hosting at Github (&amp; "Actions")</h2>
 </div>
 
 
-<div id="outline-container-orgab968e2" class="outline-2">
-<h2 id="orgab968e2">Custom Domain Name</h2>
+<div id="outline-container-org3187deb" class="outline-2">
+<h2 id="org3187deb">Custom Domain Name</h2>
 </div>
 
 
-<div id="outline-container-orged2577b" class="outline-2">
-<h2 id="orged2577b">Worth It?</h2>
-<div class="outline-text-2" id="text-orged2577b">
+<div id="outline-container-orgfa94d4d" class="outline-2">
+<h2 id="orgfa94d4d">Worth It?</h2>
+<div class="outline-text-2" id="text-orgfa94d4d">
 <p>
 If you've never used Emacs and/or org-mode, it might seem like a <b>lot</b>
 of upfront work to get over the mountain of Emacs just so you can
@@ -364,9 +364,9 @@ there are worse ways to begin the journey.
 </div>
 
 
-<div id="outline-container-org50e4aae" class="outline-2">
-<h2 id="org50e4aae">Resources</h2>
-<div class="outline-text-2" id="text-org50e4aae">
+<div id="outline-container-orgd9b580d" class="outline-2">
+<h2 id="orgd9b580d">Resources</h2>
+<div class="outline-text-2" id="text-orgd9b580d">
 <p>
 The amazing <a href="https://systemcrafters.net/">System Crafters</a> website has a whole series of videos
 related to Emacs, and a section devoted to website publishing with
@@ -390,7 +390,7 @@ another guide to using ox-publish on the Org-mode website here:
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="date">Created: 2025-04-04 Fri 17:29</p>
+<p class="date">Created: 2025-04-04 Fri 17:38</p>
 <p class="creator"><a href="https://www.gnu.org/software/emacs/">Emacs</a> 29.3 (<a href="https://orgmode.org">Org</a> mode 9.6.15)</p>
 </div>
 </body>
