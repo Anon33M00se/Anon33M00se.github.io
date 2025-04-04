@@ -5,7 +5,7 @@
   <p><i>noun</i> 1. things which need to be put somewhere.</p>
   <div class="topbar-menu-container">
     <span><a href="/index.html">home</a></span> |
-    <span><a href="/foo.html">foo</a></span> | 
+    <span><a href="/enough.html">enough</a></span> | 
     <span><a href="/bar.html">bar</a></span> | 
     <span><a href="/Books/RootsThatBind/">roots</a></span> | 
     <span><a href="/what.html">what?</a></span> | 
