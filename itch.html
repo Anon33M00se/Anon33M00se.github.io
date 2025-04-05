@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- 2025-04-05 Sat 17:20 -->
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=0.5" />
+<title>From Itch to Launch?</title>
+<meta name="generator" content="Org Mode" />
+<link rel="stylesheet" href="https://cdn.simplecss.org/simple.min.css"/>
+                                            <link rel="stylesheet" type="text/css" href="/static/css/customizations.css" />
+                                            <link rel="stylesheet" type="text/css" href="/static/css/org-html-styling.css" />
+</head>
+<body>
+<div id="content" class="content">
+<header>
+  <h1>Stuff</h1>
+  <p><i>noun</i> 1. things which need to be put somewhere.</p>
+  <div class="topbar-menu-container">
+    <span><a href="/index.html">home</a></span> |
+    <span><a href="/enough.html">enough</a></span> | 
+    <span><a href="/itch.html">itch</a></span> | 
+    <span><a href="/email.html">email</a></span> | 
+    <span><a href="/Books/RootsThatBind/">roots</a></span> | 
+    <span><a href="/pta.html">pta</a></span> | 
+    <span><a href="/how.html">how?</a></span>
+  </div>
+</header>
+
+<p>
+<i>{This is now verging on ancient history, but people keep asking for a
+copy so I've archived it here. Originally published June 28, 2017}</i>
+</p>
+
+
+<div id="outline-container-orgacc72f3" class="outline-2">
+<h2 id="orgacc72f3">From Itch to Lanch</h2>
+<div class="outline-text-2" id="text-orgacc72f3">
+
+<figure id="orgeec8c5f">
+<img src="./static/img/float_rope.png" alt="float_rope.png">
+
+</figure>
+
+<p>
+As we make the final preparations for our <a href="https://www.kickstarter.com/projects/modiot/floathub">Kickstarter Launch</a>, many of
+the folks we’ve press-ganged into acting as beta testers have been
+asking us about FloatHub’s history. Rather than dribbling out snippets
+of answers here and there, we’ve attempted to set down a relatively
+brief narrative of how we got here (in a technical sense).
+</p>
+
+<p>
+The original impetus was a definite itch; after the umpteenth time
+arriving at our boat and discovering some minor disaster related to
+flat batteries, water over the floorboards, etc., etc, we thought, how
+hard could it be to hack a solution to this problem? There has to be
+an affordable way to monitor what’s happening on a boat when we’re not
+onboard. Just solder-up some sensors to an old 2g cell phone and push
+readings to a server somewhere. Flat file data storage, a few grep
+scripts, some log rotations, and you’re done. Shouldn’t take more than
+an afternoon. :-)
+</p>
+
+<p>
+Initially, we had no intention of trying to create a commercial
+product. We just wanted to solve our own problem. Maybe create a few
+extra copies for friends in the same situation &#x2026;
+</p>
+</div>
+</div>
+
+
+<div id="outline-container-org5a44f51" class="outline-2">
+<h2 id="org5a44f51">Hardware Choices</h2>
+<div class="outline-text-2" id="text-org5a44f51">
+<p>
+After the first few largely forgettable experimental failures, we made
+some basic hardware decisions. We wanted to go with a true
+microcontroller (as opposed to a more complicated Raspberry Pi or
+other higher level system). The main reason was power usage, since
+boats often have to make their own. But we were also attracted to a
+really <span class="underline">simple</span> design goal for the device; ideally it would just sit
+on a boat for months and years, with no-one ever having to intervene
+and update it, install a new driver, and so on. To the extent that we
+wanted to do anything clever with the data, we were pretty sure the
+right idea was to do that out on the network, after it had already
+been pushed off the boat. Plus there is something hard to define but
+extremely satisfying about writing low-level microcontroller code; you
+are in charge of just about <span class="underline">everything</span>. Working just a compiler
+above bare wires with memory measured in kilobytes is such a
+refreshing change from most other kinds of software development.
+</p>
+
+<p>
+Since we wanted to talk to other onboard systems (depth sounders, wind
+speed, etc.) and since most historic data systems on boats use a 4800
+baud protocol that is a very close cousin of RS-232/RS-422, we knew
+we’d want multiple serial ports. Accordingly, we settled on the
+<a href="https://www.arduino.cc/en/hardware#mega-family">Arduino Mega</a> for the prototyping platform (it has 4 serial ports). We
+also wanted to be able to directly measure analog voltages to be able
+to report on battery levels, charging systems, and pump voltages (to
+see when and for how long pumps were running). Again we stayed very
+simple, and started designing a custom Arduino shield that included
+straightforward voltage dividers composed of simple resistors. We also
+made sure our board design passed through all header connections so
+that we could stack more shields on top. Adding an embedded GPS was an
+absolute breeze (just supply power and make a serial connection to any
+of the plentiful GPS chipsets, e.g. the ubiquitous Neo 6 family). That
+gave us not only position, but date and time info as well. We also
+added a Bosch chip that measured temperature and barometric pressure.
+</p>
+
+<p>
+So with an off-the-shelf Mega and a half-breadboard/half-shield
+prototype, we had a basic system that could monitor 9 voltages, talk
+to other onboard systems, know where it was in space &amp; time, and take
+some ambient weather measurements .
+</p>
+
+
+<figure id="org89f230d">
+<img src="./static/img/floathub_v0.0.1.png" alt="floathub_v0.0.1.png">
+
+</figure>
+
+<p>
+In the first real working iteration of the hardware, we used a
+cellular shield that interacted with the Mega on serial port 2 and
+basically used a Hayes Modem command set. With that, we could
+periodically do an AT-CALL {HOME} (which would get a GRPS-based TCP/IP
+socket connection to a host and port) and then AT-SEND {STRING OF
+DATA} to send a packet to the host.
+</p>
+
+<p>
+So the next challenge was what should that {STRING OF DATA} actually
+be composed of?
+</p>
+</div>
+</div>
+
+
+<div id="outline-container-org76c70b2" class="outline-2">
+<h2 id="org76c70b2">A Protocol</h2>
+<div class="outline-text-2" id="text-org76c70b2">
+<p>
+On the server side, we could, for all intents and purposes, do
+anything we wanted in terms of data types, markup, handshaking,
+transmission frequency, security, encryption, and so on. The challenge
+was the device side, where our little microcontroller took a
+non-trivial number of clock cycles just to assemble characters into a
+string. Sending them took longer still. And if the connection was
+lost, we had to worry about somehow storing the data in a tiny amount
+of EEPROM and trying to keep phoning home in the meantime.
+</p>
+
+<p>
+As far as marking up the data, the most obvious choice was the NMEA
+protocol that many marine instruments already use, and essentially all
+GPS chipsets speak. This would have the advantage of making the device
+really, <span class="underline">really</span> simple. It would just be a gateway that sent NMEA up
+over a cellular link. The main disadvantage is that NMEA is, in this
+context, idiotically verbose; a GPS chip just keeps spitting out
+location data on a NMEA link at 4800 baud even if it remains entirely
+motionless. And since NMEA is really a local, hard-wired serial
+protocol, it has absolutely no notion of identity or security.
+</p>
+
+<p>
+A second natural choice was a then emerging JSON-based standard for
+onboard systems called <a href="https://signalk.org/">SignalK</a>. This had several great advantages, not
+the least of which is that it is truly free and open. Unfortunately,
+while trying to mark up JSON in a minuscule memory footprint is just
+barely possible, it is quite difficult and very limiting in how many
+pieces of data you can handle (the right place for SignalK in the
+FloatHub world is as an output from the server, something we are
+currently actively working on).
+</p>
+
+<p>
+And so, of course, we rolled our own protocol. Details are <a href="https://www.modiot.com/FloatHubCommunicationsProtocol_0.39.pdf">available</a>,
+but the gist of it is that we needed two message types, and both of
+them had to be nice and compact. First, we needed a sample-in-time
+type of message that showed the current state of all the systems
+(battery voltages, water depth, etc.). We also needed a point-in-time
+message that could be sent when an important event had just occurred
+(e.g. a pump turned on at precisely 11:23:06 UTC). Then we had to have
+some convention to explain which device the message was coming from
+(i.e. a unique identifier). On top of all of that, we needed some form
+of encryption, as otherwise we would be passing plaintext data over
+TCP/IP (including location information). A full SSL-style stack of
+infrastructure would have overwhelmed our little Megas, but we did
+have enough spare program space to squeeze in an <a href="https://en.wikipedia.org/wiki/Block_cipher_mode_of_operation#Cipher_Block_Chaining_.28CBC.29">AES-CBC</a> routine.
+</p>
+</div>
+</div>
+
+
+<div id="outline-container-org629a00f" class="outline-2">
+<h2 id="org629a00f">Iterating Hardware</h2>
+<div class="outline-text-2" id="text-org629a00f">
+<p>
+We then spent something close to <span class="underline">3 years</span> of otherwise idle time in
+the evenings and on weekends iterating on the hardware. We’re still
+far from true circuit design ninjas, but gradually progressed from
+thru-hole, hand soldered components to mostly surface mount. All of
+the layout and design was done in Eagle. We tried a few different
+places for printed circuit board (PCB) prototype manufacturing, but
+eventually settled on <a href="https://www.seeedstudio.com/">Seeed</a> as they could do both the PCB creation and
+<a href="https://www.seeedstudio.com/fusion_pcb.html">component assembly</a> in very small batches at reasonable rates.
+</p>
+
+
+<figure id="orgf2e394d">
+<img src="./static/img/floathub_p3a3.png" alt="floathub_p3a3.png">
+
+</figure>
+
+<p>
+While our custom shield progressed, we used a few different Arduino
+WiFi and Cellular shields on the top of the physical stack for
+communications. We needed an enclosure that could encompass this
+triple-stacked PCB sandwich, have a cutout where the screw terminals
+would allow hookups for voltage testing, mounting points for GPS,
+WiFi, and Cellular antennas, and so on. We did spend a fair bit of
+time hunting for a ready-made case we could use off the shelf, but
+never found one that really worked.
+</p>
+
+<p>
+So, just to ratchet up the time commitment to this “easy hack”
+solution, we started fiddling with CAD/CAM software. We knew we could
+3-D print a case if we could manage to wrap our brains around modeling
+software. We started out with <a href="https://openscad.org/">OpenSCAD</a>, which we absolutely
+loved. It’s really more of a programming language than a traditional
+GUI-based CAD/CAM tool, so we were able to keep thinking like software
+developers when using it. Data and directives are in the “source code”
+(e.g. draw a box here, take away the volume of a cylinder there),
+which is then run through a “compiler” (i.e. OpenSCAD), to create
+“object” (i.e. files that can be sent to a 3-D printer). We acquired a
+<a href="https://en.wikipedia.org/wiki/Printrbot">Printrbot</a> simple and started churning out enclosure revisions. As our
+volume of prototype units went up, we initially printed them with
+<a href="https://www.shapeways.com">Shapeways</a>, although recently have been doing more and more with <a href="https://www.voodoomfg.com/">Voodoo
+Manufacturing</a>.
+</p>
+
+
+<figure id="org0dc19d3">
+<img src="./static/img/floathub_p4p5.png" alt="floathub_p4p5.png">
+
+</figure>
+
+<p>
+At some point in 2015, we had really settled on the physical design
+and thought we were “done” from an enclosure standpoint. Still only
+half serious about ever moving forward with a real commercial product,
+we started reading about injection molding. We’d naively assumed that
+any file that could be 3-D printed would also be just fine for tooling
+molds. Couple of problems with that: 1) at the time, OpenSCAD was not
+great with the IGES or STEP files used by most tooling systems, and 2)
+a little something called “draft”. We designed our enclosure with
+simple right angles just about everywhere. Turns out that does not
+work very well for parts that will come out of a mold. You need angles
+that taper (at least a little) so the part can be popped out after
+it’s cooled. This notion of <a href="https://en.wikipedia.org/wiki/Draft_(engineering)">draft</a>  is probably taught in the first
+month of any CAD/CAM or engineering course, but it was news to
+us. Since we were already having format issues with OpenSCAD and we
+were going to have to redesign the whole enclosure anyway, we switched
+to FreeCAD for our CAD/CAM work. After more months of spare hours
+learning the tool and then using it to re-design the case, we finally
+had something that the automated design checker at <a href="https://www.protolabs.com/">ProtoLabs</a> said
+could be injected molded without too much difficulty.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org1288f18" class="outline-2">
+<h2 id="org1288f18">A Server Process</h2>
+<div class="outline-text-2" id="text-org1288f18">
+<p>
+With the device electronics and physical specification coming along
+nicely, we turned back to the server side of our home grown data
+protocol. This was a nice project that had a very well defined scope:
+</p>
+
+<ol class="org-ol">
+<li>listen for an incoming connection</li>
+<li>receive a string of characters from the device, terminated by a newline</li>
+<li>acknowledge reception by sending a short response string (and generally closing the connection)</li>
+<li>given the unique identifier in the initial part of the string, attempt to decrypt it (AES-CBC)</li>
+<li>On successful decryption, parse out data elements and stuff them into permanent storage (a database)</li>
+</ol>
+
+<p>
+We basically used a Python TCPSocketServer with a threading mixin,
+running on some fairly small AWS EC2 instances. Each job is very
+discreet. When the string arrives, there’s a defined section near the
+beginning that includes a unique identifier. Looking this up in a
+server side database, we grab the relevant AES key for that “account”
+(the device’s unique identifier) and attempt decryption. If that
+succeeds, then we have plaintext data to parse out of the string and
+store in the relevant table(s) for this “account”.
+</p>
+
+<p>
+The only thing we did here which even verged on clever was to realize
+that the streaming data for each “account” could be stored in its own
+tablespace (no device data is directly reliant on any other device’s
+data). We could use a central database to look up “account”
+information and include in that a pointer to device-specific
+host/database/tables where message data could be stored. Although each
+transmission from the device is quite small, they can send up to 120
+per hour, and over the days, weeks, and months, the set can grow to
+multiple GBs per device. Having the data sharded in this way makes it
+cleaner to work with. For example, deleting an “account” is just a
+simple table drop, not a careful select on some enormous über-table of
+data. And we can scale in a relatively straightforward way by just
+horizontally adding more database instances.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgf902ed5" class="outline-2">
+<h2 id="orgf902ed5">The Amazing ESP8266</h2>
+<div class="outline-text-2" id="text-orgf902ed5">
+<p>
+Somewhere in 2015, we noticed that we were starting to use the word
+“account” a lot, implying that we really had started to think of this
+as something we might try to sell commercially. The biggest remaining
+technical barrier was then device configuration. Up until that point,
+we had been making changes in device identifiers, AES keys, network
+settings, and other parameters largely by editing source code,
+recompiling, and then re-flashing the Mega. Perfectly adequate for
+proving out the core functionality, but far from viable as a “user
+experience”. We experimented a little bit with a very simple serial
+protocol where you could set parameters via a terminal program, but
+even that was not terribly user friendly. We also experimented with
+bluetooth and an app, where we could hide the serial line protocol
+behind a phone/tablet GUI.
+</p>
+
+
+<figure id="org500a138">
+<img src="./static/img/esp8266.png" alt="esp8266.png">
+
+</figure>
+
+<p>
+Around the same time, everyone and their uncle started writing about a
+new WiFi-centric microcontroller called the <a href="https://en.wikipedia.org/wiki/ESP8266">ESP8266</a>. This chip has a
+whole TCP/IP stack onboard, can do both access point and regular
+station mode (and even both at the same time), was quickly supported
+within the <a href="https://github.com/esp8266/Arduino">Arduino environment</a>, and is ridiculously cheap (less than
+$10, even in a full breakout-board configuration). We started
+experimenting and realized we could add one to FloatHub and have it
+serve two roles: 1) replace shield-based WiFi solutions for sending
+date off the device, and 2) run a minuscule web-server right onboard
+that would let end users set configuration values.
+</p>
+
+<p>
+Compared to the modern web development world of complex application
+server stacks and API’s to API’s, writing a whole
+microcontroller-based http server is starkly clear cut. Much like our
+previous code for the Mega, you’re dealing with tiny executable sizes,
+and pretty severe memory limitations. For example, we needed cookies
+for our device logon, so we had to actually come up with a
+small-as-possible C struct to represent them. Graphic elements in the
+interface had to be byte-coded into the executable, as there is no
+traditional file system to serve them from.
+</p>
+
+<p>
+The ESP8266 is also <span class="underline">rock</span> solid as an upstream data channel. As long
+as it can see it’s designated WiFi connection, it will stay connected,
+and the interactions over loosing a connection and then asking it to
+re-establish one are very straightforward and reliable. The fact that
+it can do Access Point and regular Station mode at the same time means
+FloatHub effectively has two WiFi interfaces; a “private” one with
+it’s own 192.168.4.* address space, and a “public” one where it
+connects with the outside world. Our only grumble is that since these
+two modes share the actual same physical hardware, they have to be at
+the same WiFi frequency. So if the upstream connection has to move to
+a new frequency to connect, it must drag along the private connection
+to that new frequency as well, effectively bumping off clients and
+forcing them to re-connect. But it’s a very small price to pay, and a
+joy to be able to fiddle with device settings with any browser that
+happens to be handy.
+</p>
+
+<p>
+Since we needed the ESP8266 on all FloatHub devices (even the cellular
+version) in order to do device configuration, we realized we should
+also add an option to broadcast NMEA over WiFi. That is, have a little
+server process in parallel with the http server that would push NMEA
+data to any connected client. This is really a NMEA to WiFi gateway,
+pushing any valid data generated internally by the onboard sensors or
+seen coming in from other devices (via serial). There are lots of
+marine applications for phones, tablets, and computers that can make a
+connection to these sorts of servers and then display vessel location,
+depth, wind speed, etc. Originally this was an almost accidental
+by-product of the fact that we needed some way to easily configure a
+FloatHub. Now it is easily the favorite feature among our beta
+testers.
+</p>
+</div>
+</div>
+
+
+<div id="outline-container-org7d55dda" class="outline-2">
+<h2 id="org7d55dda">Online Site &amp; Web Interface</h2>
+<div class="outline-text-2" id="text-org7d55dda">
+<p>
+The last major piece of the, “is this actually something we could
+sell?” question was to make a <a href="https://floathub.com/demo">functioning website</a> with an interface to
+the data. We’re really more server side developers than front-end
+types, but where there’s a will, there’s a way.
+</p>
+
+
+<figure id="org958d2a9">
+<a href="http://floathub.com/demo"><img src="./static/img/floathub_chart.png" alt="floathub_chart.png"></a>
+
+</figure>
+
+<p>
+Our core framework is <a href="https://flask.palletsprojects.com/">Flask</a>, which we run with <a href="https://gunicorn.org/">gunicorn</a>. <a href="https://docs.nginx.com/">Nginx</a> is the
+public facing web server (and handles https with letsencrypt
+certificates). Our Flask-based user accounts, e-mail based
+verification, etc. is all fairly vanilla stuff. We set up <a href="https://stripe.com">Stripe</a> for
+payments and subscriptions. There is a main user account databases on
+an RDS instance, and then the flow of device data is pulled in
+according to the shard setup we mentioned earlier.
+</p>
+
+<p>
+The actual vessel monitoring interface is a simple “one page
+application”, in that it shows a bunch of data and updates
+automatically as new data becomes available. Nothing really novel in
+how we implement that; we use a JQuery <a href="https://api.jquery.com/jquery.getjson/">getJSON()</a> approach to call the
+data API every 30 seconds and see if new data has arrived. If it has,
+we update the gauges and displays accordingly. You’d <span class="underline">never</span> want to
+use it to actually navigate with, but for a quick summary of what’s up
+with your boat or for following along with a vessel on a voyage, it’s
+quite serviceable.
+</p>
+
+<p>
+For the gauges, we looked at a fair number of different
+packages. There are a <span class="underline">lot</span> of them out there. We settled on <a href="https://canvas-gauges.com/">Canvas
+Gauges</a> by Mikhail Stadnyk, because it has wide browser support, is
+under active development, and works as advertised. We haven’t really
+done full justice to what’s possible with Canvas Gauges yet, and plan
+to add more detail and nicer polish over time.
+</p>
+
+
+<figure id="orgb568ce4">
+<a href="http://floathub.com/demo"><img src="./static/img/floathub_graphs.png" alt="floathub_graphs.png"></a>
+
+</figure>
+
+<p>
+To display historical data (and update it live), we went with <a href="https://c3js.org/">C3</a>
+(based, in turn, on <a href="https://d3js.org/">D3</a>). C3 makes it dead easy to create attractive,
+interactive charts. Because it’s D3-based, there’s a fairly rich set
+of code to draw on, including JSON methods where you can just ask for
+some data from the API and the code will automatically draw the
+relevant graph once the data comes back. There are some great examples
+of this and many other features of C3 in the <a href="https://c3js.org/gettingstarted.html">documentation</a>.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org29c6de7" class="outline-2">
+<h2 id="org29c6de7">Off to Launch</h2>
+<div class="outline-text-2" id="text-org29c6de7">
+<p>
+That pretty much sums it up. Of course we’ve skipped over lots of
+detail, but we’ve covered the major items in getting from there to
+here. At the time of putting these thoughts and notes together, we
+have just a few days left before our KickStarter launch. We’re
+optimistic, as we think FloatHub is a really useful product and
+service and our beta testing group has been giving reasonably positive
+feedback. But whether FloatHub enjoys successful adoption or sinks
+into insignificance, it seemed like the right time to try and get some
+of this history down.
+</p>
+
+<p>
+From that one little itch, we got to spend time exploring circuit
+layout, microcontrollers, protocol design, WiFi chipsets, embedded
+servers, CAD/CAM modeling, injection molding (draft!), component
+sourcing, database design, server processes, Flask, front-end
+libraries, Javascript/JQuery, and responsive data interfaces.
+</p>
+
+<p>
+Please let us know your thoughts or comments here or via email at
+<a href="mailto:info@floathub.com">info@floathub.com</a>.
+</p>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="date">Created: 2025-04-05 Sat 17:20</p>
+<p class="creator"><a href="https://www.gnu.org/software/emacs/">Emacs</a> 29.3 (<a href="https://orgmode.org">Org</a> mode 9.6.15)</p>
+</div>
+</body>
+</html>
