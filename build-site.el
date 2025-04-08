@@ -27,6 +27,9 @@
       org-html-head-include-scripts        nil ;; don't put default org-html export scripts in place
       org-html-doctype                     "html5"
       org-html-html5-fancy                 t
+      ;;org-export-html-date-format-string "%Y-%m-%d"
+      ;;org-html-metadata-timestamp-format   "%Y-%m-%d"
+      org-html-metadata-timestamp-format   "%B %e, %Y"
       org-html-head-include-default-style  nil ;; skip the default style sheet
       org-html-viewport                    '((width "device-width")
 			                     (initial-scale "0.5")
@@ -58,7 +61,7 @@
      :with-creator t
      :with-toc nil
      :section-numbers nil
-     :time-stamp-file t)
+     :time-stamp-file nil)
    (list "static"
      :recursive t
      :base-directory "./static"

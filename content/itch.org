@@ -1,11 +1,12 @@
 #+TITLE: From Itch to Launch?
 #+INCLUDE: "./header.org"
+#+DATE: <2017-06-08 >
 
 /{This is now verging on ancient history, but people keep asking for a
 copy so I've archived it here. Originally published June 28, 2017}/
 
 
-** From Itch to Lanch
+** From Itch to Launch
 
 [[file:./static/img/float_rope.png]]
 

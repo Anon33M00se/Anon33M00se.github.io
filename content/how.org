@@ -1,6 +1,6 @@
 #+TITLE: How is this site made?
 #+INCLUDE: "./header.org"
-
+#+DATE: <2024-09-09>
 * How does this site work?
 
 A few people have asked me about how I manage this site. It changes
