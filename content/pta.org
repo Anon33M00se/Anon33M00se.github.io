@@ -1,0 +1,11 @@
+#+TITLE: Plain Text Accounting
+#+INCLUDE: "./header.org"
+#+DATE: <2023-11-24>
+
+** What is PTA and where could it go?
+
+I use it.
+
+FOr more than most.
+
+It has to be able to go wider. Just like the tax firms and filing, we're stuck in a dark-pattern equilibrium. 

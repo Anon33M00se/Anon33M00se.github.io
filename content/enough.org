@@ -1,0 +1,22 @@
+#+TITLE: Enough with the Deadweight Loss of Using Word
+#+INCLUDE: "./header.org"
+#+OPTIONS: creator:comment d:(not LOGBOOK) date:t e:t email:nil f:t inline:t
+
+** A Call to End the Use of Microsoft Word
+
+I was recently doing some consulting work for a Canadian startup
+uysing machine learning in the engineering (electrical utility)
+sector. The exact details of the project are not particularly
+important,
+
+
+
+
+
+
+
+First Released: November 3, 2024
+
+
+[fn:: This is the inline definition of this footnote]
+

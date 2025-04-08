@@ -1,0 +1,33 @@
+#+TITLE: Email in Emacs
+#+INCLUDE: "./header.org"
+#+DATE: <2024-07-28>
+
+** Handling email in Emacs
+
+I have roughly two dozen email addresses that I need to be able to
+send and receive from on a (somewhat) regular basis. I also like
+vastly prefer have a local email client with a complete archive of all
+my emails on any laptop or desktop system that I use regularly. There
+are a whole host of reasons for these prefereces, not the least of
+which is being able to search and process emails when I have spotty (or
+zero) internet access.
+
+For many years I used Thunderbird, as it was reasonably fast, had good
+search, and supported interacting with Microsoft
+Outlook/Exchange/Office365/OWA servers (which I need for a couple of
+corporate email addresses). The Microsoft bit was handled by [[https://www.beonex.com/owl/][OWL by
+Beonex]], which is a great little piece of software. But I had a few issues with this setup:
+
+1) Thunderbird search started to get very unreliable for me across 3 or 4 different machines I had it installed on.
+
+2) The non-open source license fee I was paying for OWL was bothering me more and more as the only non-OS piece of software I used on any regular basis.
+
+3) I was spending more and more of my day in Emacs for just about everything else, so it was starting to feel creaky to be switching virtual desktops and reaching for the mouse evert time I needed to handle some email.
+   
+
+
+
+So search is really important, as is
+
+
+
