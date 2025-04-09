@@ -1,6 +1,5 @@
 #+TITLE: Enough with the Deadweight Loss of Using Word
 #+INCLUDE: "./header.org"
-#+OPTIONS: creator:comment d:(not LOGBOOK) date:t e:t email:nil f:t inline:t
 
 ** A Call to End the Use of Microsoft Word
 

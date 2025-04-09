@@ -1,58 +1,68 @@
 #+TITLE: Stuff
 #+INCLUDE: "./header.org"
+#+DATE: <2025-02-28 Fri>
 
-* Overview
+# Overview
+# 
+# This is an example of a _website_ written in *Org Mode*. If this text is longer in some way, then the left justification stuff will work better.
+# 
+# I wonder what happens with LaTex Math: $y=x^2$
+# 
+# If I want to do some raw html, how about @@html:<b>@@bold text@@html:</b>@@?  
+# 
+# And here is an edit. And here is another edit. And here is a third edit. And now a fourth.
+# 
+# #+BEGIN_aside
+#   This is an aside. Over on the side ...
+# #+END_aside
+# 
+# And here is some slighly more complicated math:
+# 
+# \begin{equation}                        % arbitrary environments,
+# x=\sqrt{b}                              % even tables, figures, etc
+# \end{equation}
+# 
+# \begin{equation}                        % arbitrary environments,
+# x=\frac{dy}{dx}                              % even tables, figures, etc
+# \end{equation}
+# 
+# If $a^2=b$ and \( b=2 \), then the solution must be
+# either $$ a=+\sqrt{2} $$ or \[ a=-\sqrt{2} \].
+# 
+# 
+# related to this:
+# 
+# [[https://www.teachmaths.org/20250105_orgmode-lesson-notes/][# Emacs for Math Teachers]
+# 
+# * Links
+# 
+# - [[https://systemcrafters.net/][System Crafters]]
+# - [[https://news.ycombinator.com][Hacker News]]
+#   
 
-This is an example of a _website_ written in *Org Mode*. If this text is longer in some way, then the left justification stuff will work better.
+*Some of the things I am currently involved with:*
 
-I wonder what happens with LaTex Math: $y=x^2$
+- [[https://ethicalairesearch.com/][Machine Learning in Engineering]]
+- [[https://floathub.com][FloatHub]] (Funded on [[https://www.kickstarter.com/projects/modiot/floathub][Kickstarter]])
+- The [[https://en.wikipedia.org/wiki/Espresso_Book_Machine][Espresso Book Machine]]
+- [[https://sitnos.com/][Sitnos]]
 
-If I want to do some raw html, how about @@html:<b>@@bold text@@html:</b>@@?  
+*Some of the other things I have previously worked on:*
 
-And here is an edit. And here is another edit. And here is a third edit. And now a fourth.
-
-#+BEGIN_aside
-  This is an aside. Over on the side ...
-#+END_aside
-
-And here is some slighly more complicated math:
-
-\begin{equation}                        % arbitrary environments,
-x=\sqrt{b}                              % even tables, figures, etc
-\end{equation}
-
-\begin{equation}                        % arbitrary environments,
-x=\frac{dy}{dx}                              % even tables, figures, etc
-\end{equation}
-
-If $a^2=b$ and \( b=2 \), then the solution must be
-either $$ a=+\sqrt{2} $$ or \[ a=-\sqrt{2} \].
-
-
-related to this:
-
-[[https://www.teachmaths.org/20250105_orgmode-lesson-notes/][Emacs for Math Teachers]]  
-
-* Links
-
-- [[https://systemcrafters.net/][System Crafters]]
-- [[https://news.ycombinator.com][Hacker News]]
+- [[https://patents.google.com/patent/US9605926][DuckDrone]] (Simulated Duck Hunting with drone swarms)
+- dotSUB (as used by [[https://blog.ted.com/ted_open_trans/][TED]])
+- OG AI for Business Modeling ([[https://archive.is/20231207170037/https://www.bloomberg.com/news/articles/1998-09-20/flight-simulators-for-management][Bloomberg]])
+- Programming with [[https://www.linuxjournal.com/article/2008][XForms]]
+- [[https://www.mythtv.org/wiki][MythTV]] ([[https://github.com/MythTV/mythtv][github repo]])
+- [[https://ftp.netbsd.org/pub/pkgsrc/current/pkgsrc/math/xldlas/index.html][xldlas]] ([[https://www.linuxjournal.com/article/1371][Linux Journal]])
+- The Extended El Farol Problem ([[../static/pdf/BarsModelsRussellsChicken.pdf][Bars, Models, and Russell's Chicken]]
+- KDE Documentation Project ([[https://web.archive.org/web/19980129150130/http://www.kde.org/kdp/kde_faq.html][The KDE FAQ]])
+- [[https://store.irpp.org/products/health-care-reform][Internal Markets in Health Care Reform]]
+- Inflation and Uncertainty ([[https://mcgill.on.worldcat.org/search/detail/427999205?queryString=Thor%20Sigvaldason&clusterResults=true&groupVariantRecords=false&newsArticles=off&bookReviews=off][here]], and [[https://www.mcgill.ca/economics/files/economics/a_framework_for_examining_the_real_effects_of_inflation_volatility.pdf][here]])
   
-* More crap
-This is really a lot of text that will help scroll off the bottom of the page.
-This is really a lot of text that will help scroll off the bottom of the page.
-This is really a lot of text that will help scroll off the bottom of the page.
-This is really a lot of text that will help scroll off the bottom of the page.
-This is really a lot of text that will help scroll off the bottom of the page.
-This is really a lot of text that will help scroll off the bottom of the page.
-This is really a lot of text that will help scroll off the bottom of the page.
-This is really a lot of text that will help scroll off the bottom of the page.
-This is really a lot of text that will help scroll off the bottom of the page.
-This is really a lot of text that will help scroll off the bottom of the page.
-This is really a lot of text that will help scroll off the bottom of the page.
-This is really a lot of text that will help scroll off the bottom of the page.
-This is really a lot of text that will help scroll off the bottom of the page.
-This is really a lot of text that will help scroll off the bottom of the page.
-This is really a lot of text that will help scroll off the bottom of the page.
 
+*Wait, what is this?*
+
+This is just my small personal website for quickly posting/exchanging
+stuff. More on how it works [[./how.org][here]].
 
