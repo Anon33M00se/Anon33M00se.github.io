@@ -55,7 +55,7 @@
 - Programming with [[https://www.linuxjournal.com/article/2008][XForms]]
 - [[https://www.mythtv.org/wiki][MythTV]] ([[https://github.com/MythTV/mythtv][github repo]])
 - [[https://ftp.netbsd.org/pub/pkgsrc/current/pkgsrc/math/xldlas/index.html][xldlas]] ([[https://www.linuxjournal.com/article/1371][Linux Journal]])
-- The Extended El Farol Problem ([[../static/pdf/BarsModelsRussellsChicken.pdf][Bars, Models, and Russell's Chicken]]
+- The Extended El Farol Problem ([[../static/pdf/BarsModelsRussellsChicken.pdf][Bars, Models, and Russell's Chicken]])
 - KDE Documentation Project ([[https://web.archive.org/web/19980129150130/http://www.kde.org/kdp/kde_faq.html][The KDE FAQ]])
 - [[https://store.irpp.org/products/health-care-reform][Internal Markets in Health Care Reform]]
 - Inflation and Uncertainty ([[https://mcgill.on.worldcat.org/search/detail/427999205?queryString=Thor%20Sigvaldason&clusterResults=true&groupVariantRecords=false&newsArticles=off&bookReviews=off][here]], and [[https://www.mcgill.ca/economics/files/economics/a_framework_for_examining_the_real_effects_of_inflation_volatility.pdf][here]])
