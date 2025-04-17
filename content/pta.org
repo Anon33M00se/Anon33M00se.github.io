@@ -396,8 +396,8 @@ system. Otherwise we would be exposing ourselves to the dangers of
 lock-in we talked about at the beginning of this post.
 
 I've been thinking about building out a prototype of something like
-this for a while now. If your involved in PTA or have any thoughts on
-any of this, I'd be very happy to hear from you about this: pta –at–
+this for a while now. If you're involved in PTA or have any thoughts
+on any of this, I'd be very happy to hear from you: pta –at–
 modiot.com
 
 
