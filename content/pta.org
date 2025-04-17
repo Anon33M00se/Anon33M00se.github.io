@@ -47,7 +47,7 @@ solutions that work well under a variety of circumstances. It also
 avoids ever having a business process end up at the mercy of a
 particular vendor or other entity.
 
-In what follow below, I'm going to go into a little more depth on PTA,
+In what follows below, I'm going to go into a little more depth on PTA,
 mostly to provide a few more detail about what it looks like in
 practice. I also want to demonstrate how flexible a PTA-based system
 can be. Finally, and most importantly, I want to discuss some nascent
