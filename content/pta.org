@@ -130,12 +130,12 @@ It's worth pointing out, however, that I did not type any of those
 entries by hand. Every month I get a PDF statement from the property
 management company that includes a page listing all transactions. I
 wrote a little utility based on pypdf that pulls those out of the PDF
-and writes them in PTA format. The same utility also looks a CVS
+and writes them in PTA format. The same utility also looks at CVS
 statements from the bank to make sure all the corresponding deposits
-and withdrawals match up. It will also automatically flag anything it
+and withdrawals match up. It will automatically flag anything it
 doesn't recognize, so I can review those transactions and edit them by
-hand if need be (and, more often than not, edit the utility to handle
-those new cases automatically in the future).
+hand if need be (and, more often than not, update the utility to
+handle those new cases automatically in the future).
 
 Writing importers is so fundamental to the PTA process that the
 packages all have helper systems to do this. Beancount, for example,
@@ -269,7 +269,7 @@ actually manufactured good:
 #+END_SRC
 
 So we now have a manufactured good in inventory at exactly the COG of
-all the components that went into it's manufacture. And all of our
+all the components that went into its manufacture. And all of our
 inventories should match exactly with what is physically on hand. We
 can also track labour costs related to this manufacturing process in
 an analogous way, but I've skipped over that in the interests of
