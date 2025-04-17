@@ -48,17 +48,18 @@
   <p><i>noun</i> 1. things which need to be put somewhere.</p>
   <div class="topbar-menu-container">
     <span><a href="/index.html">home</a></span> |
-    <span><a href="/enough.html">enough</a></span> | 
+    <!--  <span><a href="/enough.html">enough</a></span> | --!>
     <span><a href="/itch.html">itch</a></span> | 
     <span><a href="/email.html">email</a></span> | 
+    <span><a href="/totp.html">totp</a></span> | 
     <span><a href="/Books/RootsThatBind/">roots</a></span> | 
     <span><a href="/pta.html">pta</a></span> | 
-    <span><a href="/how.html">how?</a></span>
+    <span><a href="/how.html">how?</a></span> 
   </div>
 </header>
-<div id="outline-container-orgcd1dbc3" class="outline-2">
-<h2 id="orgcd1dbc3">How does this site work?</h2>
-<div class="outline-text-2" id="text-orgcd1dbc3">
+<div id="outline-container-org92e42e2" class="outline-2">
+<h2 id="org92e42e2">How does this site work?</h2>
+<div class="outline-text-2" id="text-org92e42e2">
 <p>
 A few people have asked me about how I manage this site. It changes
 frequently, as I will often throw stuff up very quickly, move it
@@ -74,9 +75,9 @@ GitHub. I'll explain each of the pieces in turn.
 </div>
 
 
-<div id="outline-container-org8a4d87a" class="outline-2">
-<h2 id="org8a4d87a">It Starts with Org Mode</h2>
-<div class="outline-text-2" id="text-org8a4d87a">
+<div id="outline-container-orgd9efde1" class="outline-2">
+<h2 id="orgd9efde1">It Starts with Org Mode</h2>
+<div class="outline-text-2" id="text-orgd9efde1">
 <p>
 Org-mode is a part of Emacs, and is a whole ecosystem for, well,
 organizing information. <a href="https://orgmode.org/">Org</a> files are just plain text with some
@@ -99,9 +100,10 @@ GitHub. I'll explain each of the pieces in turn.
 * It Starts with Org Mode
 
 Org-mode is a part of Emacs, and is a whole ecosystem for, well,
-organizing information. [[https://orgmode.org/][Org]] files are just plain text with some
-formatting conventions that superficially are not unlike
-[[https://en.wikipedia.org/wiki/Markdown][Markdown]]. Here's an example:
+organizing information. [[https://orgmode.org/][Org]] files are
+just plain text with some formatting conventions that superficially
+are not unlike [[https://en.wikipedia.org/wiki/Markdown][Markdown]].
+Here's an example:
 </pre>
 </div>
 
@@ -113,7 +115,7 @@ automatically push the changes out to "production".
 </p>
 
 <p>
-You can produce a lot of different formats in Org-mode very easily. For example:
+You can specify a lot of different formats in Org-mode very easily. For example:
 </p>
 
 <div class="org-src-container">
@@ -196,9 +198,9 @@ almost every conceivable use scenario.
 </div>
 
 
-<div id="outline-container-orgd8b5b36" class="outline-2">
-<h2 id="orgd8b5b36">Add in Some Packages</h2>
-<div class="outline-text-2" id="text-orgd8b5b36">
+<div id="outline-container-orgfb0cc6b" class="outline-2">
+<h2 id="orgfb0cc6b">Add in Some Packages</h2>
+<div class="outline-text-2" id="text-orgfb0cc6b">
 <p>
 Emacs has a notion of packages, and there a few available for
 automating the translation of org files into html. In fact, Org-mode
@@ -212,7 +214,7 @@ ancillary files organized.
 <p>
 The main package for this is ox-publish, which is really part of
 Org-mode itself. You can create an elisp file (a bit of interpretable
-code written in Emac's own variant of the Lisp programming language)
+code written in Emacs's own variant of the Lisp programming language)
 that:
 </p>
 
@@ -352,9 +354,9 @@ I get syntax highlighting in the exported html automatically without having to d
 </div>
 
 
-<div id="outline-container-org38c89cc" class="outline-2">
-<h2 id="org38c89cc">Hosting at Github (plus Actions)</h2>
-<div class="outline-text-2" id="text-org38c89cc">
+<div id="outline-container-org75eb66a" class="outline-2">
+<h2 id="org75eb66a">Hosting at Github (plus Actions)</h2>
+<div class="outline-text-2" id="text-org75eb66a">
 <p>
 Everything up to this point has been about creating content in org
 format and then automatically converting it into nice looking html. To
@@ -366,7 +368,7 @@ The first step is to get a <a href="https://github.com/signup">github account</a
 account for other purposes, it might make sense to have a separate one
 just for hosting a site (it's somewhat more complicated to juggle
 projects, repositories, and github pages when you only want to host a
-wesbsite for one repository from a given account, but it can <a href="https://deanattali.com/blog/multiple-github-pages-domains/">be done</a>).
+website for one repository from a given account, but it can <a href="https://deanattali.com/blog/multiple-github-pages-domains/">be done</a>).
 </p>
 
 <p>
@@ -462,9 +464,9 @@ automated from them on.
 </div>
 
 
-<div id="outline-container-org4861867" class="outline-2">
-<h2 id="org4861867">Custom Domain Name</h2>
-<div class="outline-text-2" id="text-org4861867">
+<div id="outline-container-org8f75b9e" class="outline-2">
+<h2 id="org8f75b9e">Custom Domain Name</h2>
+<div class="outline-text-2" id="text-org8f75b9e">
 <p>
 The last little detail on this is how to have a custom domain name
 point at the github hosted content. This is actually well documented on github at:
@@ -491,9 +493,9 @@ If you need somewhere to register a domain, I've had good luck with <a href="htt
 </div>
 
 
-<div id="outline-container-org30ce92e" class="outline-2">
-<h2 id="org30ce92e">Worth It?</h2>
-<div class="outline-text-2" id="text-org30ce92e">
+<div id="outline-container-org229056c" class="outline-2">
+<h2 id="org229056c">Worth It?</h2>
+<div class="outline-text-2" id="text-org229056c">
 <p>
 If you've never used Emacs and/or org-mode, it might seem like a <b>lot</b>
 of upfront work to get over the mountain of Emacs just so you can
@@ -524,9 +526,9 @@ site so quickly that it becomes almost second nature.
 </div>
 
 
-<div id="outline-container-org0c96e0d" class="outline-2">
-<h2 id="org0c96e0d">Resources</h2>
-<div class="outline-text-2" id="text-org0c96e0d">
+<div id="outline-container-org7411039" class="outline-2">
+<h2 id="org7411039">Resources</h2>
+<div class="outline-text-2" id="text-org7411039">
 <p>
 The amazing <a href="https://systemcrafters.net/">System Crafters</a> website has a whole series of videos
 related to Emacs, and a section devoted to website publishing with

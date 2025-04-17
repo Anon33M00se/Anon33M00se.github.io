@@ -8,6 +8,38 @@
 <link rel="stylesheet" href="https://cdn.simplecss.org/simple.min.css"/>
                                             <link rel="stylesheet" type="text/css" href="/static/css/customizations.css" />
                                             <link rel="stylesheet" type="text/css" href="/static/css/org-html-styling.css" />
+<script>
+  window.MathJax = {
+    tex: {
+      ams: {
+        multlineWidth: '85%'
+      },
+      tags: 'ams',
+      tagSide: 'right',
+      tagIndent: '.8em'
+    },
+    chtml: {
+      scale: 1.0,
+      displayAlign: 'center',
+      displayIndent: '0em'
+    },
+    svg: {
+      scale: 1.0,
+      displayAlign: 'center',
+      displayIndent: '0em'
+    },
+    output: {
+      font: 'mathjax-modern',
+      displayOverflow: 'overflow'
+    }
+  };
+</script>
+
+<script
+  id="MathJax-script"
+  async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+</script>
 </head>
 <body>
 <div id="content" class="content">
@@ -16,50 +48,669 @@
   <p><i>noun</i> 1. things which need to be put somewhere.</p>
   <div class="topbar-menu-container">
     <span><a href="/index.html">home</a></span> |
-    <span><a href="/enough.html">enough</a></span> | 
+    <!--  <span><a href="/enough.html">enough</a></span> | --!>
     <span><a href="/itch.html">itch</a></span> | 
     <span><a href="/email.html">email</a></span> | 
+    <span><a href="/totp.html">totp</a></span> | 
     <span><a href="/Books/RootsThatBind/">roots</a></span> | 
     <span><a href="/pta.html">pta</a></span> | 
-    <span><a href="/how.html">how?</a></span>
+    <span><a href="/how.html">how?</a></span> 
   </div>
 </header>
 
-<div id="outline-container-orgfa27c4a" class="outline-2">
-<h2 id="orgfa27c4a">Handling email in Emacs</h2>
-<div class="outline-text-2" id="text-orgfa27c4a">
+<div id="outline-container-orgc0de459" class="outline-2">
+<h2 id="orgc0de459">Handling email in Emacs</h2>
+<div class="outline-text-2" id="text-orgc0de459">
 <p>
 I have roughly two dozen email addresses that I need to be able to
-send and receive from on a (somewhat) regular basis. I also like
-vastly prefer have a local email client with a complete archive of all
-my emails on any laptop or desktop system that I use regularly. There
-are a whole host of reasons for these prefereces, not the least of
-which is being able to search and process emails when I have spotty (or
-zero) internet access.
+send and receive from on a regular basis. I also vastly prefer using a
+local email client with a complete archive of all my email
+history. There are a whole host of reasons for these preferences, not
+the least of which is being able to search and process emails when I
+have limited internet access.
 </p>
 
 <p>
 For many years I used Thunderbird, as it was reasonably fast, had good
 search, and supported interacting with Microsoft
 Outlook/Exchange/Office365/OWA servers (which I need for a couple of
-corporate email addresses). The Microsoft bit was handled by <a href="https://www.beonex.com/owl/">OWL by
-Beonex</a>, which is a great little piece of software. But I had a few issues with this setup:
+corporate email addresses). The Exchange bit was handled by <a href="https://www.beonex.com/owl/">OWL</a>, which
+is a great little piece of software. But I had a few issues with this
+setup:
 </p>
 
 <ol class="org-ol">
-<li>Thunderbird search started to get very unreliable for me across 3 or 4 different machines I had it installed on.</li>
+<li>Thunderbird search started to get very unreliable for me across 3 or 4 different machines.</li>
 
-<li>The non-open source license fee I was paying for OWL was bothering me more and more as the only non-OS piece of software I used on any regular basis.</li>
+<li>The OWL plugin was the only non-open source piece of software I used on any regular basis.</li>
 
-<li>I was spending more and more of my day in Emacs for just about everything else, so it was starting to feel creaky to be switching virtual desktops and reaching for the mouse evert time I needed to handle some email.</li>
+<li>Since I spend so much time in Emacs, it was jarring to be switching virtual desktops and reaching for the mouse every time I needed to handle some email.</li>
 </ol>
 
+<p>
+So I set out on a quest to handle all my email requirements from
+inside Emacs. What follows is both long and incomplete. It's long
+because I discuss almost all of the setup and extensions I use on a
+daily basis. It's incomplete because I don't go into exhaustive
+minutiae on every configuration issue or option. But there are links
+to further details where relevant, and there are some resources listed
+at the end for even more help.
+</p>
+</div>
+</div>
 
+<div id="outline-container-org74bfafe" class="outline-2">
+<h2 id="org74bfafe">Local mailbox syncing with mbsync</h2>
+<div class="outline-text-2" id="text-org74bfafe">
+<p>
+Before we can read and respond to emails inside Emacs, we first need a
+mechanism to sync email over IMAP. There are a few alternatives out
+there such as <a href="https://www.offlineimap.org/">offlineimap</a>, but the general consensus for new users
+seems to be to use mbsync. It has a slightly confusing project name
+(isync/mbsync), and there is a github repository that appears in
+searches (<a href="https://github.com/gburd/isync">https://github.com/gburd/isync</a>), but the actual current
+location for the project is on SourceForge at
+<a href="https://sourceforge.net/projects/isync/">https://sourceforge.net/projects/isync/</a>. For most Linux distributions
+and Mac OS X, you'll probably just install a package, but the source
+code is available and straightforward to compile if you need to.
+</p>
+
+<p>
+You'll need an <b>~/.mbsync</b> file in your home directory that defines each
+of your email accounts. Each account entry will look something like
+this:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-code">IMAPAccount MyShortNameForThisAccount
+Host imap.email-host.com
+User foo@example.com
+Port 993
+PassCmd "pass foo@example.com"
+TLSType IMAPS
+AuthMechs PLAIN
+PipelineDepth 1
+CertificateFile /etc/ssl/certs/ca-certificates.crt
+
+IMAPStore foo@example.com-remote
+Account MyShortNameForThisAccount
+
+MaildirStore foo@example.com-local
+Subfolders Verbatim
+Path ~/Mail/MyShortNameForThisAccount/
+Inbox ~/Mail/MyShortNameForThisAccoun/Inbox
+
+Channel foo@example.com
+Far :foo@example.com-remote:
+Near :foo@example.com-local:
+Patterns *
+Create Near
+Sync All
+SyncState *
+
+</pre>
+</div>
 
 
 <p>
-So search is really important, as is
+Most of this is pretty self explanatory, and there is an excellent <a href="https://isync.sourceforge.io/mbsync.html">man
+page</a> that explains how to configure things. One issue to highlight is
+that each IMAP mail account has an entry for "AuthMechs"
+(<a href="http://www.iana.org/assignments/sasl-mechanisms/sasl-mechanisms.xhtml">authentication mechanisms</a>). Many accounts will use "PLAIN", but in
+the case of nasty Microsoft Exchange servers, you'll probably use
+"XOAUTH2" (see below).
 </p>
+</div>
+</div>
+
+<div id="outline-container-org3b0ddf9" class="outline-2">
+<h2 id="org3b0ddf9">Authenticating with pass and pizauth</h2>
+<div class="outline-text-2" id="text-org3b0ddf9">
+<p>
+I use "<a href="https://www.passwordstore.org/">password-store</a>" (sometimes called "gnu pass") with Yubikey
+hardware keys for all my passwords, secrets, ssh credentials, and
+whatnot (see <a href="https://github.com/drduh/YubiKey-Guide">here</a> for a pretty comprehensive resource on setting that
+up). So in my <b>~/.mbsync</b> configuration for each of my "normal" imap
+accounts I have a line line this:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-code">PassCmd "pass foo@example.com"
+</pre>
+</div>
+
+<p>
+Meaning that each time mbsync wants to go and retrieve emails for this
+account, it will run the <b>pass</b> command to get the password required
+for that account.
+</p>
+
+<p>
+In the case of Exchange servers, however, the "PassCmd" setting I use
+is:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-code">PassCmd "pizauth show bar"
+</pre>
+</div>
+
+
+<p>
+This uses a utility called pizauth to manage OAUTH2 tokens (the github
+repository is <a href="https://github.com/ltratt/pizauth">here</a>). You will probably need to compile this from
+scratch, which means you will need to have a rust compiler
+available. A good resource on how to do that is available at <a href="https://brettpresnell.com/post/email/">this
+website</a> (scroll down to "Setting Up pizauth" for pizauth specifics,
+but the whole guide is relevant).
+</p>
+
+<p>
+You'll then have to setup a <b>~/.config/pizauth.conf</b> that will look something like this:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-code">account "officesmtp" {
+    auth_uri = "https://login.microsoftonline.com/common/oauth2/v2.0/authorize";
+    token_uri = "https://login.microsoftonline.com/common/oauth2/v2.0/token";
+    client_id = "..."; // Fill in with your Client ID
+    client_secret = "..."; // Fill in with your Client secret
+    scopes = [
+      "https://outlook.office365.com/IMAP.AccessAsUser.All",
+      "https://outlook.office365.com/SMTP.Send",
+      "offline_access"
+    ];
+    // You don't have to specify login_hint, but it does make authentication a
+    // little easier.
+    auth_uri_fields = { "login_hint": "email@example.com" };
+}
+</pre>
+</div>
+
+
+<p>
+Invoke the pizauth server (by running <b>pizauth server</b>), and then try
+to get your first oath2 credentials by entering <b>pizauth show
+officesmtp</b> (where <b>officesmtp</b> is whatever you call the account in
+your <b>.config/pizauth.conf</b> file). The first time you run the <b>show</b>
+command, it will open a browser tab and have you do an oauth2 login
+with the exchange server. Subsequent invocations will work without
+browser interaction for as long as the oauth server allows the same
+token (or chain of refreshed tokens) to remain valid.
+</p>
+
+<p>
+Once pizauth is in place, you can test if all email retrieval is
+working by running:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-code">mbsync -a
+</pre>
+</div>
+
+<p>
+on the command line. That should go and sync with all the accounts
+defined in your <b>~/.mbsync</b> file, and print progress messages as it
+goes. If something doesn't work, you can just delete all or some of
+the mail directories that mbsync fills (anything missing will be
+refilled on the next invocation of mbsync).
+</p>
+</div>
+</div>
+
+
+<div id="outline-container-orgd39d8b6" class="outline-2">
+<h2 id="orgd39d8b6">Indexing your local mail with mu</h2>
+<div class="outline-text-2" id="text-orgd39d8b6">
+<p>
+Having sync'd all your email locally, the next step is to start
+indexing it. This will allow you to perform quick searches across all
+your email accounts. There are packages for an amazing indexer called
+mu (which is really part of mu4e, see below). In Ubuntu, it's <b>apt
+install maildir-utils</b>. or you can build the most recent version from
+<a href="https://github.com/djcb/mu">https://github.com/djcb/mu</a>.
+</p>
+
+<p>
+Either way, once installed you run
+</p>
+
+<div class="org-src-container">
+<pre class="src src-code">mu init --maildir=/home/username/Mail             \
+        --my-address=foo@example-one.com          \
+        --my-address=bar@example-two.com          
+</pre>
+</div>
+
+<p>
+to configure mu for your email location and to let it know which email
+address(es) belong to you. You can run <b>mu info</b> to check on the
+configuration, and them <b>mu init</b> to actually index everything. If you
+have a lot of email, this can take several minutes (or even longer
+&#x2026;).
+</p>
+
+<p>
+Don't be afraid to experiment a bit with mu. You can always completely
+nuke the index (it's probably stored in <b>~/.cache/mu/xapian/</b>) and/or
+reinitialize mu by running the init command again.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org60063a9" class="outline-2">
+<h2 id="org60063a9">Sending emails</h2>
+<div class="outline-text-2" id="text-org60063a9">
+<p>
+Before we finally get to actually accessing emails in Emacs, we also
+need a way to send mail. Thankfully, this is not complicated. A quick
+<b>apt install msmtp</b> will get things started. You'll then need a
+<b>~/.msmtprc</b> with an entry for each account:
+</p>
+
+
+<div class="org-src-container">
+<pre class="src src-code"># The SMTP server of your ISP
+account isp
+host mail.isp.example
+from smithjoe@isp.example
+auth on
+user 12345
+</pre>
+</div>
+
+<p>
+Just like we set up for incoming email, you can use OATH2 settings
+with msmtp to configure it to work with those nasty Exchange servers
+something like this:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-code"># An Exchange server
+account      nastyexchange
+auth         xoauth2
+host         smtp.office365.com
+protocol     smtp
+port         587
+tls          on
+tls_starttls on
+from         foo@example.com
+user         foo@example.com
+passwordeval pizauth show bar
+</pre>
+</div>
+
+<p>
+To see if you've got it working, you can test it with (replace
+<b>you@gmail.com</b> with a working email address you have access to):
+</p>
+
+<div class="org-src-container">
+<pre class="src src-code">printf "Subject:Test\n\nThis is a test." |  msmtp -a nastyexchange you@gmail.com
+</pre>
+</div>
+</div>
+</div>
+
+
+<div id="outline-container-org0338729" class="outline-2">
+<h2 id="org0338729">mu4e as a client</h2>
+<div class="outline-text-2" id="text-org0338729">
+<p>
+Now that we have incoming email, indexing, and outgoing email all
+working, we can finally setup mu4e inside of Emacs. Inside your
+<b>~/.emacs.d/init.org</b>, you'll want to do something like this:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-elisp">(add-to-list 'load-path <span class="org-string">"/usr/local/share/emacs/site-lisp/mu4e"</span>)
+(<span class="org-keyword">require</span> '<span class="org-constant">mu4e</span>)
+
+<span class="org-comment-delimiter">;; </span><span class="org-comment">This is set to '</span><span class="org-comment"><span class="org-constant">t</span></span><span class="org-comment">' to avoid mail syncing issues when using mbsync</span>
+(<span class="org-keyword">setq</span> mu4e-change-filenames-when-moving t)
+
+<span class="org-comment-delimiter">;; </span><span class="org-comment">Refresh all mail using mbsync every 5 minutes</span>
+(<span class="org-keyword">setq</span> mu4e-update-interval (* 5 60))
+(<span class="org-keyword">setq</span> mu4e-get-mail-command <span class="org-string">"/usr/bin/mbsync -a"</span>)
+(<span class="org-keyword">setq</span> mu4e-maildir <span class="org-string">"~/Mail"</span>)
+
+<span class="org-comment-delimiter">;; </span><span class="org-comment">Use some cool utf8 chars for things like attachment indicators</span>
+(<span class="org-keyword">setq</span> mu4e-use-fancy-chars t)
+
+(<span class="org-keyword">setq</span> mu4e-contexts
+    `(
+      ,(make-mu4e-context
+        <span class="org-builtin">:name</span> <span class="org-string">"A User"</span>
+        <span class="org-builtin">:enter-func</span> (<span class="org-keyword">lambda</span> () (mu4e-message <span class="org-string">"Switch to the A User context"</span>))
+        <span class="org-builtin">:match-func</span> (<span class="org-keyword">lambda</span> (msg)
+                        (<span class="org-keyword">when</span> msg
+                          (string= (mu4e-message-field msg <span class="org-builtin">:maildir</span>) <span class="org-string">"/a.user@example.com"</span>)))
+          <span class="org-builtin">:vars</span> '( ( user-mail-address  . <span class="org-string">"a.user@example.com"</span> )
+                   ( user-full-name     . <span class="org-string">"A User"</span> )
+                   ( message-user-organization . nil )
+                     ( mu4e-sent-folder       .  <span class="org-string">"/a.user@example.com/Sent"</span>)
+                     ( mu4e-refile-folder     .  <span class="org-string">"/a.user@example.com/OldIn"</span>)
+                     ( mu4e-trash-folder      .  <span class="org-string">"/a.user@example.com/Trash"</span>)
+                     ( mu4e-drafts-folder     .  <span class="org-string">"/a.user@example.com/Drafts"</span>)
+                   ( mu4e-compose-signature .
+                     (concat
+                       <span class="org-string">"A User\n"</span>
+                         <span class="org-string">"a.user@xample.com\n"</span>))))
+     ))
+
+(<span class="org-keyword">setq</span> mu4e-maildir-shortcuts
+  '(
+    (<span class="org-builtin">:maildir</span> <span class="org-string">"/a.user@example.com/Inbox"</span>        <span class="org-builtin">:key</span> ?a)
+  )
+)
+
+<span class="org-comment-delimiter">;;</span>
+<span class="org-comment-delimiter">;; </span><span class="org-comment">Note that msmtp handles how to send based on the From: value in the</span>
+<span class="org-comment-delimiter">;; </span><span class="org-comment">enveloppe, and the details of that are defined in .msmptrc</span>
+<span class="org-comment-delimiter">;;</span>
+
+(<span class="org-keyword">setq</span> sendmail-program <span class="org-string">"/usr/bin/msmtp"</span>
+    send-mail-function 'smtpmail-send-it
+    message-sendmail-f-is-evil t
+    message-sendmail-extra-arguments '(<span class="org-string">"--read-envelope-from"</span>)
+    message-send-mail-function 'message-send-mail-with-sendmail)
+</pre>
+</div>
+
+<p>
+Phew, there's a lot going on there, and there are a lot of other
+optional things not shown in the interests of clarity. The main things
+to notice is that for each email account, you need to set up a mu4e
+"context". There's only one shown in the example above (for
+"A. User"), but you'll need one for each account. The file then
+defines a shortcut to jump to that context in the mu4e
+interface. Finally, configuring mu4e for outgoing email is much
+simpler (you just tell it to use mstmp and set a few options).
+</p>
+
+<p>
+To actually invoke mu4e from within Emacs, you just do a <b>M-x mu4e</b>,
+whereupon mu4e will ask you to choose a context (as defined above) and
+then display its interface:
+</p>
+
+
+<figure id="orga7c600e">
+<img src="./static/img/mu4e_regular.png" alt="mu4e_regular.png">
+
+</figure>
+
+<p>
+which, because it's Emacs, can be fancied up and customized to your
+heart's content:
+</p>
+
+
+<figure id="org5d8ffb0">
+<a href="https://github.com/rougier/mu4e-dashboard"><img src="./static/img/mu4e_fancy.png" alt="mu4e_fancy.png"></a>
+
+</figure>
+
+<p>
+There are a lot of keybindings and options here, best experienced
+interactively. There's a complete help system and manual built into
+mu4e, all accessible from inside the interface.
+</p>
+</div>
+</div>
+
+
+<div id="outline-container-orgd823ef3" class="outline-2">
+<h2 id="orgd823ef3">Capturing from mu4e into org files</h2>
+<div class="outline-text-2" id="text-orgd823ef3">
+<p>
+Once you get comfortable with the mu4e interface, you'll discover that
+it is both powerful and fast. You can jump around mail boxes easily,
+and search is positively blazing.
+</p>
+
+<p>
+But you can take the nimbleness of mu4e to the next level by combining
+it with <a href="https://orgmode.org/">Org-mode</a>. If you don't know what Org-mode is, you can find a
+gentle introduction <a href="https://orgmode.org/worg/org-tutorials/org4beginners.html">here</a>. Mu4e and org-mode can be combined by adding
+this to the mu4e section of your <b>~/.emacs.d/init.el</b>:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-elisp">(<span class="org-keyword">require</span> '<span class="org-constant">mu4e-org</span>)
+</pre>
+</div>
+
+<p>
+and by setting up one or more "capture templates" in the same
+file. Capture templates look something like this:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-elisp">(<span class="org-string">"e"</span> <span class="org-string">"Email Workflow"</span>)
+  (<span class="org-string">"eh"</span> <span class="org-string">"Home TODO"</span> entry
+   (file+headline <span class="org-string">"Home.org"</span> <span class="org-string">"Captured Email TODOs"</span>)
+   <span class="org-string">"* TODO Follow up with %:fromname on %a\n%t"</span>)
+ ...
+</pre>
+</div>
+
+
+<p>
+This means the keystrokes <b>e h</b> while in capture will open your
+<b>Home.org</b> file and create a <b>TODO</b> under the section heading of
+"Captured Email TODOs". That TODO will include the name of the email's
+sender (<b>%:fromname</b>) and the subject line of the email (<b>%a</b>). That
+subject line will link back to the email itself. There will also be a
+datestamp which can be easily modified. You then hit a quick <b>C-c C-c</b>
+to save the item, and you are right back to reviewing emails.
+</p>
+
+<p>
+This may sound complicated and it may not be immediately clear what
+the benefit is. Imagine you are flying through your emails and come
+across something that you must act on, but cannot do so right
+now. What do you do with that email?  You could set it back to unread,
+but that state of "not read" does not really represent what you want
+to do with the pending action.
+</p>
+
+
+<p>
+In a traditional email client, you could jump to the agenda or
+calendar interface and set a reminder, todo, or similarly dated
+entry. But then a week later when the reminder goes off, you have to
+search back through your emails to get to whatever message it was that
+initiated the chain of events (to be fair, Outlook does have a Message
+\(\rightarrow\) Follow Up \(\rightarrow\) Add Reminder, but it is a fairly
+clunky mouse driven interaction).
+</p>
+
+<p>
+What you really want is a lightning fast way to create an agenda or
+TODO item with minimal distraction. That's exactly what <b>mu4e-org</b> and
+capture templates allow. While reading the email, with a couple of
+keystrokes you immediately have a TODO entry in the relevant org file
+with a timestamp <i>and a link back to the exact email that needs to be
+acted on</i>. So when you are reviewing your agenda and TODO entries in
+the future, you can act on the item in question and instantly pop back
+into the email in question.
+</p>
+</div>
+</div>
+
+
+<div id="outline-container-orgfbbb5e2" class="outline-2">
+<h2 id="orgfbbb5e2">Adding in Snippets</h2>
+<div class="outline-text-2" id="text-orgfbbb5e2">
+<p>
+If you answer a lot of emails with similar content, it can get very
+annoying to find yourself typing the same sentences over and over
+again. Boilerplate language like, "<i>Thanks for your interest, and
+please let us know if you have any questions</i>" can be maddening to
+type over and over again.
+</p>
+
+<p>
+One solution is <a href="https://github.com/joaotavora/yasnippet">YASnippets</a>. This is an Emacs package that lets you
+define short character sets that can be automatically expanded into
+arbitrary text. To continue with our boilerplate example, if you
+create a file like this is your "snippets directory":
+</p>
+
+<div class="org-src-container">
+<pre class="src src-code"># -*- mode: snippet -*-
+# name: boilerplate-thanks
+# key: &lt;bt
+# --
+
+  Thanks for your interest, and please let us know if you have any questions.
+
+</pre>
+</div>
+
+<p>
+then anytime you are composing an email you can type:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-code">&lt;bt
+</pre>
+</div>
+
+<p>
+and hit the TAB key to expand that entry into the boilerplate language
+from the file. And this is just scratching the surface of what
+YASnippets can do. There are facilities for accessing and handling all
+kinds of data when snippets are invoked. You can even embed arbitrary
+code in the invocation process to do really complicated
+expansions. Comprehensive documentation is <a href="https://joaotavora.github.io/yasnippet/">here</a>.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgbc11b20" class="outline-2">
+<h2 id="orgbc11b20">Fancier HTML emails</h2>
+<div class="outline-text-2" id="text-orgbc11b20">
+<p>
+Everything we've covered so far really only involves plaintext
+emails. To be sure, you can add all manner of attachments to emails in
+mu4e, but if you want inline images, styled text, etc., you'll need to
+move to html emails.
+</p>
+
+<p>
+The answer, of course, is more org mode (isn't it always). More
+precisely, with a package called <a href="https://github.com/org-mime/org-mime">org-mime</a>, the command <b>M-x
+org-mime-edit-mail-in-org-mode</b> (which I bind to <b>M-o o</b>) will open a
+buffer that lets you use org mode to compose as email. So font
+styling, inline images, tables, etc. can all be created just like you
+can do in any other org document.
+</p>
+
+<p>
+So editing a buffer that looks like this:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-code">
+*bold*, _underline_, +strikethrough+, /italics/
+
+| n | n^2 | n^3 |
+|---+-----+-----|
+| 1 |   1 |   1 |
+| 2 |   4 |   8 |
+| 3 |   9 |  27 |
+
+$y=x^2$
+
+</pre>
+</div>
+
+<p>
+Will produce an email that looks like this (just remember to run <b>M-x
+org-mime-htmlize</b> before sending):
+</p>
+
+<hr>
+
+<p>
+<b>bold</b>, <span class="underline">underline</span>, <del>strikethrough</del>, <i>italics</i>
+</p>
+
+<table>
+
+
+<colgroup>
+<col  class="org-right">
+
+<col  class="org-right">
+
+<col  class="org-right">
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-right">n</th>
+<th scope="col" class="org-right">n<sup>2</sup></th>
+<th scope="col" class="org-right">n<sup>3</sup></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-right">1</td>
+<td class="org-right">1</td>
+<td class="org-right">1</td>
+</tr>
+
+<tr>
+<td class="org-right">2</td>
+<td class="org-right">4</td>
+<td class="org-right">8</td>
+</tr>
+
+<tr>
+<td class="org-right">3</td>
+<td class="org-right">9</td>
+<td class="org-right">27</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+\(y=x^2\)
+</p>
+
+<hr>
+
+<p>
+You can also embed inline images using the standard org mode
+procedures for inline images. If you want easy drag and drop right
+into your buffer, there's a package called <a href="https://github.com/abo-abo/org-download">org-download</a> that will
+take care of that.
+</p>
+
+<p>
+I have also heard good things about <a href="https://github.com/jeremy-compostella/org-msg">org-msg</a> as an alternative to
+org-mime. It is supposed to handle Outlook conventions on replies and
+quoting within html emails quite well.
+</p>
+</div>
+</div>
+
+
+<div id="outline-container-orgb57ed42" class="outline-2">
+<h2 id="orgb57ed42">Resources</h2>
+<div class="outline-text-2" id="text-orgb57ed42">
+<p>
+Here are some links related to configuring and using mu4e in Emacs:
+</p>
+
+<ul class="org-ul">
+<li>Brett Presnell's <a href="https://brettpresnell.com/post/email/">Reading Email with Emacs</a></li>
+<li><a href="https://systemcrafters.net/emacs-mail/">System Crafters Emacs Email/mu4e Series</a></li>
+<li>Nicolas P. Rougier's <a href="https://github.com/rougier/mu4e-dashboard">mu4e dashboard</a> and <a href="https://github.com/rougier/mu4e-thread-folding">thread folding</a>.</li>
+</ul>
 </div>
 </div>
 </div>
