@@ -43,6 +43,7 @@
 *Some of the things I am currently involved with:*
 
 - [[https://ethicalairesearch.com/][Machine Learning in Engineering]]
+- [[./pta.org][Plain Text Accounting]]
 - [[https://floathub.com][FloatHub]] ([[https://github.com/floathub/device][github repo]])
 - The [[https://en.wikipedia.org/wiki/Espresso_Book_Machine][Espresso Book Machine]]
 - [[https://sitnos.com/][Sitnos]]
