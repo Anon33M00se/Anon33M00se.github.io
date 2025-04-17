@@ -1,11 +1,404 @@
 #+TITLE: Plain Text Accounting
 #+INCLUDE: "./header.org"
-#+DATE: <2023-11-24>
+#+DATE: <2025-03-11>
 
-** What is PTA and where could it go?
+** Plain Text Accounting
 
-I use it.
+I've started a few different companies, including some very small
+ones. As part of those endeavours, I've tried a pretty broad range of
+accounting systems. From [[https://quickbooks.intuit.com/][QuickBooks]] to [[https://www.xero.com][Xero]], and [[https://www.netsuite.com/portal/products/erp/financial-management/finance-accounting.shtml][Netsuite]] to
+[[https://ledgersmb.org/][LedgerSMB]], I've at least dabbled with a lot of alternatives.
 
-FOr more than most.
+What I keep coming back to, however, is a family of solutions that
+fall under the umbrella of something called Plain Text Accounting
+(PTA). PTA starts from the reality that accounting is a solved
+problem. It was solved with the invention of [[https://en.wikipedia.org/wiki/Double-entry_bookkeeping][Double-entry Bookkeeping]]
+sometime close to the end of the 13th century. With 5 classes of
+accounts (Assets, Liabilities, Income, Expenses, and Equity) and two
+ways to classify flows in or out of those classes (credits and
+debits), every financial action can be captured by a double entry (a
+credit to one account type and a debit to another) in a ledger. As
+Wikipedia succinctly puts it:
 
-It has to be able to go wider. Just like the tax firms and filing, we're stuck in a dark-pattern equilibrium. 
+#+BEGIN_QUOTE
+A transaction in double-entry bookkeeping always affects at least two
+accounts, always includes at least one debit and one credit, and
+always has total debits and total credits that are equal. The purpose
+of double-entry bookkeeping is to allow the detection of financial
+errors and fraud.
+#+END_QUOTE
+
+
+All the modern accounting systems are really just variations on this
+very old theme. PTA embraces this reality in a way that often appeals
+to developers, because PTA involves:
+
+1. an open syntax (for how accounts, debits, and credits are specified)
+
+2. scriptable accounting engines that process transactions
+
+3. no vendor or file format lock-ins
+
+To many coders, engineers, and other technical types, this is a
+familiar pattern from software development (source code, run through
+interpreters/compilers, using open standards). And this is a pattern
+that they generally are very enthusiastic about; it leads to flexible
+solutions that work well under a variety of circumstances. It also
+avoids ever having a business process end up at the mercy of a
+particular vendor or other entity.
+
+In what follow below, I'm going to go into a little more depth on PTA,
+mostly to provide a few more detail about what it looks like in
+practice. I also want to demonstrate how flexible a PTA-based system
+can be. Finally, and most importantly, I want to discuss some nascent
+ideas about making PTA easier to integrate with other systems.
+
+
+** PTA Basics
+
+As the name implies, PTA uses simple text files to store all
+transactions. There a few different PTA software packages that process
+these files, chiefly [[https://ledger-cli.org/][Ledger]], [[https://hledger.org/][hledger]], and [[https://github.com/beancount/beancount][Beancount]]. But the file
+formats are all quite similar and the packages all perform roughly the
+same functions.
+
+To make this more concrete, here are a few lines from one of my actual
+beancount files for a real estate investment in Canada:
+
+#+BEGIN_SRC code
+2025-02-01 * "Urgo" "Rental Income from Unit #921"
+  Income:CA:Property:Unit921:RentIncome                     -3049.86 CAD
+  Assets:CA:UndepositedFunds
+
+2025-02-01 * "Urgo" "GST for Rental Income from Unit #921"
+  Liabilities:CA:Property:Unit921:GST:Collected              -152.49 CAD
+  Assets:CA:UndepositedFunds
+
+2025-02-01 * "Urgo" "PST for Rental Income from Unit #921"
+  Liabilities:CA:Property:Unit921:PST:Collected              -304.22 CAD
+  Assets:CA:UndepositedFunds
+
+2025-02-01 * "Urgo" "Maintenance charges for Unit #921"
+  Expenses:CA:Property:Unit921:Maintenance                     89.28 CAD
+  Assets:CA:UndepositedFunds
+
+2025-02-01 * "Urgo" "GST for Maintenance charges for Unit #921"
+  Liabilities:CA:Property:Unit921:GST:Incurred                  4.46 CAD
+  Assets:CA:UndepositedFunds
+
+2025-02-01 * "Urgo" "PST for Maintenance charges for Unit #921"
+  Liabilities:CA:Property:Unit921:PST:Incurred                  8.91 CAD
+  Assets:CA:UndepositedFunds
+
+2025-02-01 * "Urgo" "Telephone charges for Unit #921"
+  Expenses:CA:Property:Unit921:Telephone                       44.48 CAD
+  Assets:CA:UndepositedFunds
+
+2025-02-01 * "Urgo" "GST for Telephone charges for Unit #921"
+  Liabilities:CA:Property:Unit921:GST:Incurred                  2.22 CAD
+  Assets:CA:UndepositedFunds
+
+2025-02-01 * "Urgo" "PST for Telephone charges for Unit #921"
+  Liabilities:CA:Property:Unit921:PST:Incurred                  4.44 CAD
+  Assets:CA:UndepositedFunds
+#+END_SRC
+
+Every transaction has a date, a state (the asterisk means it is
+"complete"), a Payee (the outside entity the transaction occurred with,
+here "Urgo" is the property management company), some narration
+(textual comments), and then a set of "postings" on the lines that
+follow. These postings implement double-entry bookkeeping, in that
+they must always sum to zero. So, technically, that last entry should
+really be:
+
+#+BEGIN_SRC code
+2025-02-01 * "Urgo" "PST for Telephone charges for Unit #921"
+  Liabilities:CA:Property:Unit921:PST:Incurred                  4.44 CAD
+  Assets:CA:UndepositedFunds                                   -4.44 CAD
+#+END_SRC
+
+but beancount lets you leave one posting blank and then it does the
+corresponding math on that entry to make the transaction balance
+(posting can have more than 2 entries, of course, but only 1 can be
+blank). For understanding the big picture, don't get too hung up on
+the credit/debit conventions (whether a posting is + or -). The main
+point is that you can track every financial transaction using this
+surprisingly simple set of conventions and write them down in a
+plaintext file using nothing more than an editor.
+
+It's worth pointing out, however, that I did not type any of those
+entries by hand. Every month I get a PDF statement from the property
+management company that includes a page listing all transactions. I
+wrote a little utility based on pypdf that pulls those out of the PDF
+and writes them in PTA format. The same utility also looks a CVS
+statements from the bank to make sure all the corresponding deposits
+and withdrawals match up. It will also automatically flag anything it
+doesn't recognize, so I can review those transactions and edit them by
+hand if need be (and, more often than not, edit the utility to handle
+those new cases automatically in the future).
+
+Writing importers is so fundamental to the PTA process that the
+packages all have helper systems to do this. Beancount, for example,
+has a utility called bean-extract that can be configured with some
+python helper code to automatically parse and process a lot of
+different input sources as part of your regular accounting workflow.
+
+
+** More Complex Transactions
+
+At the risk of getting into the weeds, it's important to point out
+that transactions are not limited to simple cash-in or cash-out
+activity. For example, in Canada you need to track all of the
+Provincial Sales Tax (PST) you collect when you charge for
+something. You also need to track how much PST you pay when you
+purchase things (like paying for maintenance work). At the end of each
+quarter, you have to add up all the PST incurred, PST collected, and
+net out what you need to pay to the Province. Here's an example:
+
+#+BEGIN_SRC code
+2024-07-01 * "Internal Accounting" "Clear PST for 2024-Q2"
+  Liabilities:CA:Property:Unit921:PST:Collected            452.94 CAD
+  Liabilities:CA:Property:Unit603:PST:Collected            285.98 CAD
+  Liabilities:CA:Property:Unit131:PST:Collected            521.46 CAD
+  Liabilities:CA:Property:Unit921:PST:Incurred            -248.93 CAD
+  Liabilities:CA:Property:Unit603:PST:Incurred            -159.06 CAD
+  Liabilities:CA:Property:Unit131:PST:Incurred            -379.19 CAD
+  Liabilities:CA:PST:Clearing                                      
+; total PST due is 473.20
+#+END_SRC
+
+What's import here --- again --- is that I did not calculate any of
+this by hand or enter any values manually. I just ran a small script
+that uses some beancount functionality to figure out all the relevant
+transactions (and their balance) and clear them to another
+account. That clearing account is then used to track against when the
+actual payment is made to the tax authority. Here's a sense of what
+the (python) script looks like:
+
+#+BEGIN_SRC python
+from beancount.loader import load_file
+from beancount.query.query import run_query
+from beancount.query.numberify import numberify_results
+
+entries, errors, options = load_file("My_PTA_File.beancount")
+
+pst_query = """SELECT date, account, position, balance
+               WHERE account ~ "Liabilities:CA:Property:*"""
+
+cols, rows = run_query(entries, opts, balance_query)
+cols, rows = numberify_results(cols, rows)
+
+for row in rows:
+  {... process these entries ...}
+#+END_SRC
+
+Again, the specific mechanics here are less important than the
+realization that it is possible to handle arbitrarily complex
+transactions that include algebraic transformations, queries across
+the whole transaction database, and so on. It's like a complete
+programming and SQL environment where you can do anything, but
+constrained by the fact that the ultimate transaction record must stay
+in this very simple, portable, human-readable, plaintext format.
+
+
+** Manufacturing
+
+Many guides to PTA say that while it's a great tool for things like
+tracking a stock portfolio or your personal net worth, you wouldn't
+want to do anything as complex as manufacturing with it. I disagree. I
+handle all of the manufacturing processes for one of my smaller
+companies using beancount. It tracks everything required, including
+making cost of goods sold (COGS) calculations. This company sells
+marine monitoring hardware that we assemble from parts (some of which
+we have custom manufactured). When we buy components, those go into
+inventory at the price we bought them for. When we manufacture
+something from those components, those components add up to COGS.
+
+To start on a practical example, when we purchase, say, a batch of
+Red-Green LED's as part of a supply order, they go into inventory like
+this (see the last posting):
+
+#+BEGIN_SRC code
+2024-02-06 * "Mouser" "MOUSER ELECTRONICS"
+  Liabilities:AmericanExpress:SimplyCashPlus                  -337.81 USD
+  Assets:Inventory:CRIMP-TERM                 400 CRIMP-TERM { 0.075  USD}
+  Assets:Inventory:XP-912S09                     5 XP-912S09 {26.00   USD}
+  Assets:Inventory:LED-RG                         100 LED-RG { 1.7781 USD}
+#+END_SRC
+
+That shows we acquired 100 Red-Green LEDs at a unit costs of
+1.7781. We may already have other Red-Green LEDs in inventory that we
+acquired at a different cost. Beancount keeps track of all this, so
+when perform the actual manufacturing, it knows which items to pull
+from inventory (in an accounting sense) and can calculate what all of
+it costs.
+
+Here's a (somewhat simplified) example of actually manufacturing one
+of our products from a bunch of components in inventory:
+
+#+BEGIN_SRC code
+2024-10-02 * "Manufacturing" "1 N2K WiFi Unit(s)"
+  Assets:Inventory:LED-RG              -2.00 LED-RG {}     ; Red/Green Indicator LED (SKU: 1001)
+  Assets:Inventory:SCREW-S             -8.00 SCREW-S {}    ; #4 Cheese Head Screw, 3/16 Long (SKU: 2004)
+  Assets:Inventory:SCREW-L             -1.00 SCREW-L {}    ; #4 Cheese Head Screw, 3/4 Long (SKU: 2005)
+  Assets:Inventory:WASHER              -1.00 WASHER {}     ; #4 Plastic Washer (SKU: 2006)
+  Assets:Inventory:INSERTS            -10.00 INSERTS {}    ; #4 Brass Threaded Inserts (SKU: 2003)
+  Assets:Inventory:SHELL-L             -1.00 SHELL-L {}    ; Lower Enclosure Shell (SKU: 2002)
+  Assets:Inventory:SHELL-U             -1.00 SHELL-U {}    ; Upper Enclosure Shell (SKU: 2001)
+  Assets:Inventory:PCB-B               -1.00 PCB-B {}      ; Partially Populated PCB Version B (Teensy) (SKU: 3035)
+  Assets:Inventory:TSR-2-2450          -1.00 TSR-2-2450 {} ; Traco 2 Amp, 5 Volt DC:DC Converter (SKU: 7006)
+  Assets:Inventory:TEENSY41            -1.00 TEENSY41 {}   ; Teensy 4.1 (SKU: 7007)
+  Assets:Inventory:TEENSYPCB           -1.00 TEENSYPCB {}  ; Teensyduino PCB (SKU: 7001)
+  Assets:WIP:FloatHubDevice                                   
+#+END_SRC
+
+Notice that the last posting there is for our
+Assets:Inventory:WIP:FloathubDevice (WIP stands for Work In
+Progress). The transaction as a whole will reduce the quantity in
+inventory of all the components that were used and then record the
+*value* (in USD) of all those components in the WIP account.
+
+The next step in our manufacturing accounting process then looks at
+the balance of the WIP account and moves 1 unit into inventory of our
+actually manufactured good:
+
+#+BEGIN_SRC code
+2024-10-02 * "Manufacturing" "1 N2K WiFi Unit(s)"
+  Assets:WIP:FloatHubDevice                                   
+  Assets:Inventory:FLOATHUB-WIFI-N2K    1.00 FLOATHUB-WIFI-N2K {175.45 USD}
+#+END_SRC
+
+So we now have a manufactured good in inventory at exactly the COG of
+all the components that went into it's manufacture. And all of our
+inventories should match exactly with what is physically on hand. We
+can also track labour costs related to this manufacturing process in
+an analogous way, but I've skipped over that in the interests of
+brevity.
+
+
+** Custom Reporting
+
+After we have closed the books on the month, quarter, or year, we may
+want to generate some reports. PTA accounting system all have some
+kind of web reporting interface where you can easily see profit &
+loss, a balance sheet, and so on. But if you have a specific reporting
+requirement, you can also automate that as well. For example, below is
+a Canadian Goods and Services Tax (GST) "working copy" form that must
+be filled in every quarter before transferring the data to an online
+payment system. The one on the left is the blank form as it comes from
+the government. The one on the right is created by my reporting
+process completely automatically (click either to see full size):
+
+[[./static/pdf/GST_form.pdf][file:./static/img/GST_form.jpg]]  [[./static/pdf/GST_automagic.pdf][file:./static/img/GST_automagic.jpg]]
+
+
+Now, admittedly, writing the underling python and $\LaTeX$ routines to
+get that form to automatically come out looking like that was not
+trivial. But it only had to be done once and has paid huge dividends
+ever since.
+
+This gets at some of the real power of PTA. Within a few minutes of
+receiving monthly statements (and current banking records), I can
+balance the books for the entity, review profit & loss for the
+quarter, and have completed tax forms printed and ready to submit. And
+I don't need a bookkeeper or accountant for these routine tasks. Plus
+there are no constraining software licenses, and I spend zero time
+mouse-clicking through data entry screens.
+
+** Towards an API for PTA
+
+So if this is such a great approach to managing financial data, why
+does almost everyone in the real world use QuickBooks? For small
+businesses, in particular, most accountants will look at you like you
+have two heads if you suggest managing your accounts with anything
+else.
+
+And why am I writing so many custom bits of code to both extract
+transactions and convert them to PTA formats and then spit them back
+out in HTML or $\LaTeX$? Why can't other people reuse all of that
+work? If I write an exporter that can automatically pop out a 1065 and
+K-1s (a US Federal Tax form that is very common for partnerships and
+most LLCs), why can't everyone else who uses a PTA system benefit from
+that as well?
+
+There are two big issues here:
+
+1. Integrations with other systems
+
+2. Identifying "Accounts" more specifically
+
+For example, we use Stripe as our online payment processor. Consider
+that every time we make an online sale, our Stripe system records a
+transaction that includes a datestamp, customer, payment method,
+amount, etc., etc. We then have a script that we wrote by hand that
+pulls down all these transactions at the end of each month, matches
+them against orders in our database, ties in financial transactions
+from our bank, and then writes everything out in PTA format. It works
+well, but it is batch driven, kicked off manually, brittle to data
+format changes (especially from the bank), and completely unreusable
+by anyone else. Here's an example of what we finally end up with:
+
+#+BEGIN_SRC code
+2024-11-21 * "Tyler Durden" "Stripe Charge ch_WH5HySsGFc6Wmmmmn3QHJ"
+  Assets:AccountsReceivable                309.00 USD
+  Income:Sales:FloatHubDevices            -299.00 USD
+  Assets:Inventory:FLOATHUB-BORON3G-N2K     -1.00 FLOATHUB-BORON3G-N2K {}
+  Expenses:COGS                                               
+  Income:Sales:ShippingIncome              -10.00 USD
+
+2024-11-21 * "Tyler Durden" "Stripe Charge ch_WH5HySsGFc6Wmmmmn3QHJ"
+  Assets:AccountsReceivable               -309.00 USD
+  Assets:UndepositedFunds                  299.74 USD
+  Expenses:Fees:StripeProcessing             9.26 USD
+#+END_SRC
+
+In plain English, that shows we sold one unit for $299 plus $10
+shipping, but then Stripe took their $9.26 payment processing fee
+leaving us $299.74. That gets deposited (possibly with other
+transactions) in a few days:
+
+#+BEGIN_SRC code
+2024-11-24 * "WELLS FARGO BANK" "Stripe Payout po_INHxxFc6mnAkxHnj1QOU0s"
+  Assets:WellsFargo:Checking                                  
+  Assets:UndepositedFunds                 -299.74 USD
+#+END_SRC
+
+
+If there was a way to integrate Stripe programmatically with our PTA
+system, then we could have a webhook occur the moment the transaction
+was complete. And that webhook could use a well understood interface
+specification to describe the data elements involved. We would not
+need to write any custom code or kick off any manual process, as the
+data would already be in our PTA system the moment the transaction
+went through.
+
+But for that to work, we need some kind of programmatic interface to
+talk to. And for any integration glue or clever reporting code to be
+reusable, there probably needs to be some conventions or mappings
+around account names. If I call my provincial sales tax accrual
+account *Liabilities:CA:PST:Incurred* and you call yours
+*Liabilities:Property:PaidPST*, then how do we make a reusable
+reporting system understand which one (or ones) to use in a given
+context?
+
+Maybe we can't? Maybe the simplicity and openness of PTA itself
+precludes structures of reusability. Maybe I'm thinking about this all
+the wrong way round? But it seems to me that if we can constrain PTA
+somewhat (make it a *little* bit /more/ like QuickBooks), then we
+might be able to reap some benefits. If we put it behind some kind of
+REST-ful web interface and give it some naming conventions, there be a
+lot we can get out of that.
+
+To be sure, we would still want to be fundamentally working with the
+same underlying plain and open data format. And you would always need
+a way to get your raw PTA file and walk away from the interface based
+system. Otherwise we would be exposing ourselves to the dangers of
+lock-in we talked about at the beginning of this post.
+
+I've been thinking about building out a prototype of something like
+this for a while now. If your involved in PTA or have any thoughts on
+any of this, I'd be very happy to hear from you about this: pta –at–
+modiot.com
+
+
+ 

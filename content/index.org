@@ -16,7 +16,7 @@
 #   This is an aside. Over on the side ...
 # #+END_aside
 # 
-# And here is some slighly more complicated math:
+# And here is some slightly more complicated math:
 # 
 # \begin{equation}                        % arbitrary environments,
 # x=\sqrt{b}                              % even tables, figures, etc
@@ -43,22 +43,23 @@
 *Some of the things I am currently involved with:*
 
 - [[https://ethicalairesearch.com/][Machine Learning in Engineering]]
-- [[https://floathub.com][FloatHub]] (Funded on [[https://www.kickstarter.com/projects/modiot/floathub][Kickstarter]])
+- [[https://floathub.com][FloatHub]] ([[https://github.com/floathub/device][github repo]])
 - The [[https://en.wikipedia.org/wiki/Espresso_Book_Machine][Espresso Book Machine]]
 - [[https://sitnos.com/][Sitnos]]
 
 *Some of the other things I have previously worked on:*
 
-- [[https://patents.google.com/patent/US9605926][DuckDrone]] (Simulated Duck Hunting with drone swarms)
+- [[https://patents.google.com/patent/US9605926][DuckDrone]] (simulated duck hunting with drone swarms)
 - dotSUB (as used by [[https://blog.ted.com/ted_open_trans/][TED]])
 - OG AI for Business Modeling ([[https://archive.is/20231207170037/https://www.bloomberg.com/news/articles/1998-09-20/flight-simulators-for-management][Bloomberg]])
 - Programming with [[https://www.linuxjournal.com/article/2008][XForms]]
+- Automation controllers with [[https://www.linux.com/news/linux-perks-espresso-book-machine/][Linux]] 
 - [[https://www.mythtv.org/wiki][MythTV]] ([[https://github.com/MythTV/mythtv][github repo]])
 - [[https://ftp.netbsd.org/pub/pkgsrc/current/pkgsrc/math/xldlas/index.html][xldlas]] ([[https://www.linuxjournal.com/article/1371][Linux Journal]])
 - The Extended El Farol Problem ([[../static/pdf/BarsModelsRussellsChicken.pdf][Bars, Models, and Russell's Chicken]])
 - KDE Documentation Project ([[https://web.archive.org/web/19980129150130/http://www.kde.org/kdp/kde_faq.html][The KDE FAQ]])
 - [[https://store.irpp.org/products/health-care-reform][Internal Markets in Health Care Reform]]
-- Inflation and Uncertainty ([[https://mcgill.on.worldcat.org/search/detail/427999205?queryString=Thor%20Sigvaldason&clusterResults=true&groupVariantRecords=false&newsArticles=off&bookReviews=off][here]], and [[https://www.mcgill.ca/economics/files/economics/a_framework_for_examining_the_real_effects_of_inflation_volatility.pdf][here]])
+- Inflation and Uncertainty ([[https://books.google.com/books/about/Inflation_Uncertainty_and_Financial_Inte.html?id=mlslQwAACAAJ][here]] and [[https://www.mcgill.ca/economics/files/economics/a_framework_for_examining_the_real_effects_of_inflation_volatility.pdf][here]])
   
 
 *Wait, what is this?*
@@ -66,3 +67,7 @@
 This is just my small personal website for quickly posting/exchanging
 stuff. More on how it works [[./how.org][here]].
 
+
+*Questions, comments, or criticisms?*
+
+Send an email to: feedback --at-- sigvaldason.com

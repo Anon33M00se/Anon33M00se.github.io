@@ -5,29 +5,478 @@
 ** Handling email in Emacs
 
 I have roughly two dozen email addresses that I need to be able to
-send and receive from on a (somewhat) regular basis. I also like
-vastly prefer have a local email client with a complete archive of all
-my emails on any laptop or desktop system that I use regularly. There
-are a whole host of reasons for these prefereces, not the least of
-which is being able to search and process emails when I have spotty (or
-zero) internet access.
+send and receive from on a regular basis. I also vastly prefer using a
+local email client with a complete archive of all my email
+history. There are a whole host of reasons for these preferences, not
+the least of which is being able to search and process emails when I
+have limited internet access.
 
 For many years I used Thunderbird, as it was reasonably fast, had good
 search, and supported interacting with Microsoft
 Outlook/Exchange/Office365/OWA servers (which I need for a couple of
-corporate email addresses). The Microsoft bit was handled by [[https://www.beonex.com/owl/][OWL by
-Beonex]], which is a great little piece of software. But I had a few issues with this setup:
+corporate email addresses). The Exchange bit was handled by [[https://www.beonex.com/owl/][OWL]], which
+is a great little piece of software. But I had a few issues with this
+setup:
 
-1) Thunderbird search started to get very unreliable for me across 3 or 4 different machines I had it installed on.
+1) Thunderbird search started to get very unreliable for me across 3 or 4 different machines.
 
-2) The non-open source license fee I was paying for OWL was bothering me more and more as the only non-OS piece of software I used on any regular basis.
+2) The OWL plugin was the only non-open source piece of software I used on any regular basis.
 
-3) I was spending more and more of my day in Emacs for just about everything else, so it was starting to feel creaky to be switching virtual desktops and reaching for the mouse evert time I needed to handle some email.
+3) Since I spend so much time in Emacs, it was jarring to be switching virtual desktops and reaching for the mouse every time I needed to handle some email.
    
+So I set out on a quest to handle all my email requirements from
+inside Emacs. What follows is both long and incomplete. It's long
+because I discuss almost all of the setup and extensions I use on a
+daily basis. It's incomplete because I don't go into exhaustive
+minutiae on every configuration issue or option. But there are links
+to further details where relevant, and there are some resources listed
+at the end for even more help.
+
+** Local mailbox syncing with mbsync
+
+Before we can read and respond to emails inside Emacs, we first need a
+mechanism to sync email over IMAP. There are a few alternatives out
+there such as [[https://www.offlineimap.org/][offlineimap]], but the general consensus for new users
+seems to be to use mbsync. It has a slightly confusing project name
+(isync/mbsync), and there is a github repository that appears in
+searches ([[https://github.com/gburd/isync][https://github.com/gburd/isync]]), but the actual current
+location for the project is on SourceForge at
+[[https://sourceforge.net/projects/isync/][https://sourceforge.net/projects/isync/]]. For most Linux distributions
+and Mac OS X, you'll probably just install a package, but the source
+code is available and straightforward to compile if you need to.
+
+You'll need an *~/.mbsync* file in your home directory that defines each
+of your email accounts. Each account entry will look something like
+this:
+
+#+BEGIN_SRC code
+IMAPAccount MyShortNameForThisAccount
+Host imap.email-host.com
+User foo@example.com
+Port 993
+PassCmd "pass foo@example.com"
+TLSType IMAPS
+AuthMechs PLAIN
+PipelineDepth 1
+CertificateFile /etc/ssl/certs/ca-certificates.crt
+
+IMAPStore foo@example.com-remote
+Account MyShortNameForThisAccount
+
+MaildirStore foo@example.com-local
+Subfolders Verbatim
+Path ~/Mail/MyShortNameForThisAccount/
+Inbox ~/Mail/MyShortNameForThisAccoun/Inbox
+
+Channel foo@example.com
+Far :foo@example.com-remote:
+Near :foo@example.com-local:
+Patterns *
+Create Near
+Sync All
+SyncState *
+
+#+END_SRC
 
 
+Most of this is pretty self explanatory, and there is an excellent [[https://isync.sourceforge.io/mbsync.html][man
+page]] that explains how to configure things. One issue to highlight is
+that each IMAP mail account has an entry for "AuthMechs"
+([[http://www.iana.org/assignments/sasl-mechanisms/sasl-mechanisms.xhtml][authentication mechanisms]]). Many accounts will use "PLAIN", but in
+the case of nasty Microsoft Exchange servers, you'll probably use
+"XOAUTH2" (see below).
 
-So search is really important, as is
+** Authenticating with pass and pizauth
+
+I use "[[https://www.passwordstore.org/][password-store]]" (sometimes called "gnu pass") with Yubikey
+hardware keys for all my passwords, secrets, ssh credentials, and
+whatnot (see [[https://github.com/drduh/YubiKey-Guide][here]] for a pretty comprehensive resource on setting that
+up). So in my *~/.mbsync* configuration for each of my "normal" imap
+accounts I have a line line this:
+
+#+BEGIN_SRC code
+PassCmd "pass foo@example.com"
+#+END_SRC
+
+Meaning that each time mbsync wants to go and retrieve emails for this
+account, it will run the *pass* command to get the password required
+for that account.
+
+In the case of Exchange servers, however, the "PassCmd" setting I use
+is:
+
+#+BEGIN_SRC code
+PassCmd "pizauth show bar"
+#+END_SRC
+
+
+This uses a utility called pizauth to manage OAUTH2 tokens (the github
+repository is [[https://github.com/ltratt/pizauth][here]]). You will probably need to compile this from
+scratch, which means you will need to have a rust compiler
+available. A good resource on how to do that is available at [[https://brettpresnell.com/post/email/][this
+website]] (scroll down to "Setting Up pizauth" for pizauth specifics,
+but the whole guide is relevant).
+
+You'll then have to setup a *~/.config/pizauth.conf* that will look something like this:
+
+#+BEGIN_SRC code
+account "officesmtp" {
+    auth_uri = "https://login.microsoftonline.com/common/oauth2/v2.0/authorize";
+    token_uri = "https://login.microsoftonline.com/common/oauth2/v2.0/token";
+    client_id = "..."; // Fill in with your Client ID
+    client_secret = "..."; // Fill in with your Client secret
+    scopes = [
+      "https://outlook.office365.com/IMAP.AccessAsUser.All",
+      "https://outlook.office365.com/SMTP.Send",
+      "offline_access"
+    ];
+    // You don't have to specify login_hint, but it does make authentication a
+    // little easier.
+    auth_uri_fields = { "login_hint": "email@example.com" };
+}
+#+END_SRC
+
+
+Invoke the pizauth server (by running *pizauth server*), and then try
+to get your first oath2 credentials by entering *pizauth show
+officesmtp* (where *officesmtp* is whatever you call the account in
+your *.config/pizauth.conf* file). The first time you run the *show*
+command, it will open a browser tab and have you do an oauth2 login
+with the exchange server. Subsequent invocations will work without
+browser interaction for as long as the oauth server allows the same
+token (or chain of refreshed tokens) to remain valid.
+
+Once pizauth is in place, you can test if all email retrieval is
+working by running:
+
+#+BEGIN_SRC code
+mbsync -a
+#+END_SRC
+
+on the command line. That should go and sync with all the accounts
+defined in your *~/.mbsync* file, and print progress messages as it
+goes. If something doesn't work, you can just delete all or some of
+the mail directories that mbsync fills (anything missing will be
+refilled on the next invocation of mbsync).
+
+
+** Indexing your local mail with mu
+
+Having sync'd all your email locally, the next step is to start
+indexing it. This will allow you to perform quick searches across all
+your email accounts. There are packages for an amazing indexer called
+mu (which is really part of mu4e, see below). In Ubuntu, it's *apt
+install maildir-utils*. or you can build the most recent version from
+[[https://github.com/djcb/mu][https://github.com/djcb/mu]].
+
+Either way, once installed you run
+
+#+BEGIN_SRC code
+mu init --maildir=/home/username/Mail             \
+        --my-address=foo@example-one.com          \
+        --my-address=bar@example-two.com          
+#+END_SRC
+
+to configure mu for your email location and to let it know which email
+address(es) belong to you. You can run *mu info* to check on the
+configuration, and them *mu init* to actually index everything. If you
+have a lot of email, this can take several minutes (or even longer
+...).
+
+Don't be afraid to experiment a bit with mu. You can always completely
+nuke the index (it's probably stored in *~/.cache/mu/xapian/*) and/or
+reinitialize mu by running the init command again.
+
+** Sending emails
+
+Before we finally get to actually accessing emails in Emacs, we also
+need a way to send mail. Thankfully, this is not complicated. A quick
+*apt install msmtp* will get things started. You'll then need a
+*~/.msmtprc* with an entry for each account:
+
+
+#+BEGIN_SRC code
+# The SMTP server of your ISP
+account isp
+host mail.isp.example
+from smithjoe@isp.example
+auth on
+user 12345
+#+END_SRC
+
+Just like we set up for incoming email, you can use OATH2 settings
+with msmtp to configure it to work with those nasty Exchange servers
+something like this:
+
+#+BEGIN_SRC code
+# An Exchange server
+account      nastyexchange
+auth         xoauth2
+host         smtp.office365.com
+protocol     smtp
+port         587
+tls          on
+tls_starttls on
+from         foo@example.com
+user         foo@example.com
+passwordeval pizauth show bar
+#+END_SRC
+
+To see if you've got it working, you can test it with (replace
+*you@gmail.com* with a working email address you have access to):
+
+#+BEGIN_SRC code
+printf "Subject:Test\n\nThis is a test." |  msmtp -a nastyexchange you@gmail.com
+#+END_SRC
+
+
+** mu4e as a client
+
+Now that we have incoming email, indexing, and outgoing email all
+working, we can finally setup mu4e inside of Emacs. Inside your
+*~/.emacs.d/init.org*, you'll want to do something like this:
+
+#+BEGIN_SRC elisp
+(add-to-list 'load-path "/usr/local/share/emacs/site-lisp/mu4e")
+(require 'mu4e)
+
+;; This is set to 't' to avoid mail syncing issues when using mbsync
+(setq mu4e-change-filenames-when-moving t)
+
+;; Refresh all mail using mbsync every 5 minutes
+(setq mu4e-update-interval (* 5 60))
+(setq mu4e-get-mail-command "/usr/bin/mbsync -a")
+(setq mu4e-maildir "~/Mail")
+
+;; Use some cool utf8 chars for things like attachment indicators
+(setq mu4e-use-fancy-chars t)
+
+(setq mu4e-contexts
+    `(
+      ,(make-mu4e-context
+        :name "A User"
+        :enter-func (lambda () (mu4e-message "Switch to the A User context"))
+        :match-func (lambda (msg)
+                        (when msg
+                          (string= (mu4e-message-field msg :maildir) "/a.user@example.com")))
+          :vars '( ( user-mail-address	. "a.user@example.com" )
+                   ( user-full-name	. "A User" )
+                   ( message-user-organization . nil )
+		     ( mu4e-sent-folder       .  "/a.user@example.com/Sent")
+		     ( mu4e-refile-folder     .  "/a.user@example.com/OldIn")
+		     ( mu4e-trash-folder      .  "/a.user@example.com/Trash")
+		     ( mu4e-drafts-folder     .  "/a.user@example.com/Drafts")
+                   ( mu4e-compose-signature .
+                     (concat
+                       "A User\n"
+		         "a.user@xample.com\n"))))
+     ))
+
+(setq mu4e-maildir-shortcuts
+  '(
+    (:maildir "/a.user@example.com/Inbox"        :key ?a)
+  )
+)
+
+;;
+;; Note that msmtp handles how to send based on the From: value in the
+;; enveloppe, and the details of that are defined in .msmptrc
+;;
+
+(setq sendmail-program "/usr/bin/msmtp"
+    send-mail-function 'smtpmail-send-it
+    message-sendmail-f-is-evil t
+    message-sendmail-extra-arguments '("--read-envelope-from")
+    message-send-mail-function 'message-send-mail-with-sendmail)
+#+END_SRC
+
+Phew, there's a lot going on there, and there are a lot of other
+optional things not shown in the interests of clarity. The main things
+to notice is that for each email account, you need to set up a mu4e
+"context". There's only one shown in the example above (for
+"A. User"), but you'll need one for each account. The file then
+defines a shortcut to jump to that context in the mu4e
+interface. Finally, configuring mu4e for outgoing email is much
+simpler (you just tell it to use mstmp and set a few options).
+
+To actually invoke mu4e from within Emacs, you just do a *M-x mu4e*,
+whereupon mu4e will ask you to choose a context (as defined above) and
+then display its interface:
+
+[[file:./static/img/mu4e_regular.png]]
+
+which, because it's Emacs, can be fancied up and customized to your
+heart's content:
+
+[[https://github.com/rougier/mu4e-dashboard][file:./static/img/mu4e_fancy.png]]
+
+There are a lot of keybindings and options here, best experienced
+interactively. There's a complete help system and manual built into
+mu4e, all accessible from inside the interface.
+
+
+** Capturing from mu4e into org files
+
+Once you get comfortable with the mu4e interface, you'll discover that
+it is both powerful and fast. You can jump around mail boxes easily,
+and search is positively blazing.
+
+But you can take the nimbleness of mu4e to the next level by combining
+it with [[https://orgmode.org/][Org-mode]]. If you don't know what Org-mode is, you can find a
+gentle introduction [[https://orgmode.org/worg/org-tutorials/org4beginners.html][here]]. Mu4e and org-mode can be combined by adding
+this to the mu4e section of your *~/.emacs.d/init.el*:
+
+#+BEGIN_SRC elisp
+(require 'mu4e-org)
+#+END_SRC
+
+and by setting up one or more "capture templates" in the same
+file. Capture templates look something like this:
+
+#+BEGIN_SRC elisp
+  ("e" "Email Workflow")
+    ("eh" "Home TODO" entry
+     (file+headline "Home.org" "Captured Email TODOs")
+     "* TODO Follow up with %:fromname on %a\n%t")
+   ...
+     #+END_SRC
+
+
+This means the keystrokes *e h* while in capture will open your
+*Home.org* file and create a *TODO* under the section heading of
+"Captured Email TODOs". That TODO will include the name of the email's
+sender (*%:fromname*) and the subject line of the email (*%a*). That
+subject line will link back to the email itself. There will also be a
+datestamp which can be easily modified. You then hit a quick *C-c C-c*
+to save the item, and you are right back to reviewing emails.
+
+This may sound complicated and it may not be immediately clear what
+the benefit is. Imagine you are flying through your emails and come
+across something that you must act on, but cannot do so right
+now. What do you do with that email?  You could set it back to unread,
+but that state of "not read" does not really represent what you want
+to do with the pending action.
+
+
+In a traditional email client, you could jump to the agenda or
+calendar interface and set a reminder, todo, or similarly dated
+entry. But then a week later when the reminder goes off, you have to
+search back through your emails to get to whatever message it was that
+initiated the chain of events (to be fair, Outlook does have a Message
+$\rightarrow$ Follow Up $\rightarrow$ Add Reminder, but it is a fairly
+clunky mouse driven interaction).
+
+What you really want is a lightning fast way to create an agenda or
+TODO item with minimal distraction. That's exactly what *mu4e-org* and
+capture templates allow. While reading the email, with a couple of
+keystrokes you immediately have a TODO entry in the relevant org file
+with a timestamp /and a link back to the exact email that needs to be
+acted on/. So when you are reviewing your agenda and TODO entries in
+the future, you can act on the item in question and instantly pop back
+into the email in question.
+
+
+** Adding in Snippets
+
+If you answer a lot of emails with similar content, it can get very
+annoying to find yourself typing the same sentences over and over
+again. Boilerplate language like, "/Thanks for your interest, and
+please let us know if you have any questions/" can be maddening to
+type over and over again.
+
+One solution is [[https://github.com/joaotavora/yasnippet][YASnippets]]. This is an Emacs package that lets you
+define short character sets that can be automatically expanded into
+arbitrary text. To continue with our boilerplate example, if you
+create a file like this is your "snippets directory":
+
+#+BEGIN_SRC code
+# -*- mode: snippet -*-
+# name: boilerplate-thanks
+# key: <bt
+# --
+
+  Thanks for your interest, and please let us know if you have any questions.
+
+#+END_SRC
+
+then anytime you are composing an email you can type:
+
+#+BEGIN_SRC code
+<bt
+#+END_SRC
+
+and hit the TAB key to expand that entry into the boilerplate language
+from the file. And this is just scratching the surface of what
+YASnippets can do. There are facilities for accessing and handling all
+kinds of data when snippets are invoked. You can even embed arbitrary
+code in the invocation process to do really complicated
+expansions. Comprehensive documentation is [[https://joaotavora.github.io/yasnippet/][here]].
+
+** Fancier HTML emails
+
+Everything we've covered so far really only involves plaintext
+emails. To be sure, you can add all manner of attachments to emails in
+mu4e, but if you want inline images, styled text, etc., you'll need to
+move to html emails.
+
+The answer, of course, is more org mode (isn't it always). More
+precisely, with a package called [[https://github.com/org-mime/org-mime][org-mime]], the command *M-x
+org-mime-edit-mail-in-org-mode* (which I bind to *M-o o*) will open a
+buffer that lets you use org mode to compose as email. So font
+styling, inline images, tables, etc. can all be created just like you
+can do in any other org document.
+
+So editing a buffer that looks like this:
+
+#+BEGIN_SRC code
+
+*bold*, _underline_, +strikethrough+, /italics/
+
+| n | n^2 | n^3 |
+|---+-----+-----|
+| 1 |   1 |   1 |
+| 2 |   4 |   8 |
+| 3 |   9 |  27 |
+
+$y=x^2$
+
+#+END_SRC
+
+Will produce an email that looks like this (just remember to run *M-x
+org-mime-htmlize* before sending):
+
+-------------
+
+*bold*, _underline_, +strikethrough+, /italics/
+
+| n | n^2 | n^3 |
+|---+-----+-----|
+| 1 |   1 |   1 |
+| 2 |   4 |   8 |
+| 3 |   9 |  27 |
+
+$y=x^2$
+
+-------------
+
+You can also embed inline images using the standard org mode
+procedures for inline images. If you want easy drag and drop right
+into your buffer, there's a package called [[https://github.com/abo-abo/org-download][org-download]] that will
+take care of that.
+
+I have also heard good things about [[https://github.com/jeremy-compostella/org-msg][org-msg]] as an alternative to
+org-mime. It is supposed to handle Outlook conventions on replies and
+quoting within html emails quite well.
+
+
+** Resources
+
+Here are some links related to configuring and using mu4e in Emacs:
+
+- Brett Presnell's [[https://brettpresnell.com/post/email/][Reading Email with Emacs]]
+- [[https://systemcrafters.net/emacs-mail/][System Crafters Emacs Email/mu4e Series]]
+- Nicolas P. Rougier's [[https://github.com/rougier/mu4e-dashboard][mu4e dashboard]] and [[https://github.com/rougier/mu4e-thread-folding][thread folding]].
+
 
 
 

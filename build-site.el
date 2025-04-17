@@ -65,7 +65,7 @@
    (list "static"
      :recursive t
      :base-directory "./static"
-     :base-extension "css\\|js\\|pdf\\|png"
+     :base-extension "css\\|js\\|pdf\\|png\\|jpg"
      :publishing-directory "./public/static"
      :publishing-function 'org-publish-attachment
      :with-author nil

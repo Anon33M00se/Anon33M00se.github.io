@@ -5,12 +5,13 @@
   <p><i>noun</i> 1. things which need to be put somewhere.</p>
   <div class="topbar-menu-container">
     <span><a href="/index.html">home</a></span> |
-    <span><a href="/enough.html">enough</a></span> | 
+    <!--  <span><a href="/enough.html">enough</a></span> | --!>
     <span><a href="/itch.html">itch</a></span> | 
     <span><a href="/email.html">email</a></span> | 
+    <span><a href="/totp.html">totp</a></span> | 
     <span><a href="/Books/RootsThatBind/">roots</a></span> | 
     <span><a href="/pta.html">pta</a></span> | 
-    <span><a href="/how.html">how?</a></span>
+    <span><a href="/how.html">how?</a></span> 
   </div>
 </header>
 #+end_export

@@ -1,0 +1,180 @@
+#+TITLE: TOTP in the Terminal
+#+INCLUDE: "./header.org"
+#+DATE: <2025-02-20>
+#+OPTIONS: ^:nil
+
+* TOTP in the Terminal
+
+Anyone who uses [[https://apps.apple.com/us/app/google-authenticator/id388497605][Google Authenticator]] or [[https://2fas.com/][2FAS]] for "second factor
+authentication" knows what Time-based One Time Passwords (TOTP) are. I
+used Google Authenticator for years (with redundancy by having it
+installed on a couple of different devices). Then, one day, the
+Android version on my old Kindle Fire just stopped working:
+
+[[file:./static/img/google_none.jpg]]
+
+
+Obviously it was time to stop relying on Google Authenticator. And
+time to find a solution where I could produce TOTP codes inside a
+terminal and understand where all the relevant data was being
+stored. Also, since I use [[https://www.passwordstore.org/][password-store]] (sometimes known as gnu-pass)
+together with Yubikeys for managing all my other secrets, it would be
+great to find an approach that would work closely with that setup.
+
+* Oathtool to the Rescue
+
+There are a [[https://www.cyberciti.biz/faq/use-oathtool-linux-command-line-for-2-step-verification-2fa/][couple]] of [[https://www.nongnu.org/oath-toolkit/oathtool.1.html][resources]] around that explain how one can
+generate TOTP codes at the CLI. They all seem to center on a utility
+called oathtool (installed via an oathtool package on virtually all
+flavours of Linux).
+
+Once I had oathtool installed, I worked up this little bit of a
+wrapper script and put it in my .bashrc:
+
+#+BEGIN_SRC code
+totp () { 
+  if [[ -z $2 ]];
+  then 
+    oathtool --totp --base32 $(pass TOTP/"$1" | head -n 1) ;
+  else
+    if [[ $2 == "-c" ]];
+    then
+      oathtool --totp --base32 $(pass TOTP/"$1"  | head -n 1) | xclip -selection clipboard
+      echo "TOTP code has been copied to the clipboard"
+    else
+      echo "I am confused and do not know what to do !?"
+    fi
+  fi 
+}
+#+END_SRC
+
+
+which lets me type:
+
+#+BEGIN_SRC code
+totp twilio
+#+END_SRC
+
+and it will spit back a one time code:
+
+#+BEGIN_SRC code
+236018
+#+END_SRC
+
+or I can just type 
+#+BEGIN_SRC code
+totp twilio -c
+#+END_SRC
+
+and it will say:
+
+#+BEGIN_SRC code
+TOTP code has been copied to the clipboard
+#+END_SRC
+
+and copy the one time code to the clipboard.
+
+* Wait, Where do we Get the Original Secrets From?
+
+If you have a look at that bash function, it's using oathtool to calculate a TOTP from the first line of an entry returned by *pass*. The *pass* part of this is just:
+
+#+BEGIN_SRC code
+pass TOTP/twilio
+#+END_SRC
+
+which returns something like:
+
+#+BEGIN_SRC code
+XXXXXXXLONG-SECRET-STRINGXXXXXXX
+
+Name:    Twilio
+Issuer:  Twilio
+Type:    totp
+#+END_SRC
+
+So, as far as *pass* is concerned, it's just returning a secret (the
+first line above: XXXXXXXLONG-SECRET-STRINGXXXXXXX). Oathtool is then
+using that secret, along with the current timestamp, to generate the
+one time code. But where does XXXXXXXLONG-SECRET-STRINGXXXXXXX come from?
+
+When you ask a website to use TOTP as an authentication mechanism, it
+will usually display a QR code (sometimes you can get the secret
+directly from copy and paste, but usually it's encoded in the QR
+code). You can also have most authenticator apps re-display the QR code
+(generally used to back up or migrate codes to a second device).
+
+I grab those QR codes in an image and then use a utility available on
+github called [[https://github.com/scito/extract_otp_secrets][extract_otp_secrets]]. If you clone that repository, you
+can set up a virtual environment like this:
+
+#+BEGIN_SRC code
+git clone "https://github.com/scito/extract_otp_secrets.git"
+cd extract_otp_secrets/
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt 
+#+END_SRC
+
+That will pull in everything the utility needs to work. You can then use it like this:
+
+#+BEGIN_SRC code
+python src/extract_otp_secrets.py ~/somewhere/a_qr_code.png
+#+END_SRC
+
+and it will spit out something like:
+
+#+BEGIN_SRC code
+Name:    Twilio
+Secret:  XXXXXXXLONG-SECRET-STRINGXXXXXXX
+Issuer:  Twilio
+Type:    totp
+#+END_SRC
+
+With a bit of editing, you can cut and paste that into a *pass* entry. Of course you do have to be very careful handling the QR Code images,
+deleting them after they have been processed, etc.
+
+
+* The Joy of Auto Completion
+
+Since I have a few dozen TOTP-enabled accounts, I don't actually call
+them something as short as *twilio*. I use conventions more like
+*aws.AccountA@example.com*. *aws.AccountB@example.com*, etc. One of
+the great features of *pass* is that it uses auto completion, so if
+you can't remember exactly where in the tree you put your company
+credit card password (is that under banking, travel, or work?) you can
+*TAB* your way through to discovering it quickly. And even if you do
+know where it is, you can generally get there with a lot fewer
+keystrokes.
+
+Amazingly, there is an easy way to make tab completion work for my
+totp function as well. Well, amazing to me as I've never really
+understood the rare incantations related to specifying tab completion
+patterns. If you put this:
+
+#+BEGIN_SRC code
+#/usr/bin/env bash
+
+>/dev/null pushd "${PASSWORD_STORE_DIR:-$HOME/.password-store}/TOTP"
+    l="$(find . -type f | sed s#^./## | sed s#.gpg\$##)"
+>/dev/null popd
+
+complete -W "$l" totp
+#+END_SRC
+
+in:
+
+#+BEGIN_SRC code
+/usr/share/bash-completion/completions/totp
+#+END_SRC
+
+then it will all just automagically work. I don't really understand
+the nuances of this, but there is a [[https://www.gnu.org/software/bash/manual/html_node/Programmable-Completion.html][guide]] for more information.
+
+
+* Update
+
+A few people have pointed out that there is also [[https://github.com/tadfisher/pass-otp][pass-otp]] project on
+github which is another way of going about this.
+
+
+ 

@@ -34,9 +34,10 @@ GitHub. I'll explain each of the pieces in turn.
 ,* It Starts with Org Mode
 
 Org-mode is a part of Emacs, and is a whole ecosystem for, well,
-organizing information. [[https://orgmode.org/][Org]] files are just plain text with some
-formatting conventions that superficially are not unlike
-[[https://en.wikipedia.org/wiki/Markdown][Markdown]]. Here's an example:
+organizing information. [[https://orgmode.org/][Org]] files are
+just plain text with some formatting conventions that superficially
+are not unlike [[https://en.wikipedia.org/wiki/Markdown][Markdown]].
+Here's an example:
 #+END_SRC
 
 That is the exact content that this page starts with. Because I spend
@@ -44,7 +45,7 @@ most of my day in Emacs already (see [[https://stuff.sigvaldason.com/email.html]
 pop into an org file, make some edits (or create a new file) and
 automatically push the changes out to "production".
 
-You can produce a lot of different formats in Org-mode very easily. For example:
+You can specify a lot of different formats in Org-mode very easily. For example:
 
 #+BEGIN_SRC code
 
@@ -93,7 +94,7 @@ ancillary files organized.
 
 The main package for this is ox-publish, which is really part of
 Org-mode itself. You can create an elisp file (a bit of interpretable
-code written in Emac's own variant of the Lisp programming language)
+code written in Emacs's own variant of the Lisp programming language)
 that:
 
 1. Makes sure ox-publish is in place
@@ -228,7 +229,7 @@ The first step is to get a [[https://github.com/signup][github account]]. Even i
 account for other purposes, it might make sense to have a separate one
 just for hosting a site (it's somewhat more complicated to juggle
 projects, repositories, and github pages when you only want to host a
-wesbsite for one repository from a given account, but it can [[https://deanattali.com/blog/multiple-github-pages-domains/][be done]]).
+website for one repository from a given account, but it can [[https://deanattali.com/blog/multiple-github-pages-domains/][be done]]).
 
 Once you've got the github account setup, you should create a
 repository in that account with a name that consists of your username
