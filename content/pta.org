@@ -5,7 +5,7 @@
 ** Plain Text Accounting
 
 I've started a few different companies, including some very small
-ones. As part of those endeavours, I've tried a pretty broad range of
+ones :-) As part of those endeavours, I've tried a pretty broad range of
 accounting systems. From [[https://quickbooks.intuit.com/][QuickBooks]] to [[https://www.xero.com][Xero]], and [[https://www.netsuite.com/portal/products/erp/financial-management/finance-accounting.shtml][Netsuite]] to
 [[https://ledgersmb.org/][LedgerSMB]], I've at least dabbled with a lot of alternatives.
 
@@ -140,7 +140,7 @@ handle those new cases automatically in the future).
 Writing importers is so fundamental to the PTA process that the
 packages all have helper systems to do this. Beancount, for example,
 has a utility called bean-extract that can be configured with some
-python helper code to automatically parse and process a lot of
+python extension code to automatically parse and process a lot of
 different input sources as part of your regular accounting workflow.
 
 
@@ -253,10 +253,10 @@ of our products from a bunch of components in inventory:
 #+END_SRC
 
 Notice that the last posting there is for our
-Assets:Inventory:WIP:FloathubDevice (WIP stands for Work In
-Progress). The transaction as a whole will reduce the quantity in
-inventory of all the components that were used and then record the
-*value* (in USD) of all those components in the WIP account.
+Assets:WIP:FloathubDevice (WIP stands for Work In Progress). The
+transaction as a whole will reduce the quantity in inventory of all
+the components that were used and then record the *value* (in USD) of
+all those components in the WIP account.
 
 The next step in our manufacturing accounting process then looks at
 the balance of the WIP account and moves 1 unit into inventory of our
