@@ -7,7 +7,7 @@
 I've started a few different companies, including some very small
 ones :-) As part of those endeavours, I've tried a pretty broad range of
 accounting systems. From [[https://quickbooks.intuit.com/][QuickBooks]] to [[https://www.xero.com][Xero]], and [[https://www.netsuite.com/portal/products/erp/financial-management/finance-accounting.shtml][Netsuite]] to
-[[https://ledgersmb.org/][LedgerSMB]], I've at least dabbled with a lot of alternatives!
+[[https://ledgersmb.org/][LedgerSMB]], I've at least dabbled with a lot of alternatives.
 
 What I keep coming back to, however, is a family of solutions that
 fall under the umbrella of something called Plain Text Accounting
