@@ -2,6 +2,9 @@
 
   Partly a place to put "stuff", partly a place to experiment with CI/CD/GitHubActions. 
 
+  If you randomly stumbled on this, you probably want to go here:
+  https://stuff.sigvaldason.com
+
 * How this works
 
   Steps to create and/or push the website
