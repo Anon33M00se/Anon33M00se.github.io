@@ -1,0 +1,13 @@
+#+TITLE: How is this site made?
+#+INCLUDE: "./header.org"
+#+DATE: <2025-10-11>
+
+* Fork my repo:
+
+ Clicking this button should kick off a github "template" (most people think of this as a "fork", but technically a "fork" has a link back to the originating repo which we don't want:
+
+
+ [[https://google.com][THis is google]]
+
+
+ 
