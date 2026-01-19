@@ -42,11 +42,12 @@
 
 *Some of the things I am currently involved with:*
 
+- [[https://muna.ai][Running AI models anywhere (including local devices)]]
 - [[https://ethicalairesearch.com/][Machine Learning in Engineering]]
 - [[./pta.org][Plain Text Accounting]]
 - [[https://floathub.com][FloatHub]] ([[https://github.com/floathub/device][github repo]])
 - The [[https://en.wikipedia.org/wiki/Espresso_Book_Machine][Espresso Book Machine]]
-- [[https://sitnos.com/][Sitnos]]
+# - [[https://sitnos.com/][Sitnos]]
 
 *Some of the other things I have previously worked on:*
 
