@@ -1,6 +1,6 @@
 #+TITLE: Stuff
 #+INCLUDE: "./header.org"
-#+DATE: <2025-02-28 Fri>
+#+DATE: <2026-01-12 Fri>
 
 # Overview
 # 
