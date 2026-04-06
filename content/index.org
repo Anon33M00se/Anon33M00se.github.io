@@ -51,7 +51,7 @@
 
 *Some of the other things I have previously worked on:*
 
-- [[https://patents.google.com/patent/US9605926][DuckDrone]] (simulated duck hunting with drone swarms)
+- [[https://patents.google.com/patent/US9605926][DuckDrone]] (simulated duck hunting with drones)
 - dotSUB (as used by [[https://blog.ted.com/ted_open_trans/][TED]])
 - OG AI for Business Modeling ([[https://archive.is/20231207170037/https://www.bloomberg.com/news/articles/1998-09-20/flight-simulators-for-management][Bloomberg]])
 - Programming with [[https://www.linuxjournal.com/article/2008][XForms]]
