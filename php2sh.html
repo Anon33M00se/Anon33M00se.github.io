@@ -22,7 +22,7 @@
     <span><a href="/totp.html">totp</a></span> | 
     <span><a href="/Books/RootsThatBind/">roots</a></span> | 
     <span><a href="/pta.html">pta</a></span> | 
-    <span><a href="/php2sh.html">php2sh</a></span> 
+    <span><a href="/php2sh.html">php2sh</a></span> | 
     <span><a href="/how.html">how?</a></span> 
   </div>
 </header>
@@ -39,12 +39,18 @@ I have a bunch of old Apache/PHP sites running, and have never had
 time to bring them up to date with more recent PHP versions or isolate
 them inside a container. These are just informal resources I keep up
 for friends and whatnot, not "real" website. Nevertheless, they are
-useful, and this PHP vulnerability could effect them.
+useful, and this PHP vulnerability could affect them.
 </p>
 
-<div id="outline-container-org8b6b0f7" class="outline-2">
-<h2 id="org8b6b0f7">The issue</h2>
-<div class="outline-text-2" id="text-org8b6b0f7">
+<p>
+What follows below is Debian/Ubuntu-centric, but the core ideas should
+be transferable.
+</p>
+
+
+<div id="outline-container-org9c1e3ad" class="outline-2">
+<h2 id="org9c1e3ad">The issue</h2>
+<div class="outline-text-2" id="text-org9c1e3ad">
 <p>
 <a href="https://github.com/php/php-src/security/advisories/GHSA-w8hw-w9fx-j79w">CVE-2026-109618</a> and <a href="https://github.com/php/php-src/security/advisories/GHSA-6wmf-4rv5-p3rp">CVE-2026-109619</a> ("PHP2Shell") were disclosed on 2026-10-21.
 Both are rated CVSS 9.2 and allow unauthenticated remote code execution.
@@ -66,9 +72,9 @@ when the vulnerability was announced).
 </div>
 </div>
 
-<div id="outline-container-orga90810e" class="outline-2">
-<h2 id="orga90810e">Before you start: the trade-offs</h2>
-<div class="outline-text-2" id="text-orga90810e">
+<div id="outline-container-org830e348" class="outline-2">
+<h2 id="org830e348">Before you start: the trade-offs</h2>
+<div class="outline-text-2" id="text-org830e348">
 <p>
 Only use this if you can live with both of these until a real fix is in place:
 </p>
@@ -88,15 +94,15 @@ These measures reduce the risk; they don't remove it.
 </div>
 
 
-<div id="outline-container-orga01c5bf" class="outline-2">
-<h2 id="orga01c5bf">Step 1: Block multipart requests at the web server</h2>
-<div class="outline-text-2" id="text-orga01c5bf">
+<div id="outline-container-org6bc0df4" class="outline-2">
+<h2 id="org6bc0df4">Step 1: Block multipart requests at the web server</h2>
+<div class="outline-text-2" id="text-org6bc0df4">
 </div>
-<div id="outline-container-orgf795e2c" class="outline-3">
-<h3 id="orgf795e2c">Apache 2.4 (one file covers every vhost, HTTP and HTTPS)</h3>
-<div class="outline-text-3" id="text-orgf795e2c">
+<div id="outline-container-org3158951" class="outline-3">
+<h3 id="org3158951">Apache 2.4</h3>
+<div class="outline-text-3" id="text-org3158951">
 <p>
-Debian/Ubuntu: <code>/etc/apache2/conf-available/block-multipart.conf</code>
+Create <code>/etc/apache2/conf-available/block-multipart.conf</code> to contain:
 </p>
 
 <div class="org-src-container">
@@ -108,16 +114,20 @@ Debian/Ubuntu: <code>/etc/apache2/conf-available/block-multipart.conf</code>
 </div>
 
 <p>
+Then add it to apache's configuration set:
+</p>
+
+<p>
 <code>sudo a2enconf block-multipart</code>
 </p>
 </div>
 </div>
 
-<div id="outline-container-org6d856fb" class="outline-3">
-<h3 id="org6d856fb">nginx (in <i>every</i> <code>server {}</code> block that passes requests to PHP)</h3>
-<div class="outline-text-3" id="text-org6d856fb">
+<div id="outline-container-org63f053c" class="outline-3">
+<h3 id="org63f053c">nginx (in <i>every</i> <code>server {}</code> block that passes requests to PHP)</h3>
+<div class="outline-text-3" id="text-org63f053c">
 <p>
-This is untested, but should work. 
+This is untested, as I only run Apache on these old php sites. 
 </p>
 
 <div class="org-src-container">
@@ -131,19 +141,20 @@ Include the default/catch-all server block too.
 </div>
 </div>
 
-<div id="outline-container-orgd23f340" class="outline-2">
-<h2 id="orgd23f340">Step 2: PHP settings</h2>
-<div class="outline-text-2" id="text-orgd23f340">
+<div id="outline-container-org30c22dc" class="outline-2">
+<h2 id="org30c22dc">Step 2: PHP settings</h2>
+<div class="outline-text-2" id="text-org30c22dc">
 <p>
 Set these so <code>.htaccess</code> and <code>ini_set()</code> can't override them.
 </p>
 </div>
 
-<div id="outline-container-orgfd844ee" class="outline-3">
-<h3 id="orgfd844ee">mod<sub>php</sub> (Apache)</h3>
-<div class="outline-text-3" id="text-orgfd844ee">
+<div id="outline-container-org453bf12" class="outline-3">
+<h3 id="org453bf12">mod<sub>php</sub> (Apache)</h3>
+<div class="outline-text-3" id="text-org453bf12">
 <p>
-Same place as step 1, e.g. <code>conf-available/php-cve-mitigation.conf</code>
+Same place as step 1, e.g. crate a
+<code>conf-available/php-cve-mitigation.conf</code> file and edit it to contain:
 </p>
 
 <div class="org-src-container">
@@ -156,16 +167,23 @@ Same place as step 1, e.g. <code>conf-available/php-cve-mitigation.conf</code>
 </div>
 
 <p>
+Then enable that with:
+</p>
+
+<p>
 <code>sudo a2enconf php-cve-mitigation</code>:
-The module name depends on version: <code>php5_module</code> (5.x), <code>php7_module</code>
+</p>
+
+<p>
+Note that the module name depends on version: <code>php5_module</code> (5.x), <code>php7_module</code>
 (7.x), <code>php_module</code> (8.x). Check with <code>apache2ctl -M | grep -i php</code>
 </p>
 </div>
 </div>
 
-<div id="outline-container-orge509e55" class="outline-3">
-<h3 id="orge509e55">What not to do</h3>
-<div class="outline-text-3" id="text-orge509e55">
+<div id="outline-container-org19834b5" class="outline-3">
+<h3 id="org19834b5">What not to do</h3>
+<div class="outline-text-3" id="text-org19834b5">
 <ul class="org-ul">
 <li>Don't cap memory with <code>ulimit -v</code> / <code>RLIMIT_AS</code> / <code>RLIMIT_DATA</code> instead.
 The PHP advisory says this makes things worse.</li>
@@ -176,13 +194,12 @@ The PHP advisory says this makes things worse.</li>
 </div>
 </div>
 
-<div id="outline-container-orgc10903f" class="outline-2">
-<h2 id="orgc10903f">Step 3: Restart and verify</h2>
-<div class="outline-text-2" id="text-orgc10903f">
+<div id="outline-container-org1d0740f" class="outline-2">
+<h2 id="org1d0740f">Step 3: Restart and verify</h2>
+<div class="outline-text-2" id="text-org1d0740f">
 <div class="org-src-container">
 <pre class="src src-sh">sudo apache2ctl configtest            <span class="org-comment-delimiter"># </span><span class="org-comment">or: sudo nginx -t
-</span>sudo systemctl restart apache2        <span class="org-comment-delimiter"># </span><span class="org-comment">full restart, not reload (httpd on RHEL)
-</span>sudo systemctl restart php7.4-fpm     <span class="org-comment-delimiter"># </span><span class="org-comment">if using FPM; match your version/unit</span>
+</span>sudo systemctl restart apache2        <span class="org-comment-delimiter"># </span><span class="org-comment">full restart, not reload</span>
 </pre>
 </div>
 <p>
@@ -219,9 +236,9 @@ Expect <code>-1</code> followed by an empty value or <code>0</code>.
 </div>
 </div>
 
-<div id="outline-container-orgd4b8d49" class="outline-2">
-<h2 id="orgd4b8d49">Wait for a real  fix</h2>
-<div class="outline-text-2" id="text-orgd4b8d49">
+<div id="outline-container-orgfbda430" class="outline-2">
+<h2 id="orgfbda430">Wait for a real  fix</h2>
+<div class="outline-text-2" id="text-orgfbda430">
 <p>
 Both CVEs must be fixed. Your PHP version number often won't change, because
 distributions backport fixes, so check the package, not <code>php -v</code>.
@@ -264,9 +281,9 @@ keep the old code until then.
 </div>
 </div>
 
-<div id="outline-container-org23ea0ab" class="outline-2">
-<h2 id="org23ea0ab">Undo the stop gap once  both CVEs are fixed</h2>
-<div class="outline-text-2" id="text-org23ea0ab">
+<div id="outline-container-org5bdd512" class="outline-2">
+<h2 id="org5bdd512">Undo the stop gap once  both CVEs are fixed</h2>
+<div class="outline-text-2" id="text-org5bdd512">
 <div class="org-src-container">
 <pre class="src src-sh">sudo a2disconf block-multipart          <span class="org-comment-delimiter"># </span><span class="org-comment">or delete the file / the nginx 'if' lines
 </span>sudo a2disconf php-cve-mitigation       <span class="org-comment-delimiter"># </span><span class="org-comment">or remove the lines from the FPM pools
@@ -283,9 +300,9 @@ safer, unless your app shows upload progress bars.</li>
 </div>
 </div>
 
-<div id="outline-container-orga7631ff" class="outline-2">
-<h2 id="orga7631ff">Sources</h2>
-<div class="outline-text-2" id="text-orga7631ff">
+<div id="outline-container-org6719bc8" class="outline-2">
+<h2 id="org6719bc8">Sources</h2>
+<div class="outline-text-2" id="text-org6719bc8">
 <ul class="org-ul">
 <li><a href="https://github.com/php/php-src/security/advisories/GHSA-w8hw-w9fx-j79w">PHP advisory GHSA-w8hw-w9fx-j79w (CVE-2026-109618)</a></li>
 <li><a href="https://github.com/php/php-src/security/advisories/GHSA-6wmf-4rv5-p3rp">PHP advisory GHSA-6wmf-4rv5-p3rp (CVE-2026-109619)</a></li>
