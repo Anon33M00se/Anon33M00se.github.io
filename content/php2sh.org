@@ -1,6 +1,8 @@
 #+TITLE: Stuff
 #+INCLUDE: "./header.org"
 #+DATE: [2026-10-21 Wed]
+#+OPTIONS: ^:nil
+
 
 
 *TL;DR* If you run PHP older than 8.2.35 / 8.3.36 / 8.4.27 / 8.5.12 and
