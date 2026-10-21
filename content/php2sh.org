@@ -1,0 +1,162 @@
+#+TITLE: Stuff
+#+INCLUDE: "./header.org"
+#+DATE: [2026-10-21 Wed]
+
+
+*TL;DR* If you run PHP older than 8.2.35 / 8.3.36 / 8.4.27 / 8.5.12 and
+can't patch yet, this should help mititgate your exposure to
+PHP2Shell. It does *not* fix the vulnerability (it is a stopgap until a
+real fix is available).
+
+
+I have a bunch of old Apache/PHP sites running, and have never had
+time to bring them up to date with more recent PHP versions or isolate
+them inside a container. These are just informal resources I keep up
+for friends and whatnot, not "real" website. Nevertheless, they are
+useful, and this PHP vulnerability could effect them.
+
+* The issue
+[[https://github.com/php/php-src/security/advisories/GHSA-w8hw-w9fx-j79w][CVE-2026-109618]] and [[https://github.com/php/php-src/security/advisories/GHSA-6wmf-4rv5-p3rp][CVE-2026-109619]] ("PHP2Shell") were disclosed on 2026-10-21.
+Both are rated CVSS 9.2 and allow unauthenticated remote code execution.
+Exploit code is apparently out there and has been seen in the wild. 
+
+- *Cause:* a fatal error mid-request, usually hitting =memory_limit=, leaves
+  freed memory that a later request reuses.
+- *Trigger:* every known attack appears to be a =multipart/form-data= request.
+- *Affected:* every PHP version since 5.4, under mod_php, PHP-FPM or CGI.
+- *No upstream fix for 8.1 and older.* Those depend on your distribution
+or vendor backporting the fix (Ubuntu Pro ESM, Debian ELTS, etc.),
+which are not available at the time of writing (i.e. today, October 21
+when the vulnerability was announced).
+
+* Before you start: the trade-offs
+Only use this if you can live with both of these until a real fix is in place:
+
+- *No multipart requests.* File uploads stop working, and so does any form
+  the browser sends as =multipart/form-data= (sometimes login, checkout or
+  contact forms). Ordinary forms and GET requests keep working.
+- *No PHP memory limit.* One runaway or malicious request can use all the
+  server's RAM and get processes OOM-killed. 
+
+These measures reduce the risk; they don't remove it.
+
+
+* Step 1: Block multipart requests at the web server
+** Apache 2.4 (one file covers every vhost, HTTP and HTTPS)
+Debian/Ubuntu: =/etc/apache2/conf-available/block-multipart.conf=
+
+#+begin_src apache
+# Temporary mitigation for CVE-2026-109618/109619 (PHP2Shell) - remove after patching
+<If "%{HTTP:Content-Type} =~ m#multipart/form-data#i">
+    Require all denied
+</If>
+#+end_src
+
+=sudo a2enconf block-multipart=
+
+** nginx (in /every/ =server {}= block that passes requests to PHP)
+This is untested, but should work. 
+
+#+begin_src nginx
+if ($http_content_type ~* "multipart/form-data") { return 403; }
+#+end_src
+Include the default/catch-all server block too.
+
+* Step 2: PHP settings
+Set these so =.htaccess= and =ini_set()= can't override them.
+
+** mod_php (Apache)
+Same place as step 1, e.g. =conf-available/php-cve-mitigation.conf=
+
+#+begin_src apache
+# Temporary mitigation for CVE-2026-109618/109619 (PHP2Shell)
+<IfModule php7_module>
+    php_admin_value memory_limit -1
+    php_admin_flag session.upload_progress.enabled off
+</IfModule>
+#+end_src
+
+=sudo a2enconf php-cve-mitigation=:
+The module name depends on version: =php5_module= (5.x), =php7_module=
+(7.x), =php_module= (8.x). Check with =apache2ctl -M | grep -i php=
+
+** What not to do
+- Don't cap memory with =ulimit -v= / =RLIMIT_AS= / =RLIMIT_DATA= instead.
+  The PHP advisory says this makes things worse.
+- Check nothing re-sets these per site:
+  =grep -rn 'php_admin\|php_value' /etc/apache2/ /etc/httpd/ /etc/php*/ 2>/dev/null=
+
+* Step 3: Restart and verify
+#+begin_src sh
+sudo apache2ctl configtest            # or: sudo nginx -t
+sudo systemctl restart apache2        # full restart, not reload (httpd on RHEL)
+sudo systemctl restart php7.4-fpm     # if using FPM; match your version/unit
+#+end_src
+You need a =restart=, because with just =reload= under with =mod_php=, old workers keep the old settings.
+
+From another machine, every one of these should print =403= (or =301= if
+that URL only redirects to HTTPS):
+#+begin_src sh
+curl -s -o /dev/null -w '%{http_code}\n' -F x=1 https://example.com/
+curl -s -o /dev/null -w '%{http_code}\n' -F x=1 http://example.com/
+curl -s -o /dev/null -w '%{http_code}\n' -F x=1 -H 'Host: bogus' http://SERVER_IP/
+curl -sk -o /dev/null -w '%{http_code}\n' -F x=1 -H 'Host: bogus' https://SERVER_IP/
+#+end_src
+A =200= means something still reaches the server. The last two catch
+default vhosts you may have forgotten.
+
+Check the PHP settings from the web side, not =php -i= (the CLI reads a
+different config). Create a temporary file, load it, then *delete it*:
+#+begin_src php
+<?php echo ini_get('memory_limit'), ' ', ini_get('session.upload_progress.enabled');
+#+end_src
+Expect =-1= followed by an empty value or =0=.
+
+* Wait for a real  fix
+
+Both CVEs must be fixed. Your PHP version number often won't change, because
+distributions backport fixes, so check the package, not =php -v=.
+
+Where to look:
+- Upstream announcement and fixed versions: the PHP advisories ([[https://github.com/php/php-src/security/advisories/GHSA-w8hw-w9fx-j79w][GHSA-w8hw-w9fx-j79w]],
+  [[https://github.com/php/php-src/security/advisories/GHSA-6wmf-4rv5-p3rp][GHSA-6wmf-4rv5-p3rp]]) and https://www.php.net/
+- Your distribution's tracker, which is the authority for your packages:
+  - Ubuntu: https://ubuntu.com/security/CVE-2026-109618 (and ...109619)
+  - Debian: https://security-tracker.debian.org/tracker/CVE-2026-109618
+
+Checking from the server:
+#+begin_src sh
+# Ubuntu (old releases need Ubuntu Pro / ESM)
+sudo pro fix CVE-2026-109618 --dry-run
+sudo pro fix CVE-2026-109619 --dry-run
+
+# Debian/Ubuntu: after upgrading, both CVEs should appear in the changelog
+zgrep -E 'CVE-2026-10961[89]' /usr/share/doc/php*/changelog.Debian.gz \
+  /usr/share/doc/libapache2-mod-php*/changelog.Debian.gz
+
+# RHEL-family (untested)
+dnf updateinfo list --security | grep php
+rpm -q --changelog php-common | grep -E 'CVE-2026-10961[89]'
+#+end_src
+After installing a fix, restart Apache and/or PHP-FPM. Running processes
+keep the old code until then.
+
+* Undo the stop gap once  both CVEs are fixed
+
+#+begin_src sh
+sudo a2disconf block-multipart          # or delete the file / the nginx 'if' lines
+sudo a2disconf php-cve-mitigation       # or remove the lines from the FPM pools
+# restore your previous pm.max_requests, and a real memory_limit
+sudo apache2ctl configtest && sudo systemctl restart apache2
+#+end_src
+- Leaving =session.upload_progress.enabled off= in place is fine, and
+  safer, unless your app shows upload progress bars.
+- Re-run the =curl -F= test. It should no longer return =403=.
+- Plan a move to a supported PHP release. Next time there may be no backport.
+
+* Sources
+- [[https://github.com/php/php-src/security/advisories/GHSA-w8hw-w9fx-j79w][PHP advisory GHSA-w8hw-w9fx-j79w (CVE-2026-109618)]]
+- [[https://github.com/php/php-src/security/advisories/GHSA-6wmf-4rv5-p3rp][PHP advisory GHSA-6wmf-4rv5-p3rp (CVE-2026-109619)]]
+- [[https://sansec.io/research/php2shell][Sansec: PHP2Shell research and mitigations]]
+- [[https://ma.ttias.be/php-cve-2026-109618-patch/][ma.ttias.be: applying the patches per distribution]]
+- [[https://www.ncsc.gov.uk/news/critical-security-issue-affecting-php][UK NCSC advisory]]
