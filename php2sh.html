@@ -38,7 +38,7 @@ real fix is available).
 I have a bunch of old Apache/PHP sites running, and have never had
 time to bring them up to date with more recent PHP versions or isolate
 them inside a container. These are just informal resources I keep up
-for friends and whatnot, not "real" website. Nevertheless, they are
+for friends and whatnot, not "real" websites. Nevertheless, they are
 useful, and this PHP vulnerability could affect them.
 </p>
 
@@ -48,9 +48,9 @@ be transferable.
 </p>
 
 
-<div id="outline-container-org2582e5e" class="outline-2">
-<h2 id="org2582e5e">The issue</h2>
-<div class="outline-text-2" id="text-org2582e5e">
+<div id="outline-container-org493f2b9" class="outline-2">
+<h2 id="org493f2b9">The issue</h2>
+<div class="outline-text-2" id="text-org493f2b9">
 <p>
 <a href="https://github.com/php/php-src/security/advisories/GHSA-w8hw-w9fx-j79w">CVE-2026-109618</a> and <a href="https://github.com/php/php-src/security/advisories/GHSA-6wmf-4rv5-p3rp">CVE-2026-109619</a> ("PHP2Shell") were disclosed on 2026-10-21.
 Both are rated CVSS 9.2 and allow unauthenticated remote code execution.
@@ -72,9 +72,9 @@ when the vulnerability was announced).
 </div>
 </div>
 
-<div id="outline-container-org0e42050" class="outline-2">
-<h2 id="org0e42050">Before you start: the trade-offs</h2>
-<div class="outline-text-2" id="text-org0e42050">
+<div id="outline-container-org8cf9246" class="outline-2">
+<h2 id="org8cf9246">Before you start: the trade-offs</h2>
+<div class="outline-text-2" id="text-org8cf9246">
 <p>
 Only use this if you can live with both of these until a real fix is in place:
 </p>
@@ -94,13 +94,13 @@ These measures reduce the risk; they don't remove it.
 </div>
 
 
-<div id="outline-container-org05ee5a0" class="outline-2">
-<h2 id="org05ee5a0">Step 1: Block multipart requests at the web server</h2>
-<div class="outline-text-2" id="text-org05ee5a0">
+<div id="outline-container-org63ee03c" class="outline-2">
+<h2 id="org63ee03c">Step 1: Block multipart requests at the web server</h2>
+<div class="outline-text-2" id="text-org63ee03c">
 </div>
-<div id="outline-container-orgdca6ef7" class="outline-3">
-<h3 id="orgdca6ef7">Apache 2.4</h3>
-<div class="outline-text-3" id="text-orgdca6ef7">
+<div id="outline-container-orgd060a00" class="outline-3">
+<h3 id="orgd060a00">Apache 2.4</h3>
+<div class="outline-text-3" id="text-orgd060a00">
 <p>
 Create <code>/etc/apache2/conf-available/block-multipart.conf</code> to contain:
 </p>
@@ -123,9 +123,9 @@ Then add it to apache's configuration set:
 </div>
 </div>
 
-<div id="outline-container-org91aabaa" class="outline-3">
-<h3 id="org91aabaa">nginx (in <i>every</i> <code>server {}</code> block that passes requests to PHP)</h3>
-<div class="outline-text-3" id="text-org91aabaa">
+<div id="outline-container-org57690ed" class="outline-3">
+<h3 id="org57690ed">nginx (in <i>every</i> <code>server {}</code> block that passes requests to PHP)</h3>
+<div class="outline-text-3" id="text-org57690ed">
 <p>
 This is untested, as I only run Apache on these old php sites. 
 </p>
@@ -141,17 +141,17 @@ Include the default/catch-all server block too.
 </div>
 </div>
 
-<div id="outline-container-org6339265" class="outline-2">
-<h2 id="org6339265">Step 2: PHP settings</h2>
-<div class="outline-text-2" id="text-org6339265">
+<div id="outline-container-org74e4339" class="outline-2">
+<h2 id="org74e4339">Step 2: PHP settings</h2>
+<div class="outline-text-2" id="text-org74e4339">
 <p>
 Set these so <code>.htaccess</code> and <code>ini_set()</code> can't override them.
 </p>
 </div>
 
-<div id="outline-container-orge8b9fab" class="outline-3">
-<h3 id="orge8b9fab">mod_php (Apache)</h3>
-<div class="outline-text-3" id="text-orge8b9fab">
+<div id="outline-container-org4191138" class="outline-3">
+<h3 id="org4191138">mod_php (Apache)</h3>
+<div class="outline-text-3" id="text-org4191138">
 <p>
 Same place as step 1, e.g. crate a
 <code>conf-available/php-cve-mitigation.conf</code> file and edit it to contain:
@@ -181,9 +181,9 @@ Note that the module name depends on version: <code>php5_module</code> (5.x), <c
 </div>
 </div>
 
-<div id="outline-container-org4443e91" class="outline-3">
-<h3 id="org4443e91">What not to do</h3>
-<div class="outline-text-3" id="text-org4443e91">
+<div id="outline-container-org5579a53" class="outline-3">
+<h3 id="org5579a53">What not to do</h3>
+<div class="outline-text-3" id="text-org5579a53">
 <ul class="org-ul">
 <li>Don't cap memory with <code>ulimit -v</code> / <code>RLIMIT_AS</code> / <code>RLIMIT_DATA</code> instead.
 The PHP advisory says this makes things worse.</li>
@@ -194,9 +194,9 @@ The PHP advisory says this makes things worse.</li>
 </div>
 </div>
 
-<div id="outline-container-orga80626e" class="outline-2">
-<h2 id="orga80626e">Step 3: Restart and verify</h2>
-<div class="outline-text-2" id="text-orga80626e">
+<div id="outline-container-org230e58c" class="outline-2">
+<h2 id="org230e58c">Step 3: Restart and verify</h2>
+<div class="outline-text-2" id="text-org230e58c">
 <div class="org-src-container">
 <pre class="src src-sh">sudo apache2ctl configtest            <span class="org-comment-delimiter"># </span><span class="org-comment">or: sudo nginx -t
 </span>sudo systemctl restart apache2        <span class="org-comment-delimiter"># </span><span class="org-comment">full restart, not reload</span>
@@ -236,9 +236,9 @@ Expect <code>-1</code> followed by an empty value or <code>0</code>.
 </div>
 </div>
 
-<div id="outline-container-org72c16e5" class="outline-2">
-<h2 id="org72c16e5">Wait for a real  fix</h2>
-<div class="outline-text-2" id="text-org72c16e5">
+<div id="outline-container-orge625001" class="outline-2">
+<h2 id="orge625001">Wait for a real  fix</h2>
+<div class="outline-text-2" id="text-orge625001">
 <p>
 Both CVEs must be fixed. Your PHP version number often won't change, because
 distributions backport fixes, so check the package, not <code>php -v</code>.
@@ -281,9 +281,9 @@ keep the old code until then.
 </div>
 </div>
 
-<div id="outline-container-org01aa6b1" class="outline-2">
-<h2 id="org01aa6b1">Undo the stop gap once  both CVEs are fixed</h2>
-<div class="outline-text-2" id="text-org01aa6b1">
+<div id="outline-container-org5797205" class="outline-2">
+<h2 id="org5797205">Undo the stop gap once  both CVEs are fixed</h2>
+<div class="outline-text-2" id="text-org5797205">
 <div class="org-src-container">
 <pre class="src src-sh">sudo a2disconf block-multipart          <span class="org-comment-delimiter"># </span><span class="org-comment">or delete the file / the nginx 'if' lines
 </span>sudo a2disconf php-cve-mitigation       <span class="org-comment-delimiter"># </span><span class="org-comment">or remove the lines from the FPM pools
@@ -300,9 +300,9 @@ safer, unless your app shows upload progress bars.</li>
 </div>
 </div>
 
-<div id="outline-container-org3583e18" class="outline-2">
-<h2 id="org3583e18">Sources</h2>
-<div class="outline-text-2" id="text-org3583e18">
+<div id="outline-container-orga8da92d" class="outline-2">
+<h2 id="orga8da92d">Sources</h2>
+<div class="outline-text-2" id="text-orga8da92d">
 <ul class="org-ul">
 <li><a href="https://github.com/php/php-src/security/advisories/GHSA-w8hw-w9fx-j79w">PHP advisory GHSA-w8hw-w9fx-j79w (CVE-2026-109618)</a></li>
 <li><a href="https://github.com/php/php-src/security/advisories/GHSA-6wmf-4rv5-p3rp">PHP advisory GHSA-6wmf-4rv5-p3rp (CVE-2026-109619)</a></li>
