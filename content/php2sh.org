@@ -14,7 +14,7 @@ real fix is available).
 I have a bunch of old Apache/PHP sites running, and have never had
 time to bring them up to date with more recent PHP versions or isolate
 them inside a container. These are just informal resources I keep up
-for friends and whatnot, not "real" website. Nevertheless, they are
+for friends and whatnot, not "real" websites. Nevertheless, they are
 useful, and this PHP vulnerability could affect them.
 
 What follows below is Debian/Ubuntu-centric, but the core ideas should
