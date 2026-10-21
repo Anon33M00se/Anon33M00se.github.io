@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=0.5" />
+<title>Stuff</title>
+<meta name="generator" content="Org Mode" />
+<link rel="stylesheet" href="https://cdn.simplecss.org/simple.min.css"/>
+                                            <link rel="stylesheet" type="text/css" href="/static/css/customizations.css" />
+                                            <link rel="stylesheet" type="text/css" href="/static/css/org-html-styling.css" />
+</head>
+<body>
+<div id="content" class="content">
+<header>
+  <h1>Stuff</h1>
+  <p><i>noun</i> 1. things which need to be put somewhere.</p>
+  <div class="topbar-menu-container">
+    <span><a href="/index.html">home</a></span> |
+    <!--  <span><a href="/enough.html">enough</a></span> | --!>
+    <span><a href="/itch.html">itch</a></span> | 
+    <span><a href="/email.html">email</a></span> | 
+    <span><a href="/totp.html">totp</a></span> | 
+    <span><a href="/Books/RootsThatBind/">roots</a></span> | 
+    <span><a href="/pta.html">pta</a></span> | 
+    <span><a href="/php2sh.html">php2sh</a></span> 
+    <span><a href="/how.html">how?</a></span> 
+  </div>
+</header>
+<p>
+<b>TL;DR</b> If you run PHP older than 8.2.35 / 8.3.36 / 8.4.27 / 8.5.12 and
+can't patch yet, this should help mititgate your exposure to
+PHP2Shell. It does <b>not</b> fix the vulnerability (it is a stopgap until a
+real fix is available).
+</p>
+
+
+<p>
+I have a bunch of old Apache/PHP sites running, and have never had
+time to bring them up to date with more recent PHP versions or isolate
+them inside a container. These are just informal resources I keep up
+for friends and whatnot, not "real" website. Nevertheless, they are
+useful, and this PHP vulnerability could effect them.
+</p>
+
+<div id="outline-container-org8b6b0f7" class="outline-2">
+<h2 id="org8b6b0f7">The issue</h2>
+<div class="outline-text-2" id="text-org8b6b0f7">
+<p>
+<a href="https://github.com/php/php-src/security/advisories/GHSA-w8hw-w9fx-j79w">CVE-2026-109618</a> and <a href="https://github.com/php/php-src/security/advisories/GHSA-6wmf-4rv5-p3rp">CVE-2026-109619</a> ("PHP2Shell") were disclosed on 2026-10-21.
+Both are rated CVSS 9.2 and allow unauthenticated remote code execution.
+Exploit code is apparently out there and has been seen in the wild. 
+</p>
+
+<ul class="org-ul">
+<li><b>Cause:</b> a fatal error mid-request, usually hitting <code>memory_limit</code>, leaves
+freed memory that a later request reuses.</li>
+<li><b>Trigger:</b> every known attack appears to be a <code>multipart/form-data</code> request.</li>
+<li><b>Affected:</b> every PHP version since 5.4, under mod<sub>php</sub>, PHP-FPM or CGI.</li>
+<li><b>No upstream fix for 8.1 and older.</b> Those depend on your distribution</li>
+</ul>
+<p>
+or vendor backporting the fix (Ubuntu Pro ESM, Debian ELTS, etc.),
+which are not available at the time of writing (i.e. today, October 21
+when the vulnerability was announced).
+</p>
+</div>
+</div>
+
+<div id="outline-container-orga90810e" class="outline-2">
+<h2 id="orga90810e">Before you start: the trade-offs</h2>
+<div class="outline-text-2" id="text-orga90810e">
+<p>
+Only use this if you can live with both of these until a real fix is in place:
+</p>
+
+<ul class="org-ul">
+<li><b>No multipart requests.</b> File uploads stop working, and so does any form
+the browser sends as <code>multipart/form-data</code> (sometimes login, checkout or
+contact forms). Ordinary forms and GET requests keep working.</li>
+<li><b>No PHP memory limit.</b> One runaway or malicious request can use all the
+server's RAM and get processes OOM-killed.</li>
+</ul>
+
+<p>
+These measures reduce the risk; they don't remove it.
+</p>
+</div>
+</div>
+
+
+<div id="outline-container-orga01c5bf" class="outline-2">
+<h2 id="orga01c5bf">Step 1: Block multipart requests at the web server</h2>
+<div class="outline-text-2" id="text-orga01c5bf">
+</div>
+<div id="outline-container-orgf795e2c" class="outline-3">
+<h3 id="orgf795e2c">Apache 2.4 (one file covers every vhost, HTTP and HTTPS)</h3>
+<div class="outline-text-3" id="text-orgf795e2c">
+<p>
+Debian/Ubuntu: <code>/etc/apache2/conf-available/block-multipart.conf</code>
+</p>
+
+<div class="org-src-container">
+<pre class="src src-apache"># Temporary mitigation for CVE-2026-109618/109619 (PHP2Shell) - remove after patching
+&lt;If "%{HTTP:Content-Type} =~ m#multipart/form-data#i"&gt;
+    Require all denied
+&lt;/If&gt;
+</pre>
+</div>
+
+<p>
+<code>sudo a2enconf block-multipart</code>
+</p>
+</div>
+</div>
+
+<div id="outline-container-org6d856fb" class="outline-3">
+<h3 id="org6d856fb">nginx (in <i>every</i> <code>server {}</code> block that passes requests to PHP)</h3>
+<div class="outline-text-3" id="text-org6d856fb">
+<p>
+This is untested, but should work. 
+</p>
+
+<div class="org-src-container">
+<pre class="src src-nginx">if ($http_content_type ~* "multipart/form-data") { return 403; }
+</pre>
+</div>
+<p>
+Include the default/catch-all server block too.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgd23f340" class="outline-2">
+<h2 id="orgd23f340">Step 2: PHP settings</h2>
+<div class="outline-text-2" id="text-orgd23f340">
+<p>
+Set these so <code>.htaccess</code> and <code>ini_set()</code> can't override them.
+</p>
+</div>
+
+<div id="outline-container-orgfd844ee" class="outline-3">
+<h3 id="orgfd844ee">mod<sub>php</sub> (Apache)</h3>
+<div class="outline-text-3" id="text-orgfd844ee">
+<p>
+Same place as step 1, e.g. <code>conf-available/php-cve-mitigation.conf</code>
+</p>
+
+<div class="org-src-container">
+<pre class="src src-apache"># Temporary mitigation for CVE-2026-109618/109619 (PHP2Shell)
+&lt;IfModule php7_module&gt;
+    php_admin_value memory_limit -1
+    php_admin_flag session.upload_progress.enabled off
+&lt;/IfModule&gt;
+</pre>
+</div>
+
+<p>
+<code>sudo a2enconf php-cve-mitigation</code>:
+The module name depends on version: <code>php5_module</code> (5.x), <code>php7_module</code>
+(7.x), <code>php_module</code> (8.x). Check with <code>apache2ctl -M | grep -i php</code>
+</p>
+</div>
+</div>
+
+<div id="outline-container-orge509e55" class="outline-3">
+<h3 id="orge509e55">What not to do</h3>
+<div class="outline-text-3" id="text-orge509e55">
+<ul class="org-ul">
+<li>Don't cap memory with <code>ulimit -v</code> / <code>RLIMIT_AS</code> / <code>RLIMIT_DATA</code> instead.
+The PHP advisory says this makes things worse.</li>
+<li>Check nothing re-sets these per site:
+<code>grep -rn 'php_admin\|php_value' /etc/apache2/ /etc/httpd/ /etc/php*/ 2&gt;/dev/null</code></li>
+</ul>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgc10903f" class="outline-2">
+<h2 id="orgc10903f">Step 3: Restart and verify</h2>
+<div class="outline-text-2" id="text-orgc10903f">
+<div class="org-src-container">
+<pre class="src src-sh">sudo apache2ctl configtest            <span class="org-comment-delimiter"># </span><span class="org-comment">or: sudo nginx -t
+</span>sudo systemctl restart apache2        <span class="org-comment-delimiter"># </span><span class="org-comment">full restart, not reload (httpd on RHEL)
+</span>sudo systemctl restart php7.4-fpm     <span class="org-comment-delimiter"># </span><span class="org-comment">if using FPM; match your version/unit</span>
+</pre>
+</div>
+<p>
+You need a <code>restart</code>, because with just <code>reload</code> under with <code>mod_php</code>, old workers keep the old settings.
+</p>
+
+<p>
+From another machine, every one of these should print <code>403</code> (or <code>301</code> if
+that URL only redirects to HTTPS):
+</p>
+<div class="org-src-container">
+<pre class="src src-sh">curl -s -o /dev/null -w <span class="org-string">'%{http_code}\n'</span> -F <span class="org-variable-name">x</span>=1 https://example.com/
+curl -s -o /dev/null -w <span class="org-string">'%{http_code}\n'</span> -F <span class="org-variable-name">x</span>=1 http://example.com/
+curl -s -o /dev/null -w <span class="org-string">'%{http_code}\n'</span> -F <span class="org-variable-name">x</span>=1 -H <span class="org-string">'Host: bogus'</span> http://SERVER_IP/
+curl -sk -o /dev/null -w <span class="org-string">'%{http_code}\n'</span> -F <span class="org-variable-name">x</span>=1 -H <span class="org-string">'Host: bogus'</span> https://SERVER_IP/
+</pre>
+</div>
+<p>
+A <code>200</code> means something still reaches the server. The last two catch
+default vhosts you may have forgotten.
+</p>
+
+<p>
+Check the PHP settings from the web side, not <code>php -i</code> (the CLI reads a
+different config). Create a temporary file, load it, then <b>delete it</b>:
+</p>
+<div class="org-src-container">
+<pre class="src src-php">&lt;?php echo ini_get('memory_limit'), ' ', ini_get('session.upload_progress.enabled');
+</pre>
+</div>
+<p>
+Expect <code>-1</code> followed by an empty value or <code>0</code>.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgd4b8d49" class="outline-2">
+<h2 id="orgd4b8d49">Wait for a real  fix</h2>
+<div class="outline-text-2" id="text-orgd4b8d49">
+<p>
+Both CVEs must be fixed. Your PHP version number often won't change, because
+distributions backport fixes, so check the package, not <code>php -v</code>.
+</p>
+
+<p>
+Where to look:
+</p>
+<ul class="org-ul">
+<li>Upstream announcement and fixed versions: the PHP advisories (<a href="https://github.com/php/php-src/security/advisories/GHSA-w8hw-w9fx-j79w">GHSA-w8hw-w9fx-j79w</a>,
+<a href="https://github.com/php/php-src/security/advisories/GHSA-6wmf-4rv5-p3rp">GHSA-6wmf-4rv5-p3rp</a>) and <a href="https://www.php.net/">https://www.php.net/</a></li>
+<li>Your distribution's tracker, which is the authority for your packages:
+<ul class="org-ul">
+<li>Ubuntu: <a href="https://ubuntu.com/security/CVE-2026-109618">https://ubuntu.com/security/CVE-2026-109618</a> (and &#x2026;109619)</li>
+<li>Debian: <a href="https://security-tracker.debian.org/tracker/CVE-2026-109618">https://security-tracker.debian.org/tracker/CVE-2026-109618</a></li>
+</ul></li>
+</ul>
+
+<p>
+Checking from the server:
+</p>
+<div class="org-src-container">
+<pre class="src src-sh"><span class="org-comment-delimiter"># </span><span class="org-comment">Ubuntu (old releases need Ubuntu Pro / ESM)
+</span>sudo pro fix CVE-2026-109618 --dry-run
+sudo pro fix CVE-2026-109619 --dry-run
+
+<span class="org-comment-delimiter"># </span><span class="org-comment">Debian/Ubuntu: after upgrading, both CVEs should appear in the changelog
+</span>zgrep -E <span class="org-string">'CVE-2026-10961[89]'</span> /usr/share/doc/php*/changelog.Debian.gz <span class="org-sh-escaped-newline">\</span>
+  /usr/share/doc/libapache2-mod-php*/changelog.Debian.gz
+
+<span class="org-comment-delimiter"># </span><span class="org-comment">RHEL-family (untested)
+</span>dnf updateinfo list --security | grep php
+rpm -q --changelog php-common | grep -E <span class="org-string">'CVE-2026-10961[89]'</span>
+</pre>
+</div>
+<p>
+After installing a fix, restart Apache and/or PHP-FPM. Running processes
+keep the old code until then.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org23ea0ab" class="outline-2">
+<h2 id="org23ea0ab">Undo the stop gap once  both CVEs are fixed</h2>
+<div class="outline-text-2" id="text-org23ea0ab">
+<div class="org-src-container">
+<pre class="src src-sh">sudo a2disconf block-multipart          <span class="org-comment-delimiter"># </span><span class="org-comment">or delete the file / the nginx 'if' lines
+</span>sudo a2disconf php-cve-mitigation       <span class="org-comment-delimiter"># </span><span class="org-comment">or remove the lines from the FPM pools
+</span><span class="org-comment-delimiter"># </span><span class="org-comment">restore your previous pm.max_requests, and a real memory_limit
+</span>sudo apache2ctl configtest &amp;&amp; sudo systemctl restart apache2
+</pre>
+</div>
+<ul class="org-ul">
+<li>Leaving <code>session.upload_progress.enabled off</code> in place is fine, and
+safer, unless your app shows upload progress bars.</li>
+<li>Re-run the <code>curl -F</code> test. It should no longer return <code>403</code>.</li>
+<li>Plan a move to a supported PHP release. Next time there may be no backport.</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orga7631ff" class="outline-2">
+<h2 id="orga7631ff">Sources</h2>
+<div class="outline-text-2" id="text-orga7631ff">
+<ul class="org-ul">
+<li><a href="https://github.com/php/php-src/security/advisories/GHSA-w8hw-w9fx-j79w">PHP advisory GHSA-w8hw-w9fx-j79w (CVE-2026-109618)</a></li>
+<li><a href="https://github.com/php/php-src/security/advisories/GHSA-6wmf-4rv5-p3rp">PHP advisory GHSA-6wmf-4rv5-p3rp (CVE-2026-109619)</a></li>
+<li><a href="https://sansec.io/research/php2shell">Sansec: PHP2Shell research and mitigations</a></li>
+<li><a href="https://ma.ttias.be/php-cve-2026-109618-patch/">ma.ttias.be: applying the patches per distribution</a></li>
+<li><a href="https://www.ncsc.gov.uk/news/critical-security-issue-affecting-php">UK NCSC advisory</a></li>
+</ul>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="date">Date: October 21, 2026</p>
+<p class="creator"><a href="https://www.gnu.org/software/emacs/">Emacs</a> 29.3 (<a href="https://orgmode.org">Org</a> mode 9.6.15)</p>
+</div>
+</body>
+</html>
