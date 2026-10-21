@@ -13,7 +13,11 @@ I have a bunch of old Apache/PHP sites running, and have never had
 time to bring them up to date with more recent PHP versions or isolate
 them inside a container. These are just informal resources I keep up
 for friends and whatnot, not "real" website. Nevertheless, they are
-useful, and this PHP vulnerability could effect them.
+useful, and this PHP vulnerability could affect them.
+
+What follows below is Debian/Ubuntu-centric, but the core ideas should
+be transferable.
+
 
 * The issue
 [[https://github.com/php/php-src/security/advisories/GHSA-w8hw-w9fx-j79w][CVE-2026-109618]] and [[https://github.com/php/php-src/security/advisories/GHSA-6wmf-4rv5-p3rp][CVE-2026-109619]] ("PHP2Shell") were disclosed on 2026-10-21.
@@ -42,8 +46,8 @@ These measures reduce the risk; they don't remove it.
 
 
 * Step 1: Block multipart requests at the web server
-** Apache 2.4 (one file covers every vhost, HTTP and HTTPS)
-Debian/Ubuntu: =/etc/apache2/conf-available/block-multipart.conf=
+** Apache 2.4 
+Create =/etc/apache2/conf-available/block-multipart.conf= to contain:
 
 #+begin_src apache
 # Temporary mitigation for CVE-2026-109618/109619 (PHP2Shell) - remove after patching
@@ -52,10 +56,12 @@ Debian/Ubuntu: =/etc/apache2/conf-available/block-multipart.conf=
 </If>
 #+end_src
 
+Then add it to apache's configuration set:
+
 =sudo a2enconf block-multipart=
 
 ** nginx (in /every/ =server {}= block that passes requests to PHP)
-This is untested, but should work. 
+This is untested, as I only run Apache on these old php sites. 
 
 #+begin_src nginx
 if ($http_content_type ~* "multipart/form-data") { return 403; }
@@ -66,7 +72,8 @@ Include the default/catch-all server block too.
 Set these so =.htaccess= and =ini_set()= can't override them.
 
 ** mod_php (Apache)
-Same place as step 1, e.g. =conf-available/php-cve-mitigation.conf=
+Same place as step 1, e.g. crate a
+=conf-available/php-cve-mitigation.conf= file and edit it to contain:
 
 #+begin_src apache
 # Temporary mitigation for CVE-2026-109618/109619 (PHP2Shell)
@@ -76,8 +83,11 @@ Same place as step 1, e.g. =conf-available/php-cve-mitigation.conf=
 </IfModule>
 #+end_src
 
+Then enable that with:
+
 =sudo a2enconf php-cve-mitigation=:
-The module name depends on version: =php5_module= (5.x), =php7_module=
+
+Note that the module name depends on version: =php5_module= (5.x), =php7_module=
 (7.x), =php_module= (8.x). Check with =apache2ctl -M | grep -i php=
 
 ** What not to do
@@ -89,8 +99,7 @@ The module name depends on version: =php5_module= (5.x), =php7_module=
 * Step 3: Restart and verify
 #+begin_src sh
 sudo apache2ctl configtest            # or: sudo nginx -t
-sudo systemctl restart apache2        # full restart, not reload (httpd on RHEL)
-sudo systemctl restart php7.4-fpm     # if using FPM; match your version/unit
+sudo systemctl restart apache2        # full restart, not reload
 #+end_src
 You need a =restart=, because with just =reload= under with =mod_php=, old workers keep the old settings.
 
