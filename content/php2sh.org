@@ -3,7 +3,7 @@
 #+DATE: [2026-10-21 Wed]
 #+OPTIONS: ^:nil
 
-
+/Almost all versions of PHP now have an update that addresses these CVEs, so this is no longer relevant and is only here for posterity./
 
 *TL;DR* If you run PHP older than 8.2.35 / 8.3.36 / 8.4.27 / 8.5.12 and
 can't patch yet, this should help mititgate your exposure to
