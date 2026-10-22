@@ -26,9 +26,9 @@
   </div>
 </header>
 
-<div id="outline-container-org3197b02" class="outline-2">
-<h2 id="org3197b02">TOTP in the Terminal</h2>
-<div class="outline-text-2" id="text-org3197b02">
+<div id="outline-container-org398464e" class="outline-2">
+<h2 id="org398464e">TOTP in the Terminal</h2>
+<div class="outline-text-2" id="text-org398464e">
 <p>
 Anyone who uses <a href="https://apps.apple.com/us/app/google-authenticator/id388497605">Google Authenticator</a> or <a href="https://2fas.com/">2FAS</a> for "second factor
 authentication" knows what Time-based One Time Passwords (TOTP) are. I
@@ -38,7 +38,7 @@ Android version on my old Kindle Fire just stopped working:
 </p>
 
 
-<figure id="org1cddb88">
+<figure id="org9572a72">
 <img src="./static/img/google_none.jpg" alt="google_none.jpg">
 
 </figure>
@@ -55,9 +55,9 @@ great to find an approach that would work closely with that setup.
 </div>
 </div>
 
-<div id="outline-container-org9b08291" class="outline-2">
-<h2 id="org9b08291">Oathtool to the Rescue</h2>
-<div class="outline-text-2" id="text-org9b08291">
+<div id="outline-container-org9cb5734" class="outline-2">
+<h2 id="org9cb5734">Oathtool to the Rescue</h2>
+<div class="outline-text-2" id="text-org9cb5734">
 <p>
 There are a <a href="https://www.cyberciti.biz/faq/use-oathtool-linux-command-line-for-2-step-verification-2fa/">couple</a> of <a href="https://www.nongnu.org/oath-toolkit/oathtool.1.html">resources</a> around that explain how one can
 generate TOTP codes at the CLI. They all seem to center on a utility
@@ -130,9 +130,9 @@ and copy the one time code to the clipboard.
 </div>
 </div>
 
-<div id="outline-container-orge18424e" class="outline-2">
-<h2 id="orge18424e">Wait, Where do we Get the Original Secrets From?</h2>
-<div class="outline-text-2" id="text-orge18424e">
+<div id="outline-container-orgaa01fbb" class="outline-2">
+<h2 id="orgaa01fbb">Wait, Where do we Get the Original Secrets From?</h2>
+<div class="outline-text-2" id="text-orgaa01fbb">
 <p>
 If you have a look at that bash function, it's using oathtool to calculate a TOTP from the first line of an entry returned by <b>pass</b>. The <b>pass</b> part of this is just:
 </p>
@@ -214,9 +214,9 @@ deleting them after they have been processed, etc.
 </div>
 
 
-<div id="outline-container-org87fa121" class="outline-2">
-<h2 id="org87fa121">The Joy of Auto Completion</h2>
-<div class="outline-text-2" id="text-org87fa121">
+<div id="outline-container-org6ed6475" class="outline-2">
+<h2 id="org6ed6475">The Joy of Auto Completion</h2>
+<div class="outline-text-2" id="text-org6ed6475">
 <p>
 Since I have a few dozen TOTP-enabled accounts, I don't actually call
 them something as short as <b>twilio</b>. I use conventions more like
@@ -264,9 +264,9 @@ the nuances of this, but there is a <a href="https://www.gnu.org/software/bash/m
 </div>
 
 
-<div id="outline-container-org0880a79" class="outline-2">
-<h2 id="org0880a79">Update</h2>
-<div class="outline-text-2" id="text-org0880a79">
+<div id="outline-container-org29253d4" class="outline-2">
+<h2 id="org29253d4">Update</h2>
+<div class="outline-text-2" id="text-org29253d4">
 <p>
 A few people have pointed out that there is also <a href="https://github.com/tadfisher/pass-otp">pass-otp</a> project on
 github which is another way of going about this.
